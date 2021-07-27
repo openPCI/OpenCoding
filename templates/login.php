@@ -1,9 +1,6 @@
 <div class="container">
 	<div class="jumbotron jumbotron-fluid">
 		<div class="row d-flex mt-4 justify-content-center">
-		<div class="container">
-			<h1 class="display-4">OpenScoring</h1>
-		</div>
 			<div class="col  " id="loginform">
 				<div class="d-flex justify-content-center">
 					<div class="card card-block homepage ">
@@ -12,7 +9,6 @@
 						<input type="text" id="inputUser" class="form-control menuform" placeholder="<?=_('Username');?>" required>
 						<label for="inputPassword" class="sr-only"><?= _('Password');?></label>
 						<input type="password" id="inputPassword" class="form-control menuform mt-2" placeholder="<?=_('Password');?>" required>
-						<input type="hidden" id="p" value="<?= ($_GET["p"]?$_GET["p"]:"main"); ?>">
 						<div class="checkbox">
 						<label>
 							<input type="checkbox" id="rememberMe"> <?= _('Remember Me');?>

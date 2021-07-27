@@ -1,10 +1,19 @@
 <?php
 session_start();
-if($_GET["logout"]) {
-	unset($_SESSION["userid"]);
+if($_POST["logout"]) {
+	unset($_SESSION["user_id"]);
+	unset($_SESSION["perms"]);
+	unset($_SESSION["response_id"]);
+	unset($_SESSION["flag_id"]);
+	unset($_SESSION["training"]);
+	unset($_SESSION["coder_id"]);
+	unset($_SESSION["isdoublecode"]);
+	unset($_SESSION["doublecodingpct"]);
+	unset($_SESSION["codingadmin"]);
+	unset($_SESSION["activetask"]);
+	unset($_SESSION["difficulty"]);
 }
-$user_id=$_SESSION["userid"];
-$loggedin=($user_id);
+$user_id=$_SESSION["user_id"];
 $relative="./";
 include_once("dirs.php");
 // include_once($secretdir."settings.php");
@@ -17,12 +26,9 @@ include_once($shareddir."templates.php");
 	if($_GET["contact"]) {
 		echo get_template("contact")["template"];
 	}
-	if($loggedin) {
+	if($user_id) {
 		$p=($_POST["p"]?$_POST["p"]:($_GET["p"]?$_GET["p"]:"main"));
-		echo get_template($p)["template"];
-	}
-	else {
-		echo get_template("login")["template"];
+		#echo get_template($p)["template"];
 	}
 ?>
 </div>

@@ -1,0 +1,81 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-07-25 11:09+0200\n"
+"PO-Revision-Date: 2021-07-25 11:56+0200\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 2.4.2\n"
+"Last-Translator: \n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Language: da_DK\n"
+
+#: js/opencoding.js:143
+msgid "Coding saved"
+msgstr "Kodning gemt"
+
+#: js/opencoding.js:163
+msgid ""
+"Please specify the difficulty of coding the response (on a scale from 0 to "
+"255) (used for ordering the responses in training, the ones with lowest "
+"difficulty will be presented first)"
+msgstr ""
+"Angiv venligst sværhedsgraden af at kode besvarelsen (på en skala fra 0-255) "
+"(bruges når besvarelserne skal sorteres i træningen. Dem med lavest "
+"sværhedsgrad skal kodes først)"
+
+#: js/opencoding.js:165
+msgid "Please give a number between 0 and 255"
+msgstr "Angiv venligst et tal mellem 0 og 255"
+
+#: js/opencoding.js:179
+msgid "Mark flag resolved."
+msgstr "Marker eftersynet som løst."
+
+#: js/opencoding.js:182
+msgid "Flag response."
+msgstr "Marker besvarelsen til eftersyn."
+
+#: js/opencoding.js:214
+msgid "You need to fill out all codes before proceeding to the next response."
+msgstr "Du skal udfylde alle koderne før du kan gå til den næste besvarelse."
+
+#: js/opencoding.js:222
+msgid "The value of {0} is out of range"
+msgstr "Værdien af {0} er uden for det tilladte"
+
+#: js/opencoding.js:445
+msgid ""
+"You are about to import {0} columns of data from {1} test-takers. Do you "
+"want to proceed?"
+msgstr ""
+"Du er ved at importere {0} kolonner med data fra {1} testtagere. Vil du "
+"fortsætte?"
+
+#: js/opencoding.js:450
+msgid ""
+"{0} new tests, {1} new tasks, and {2} new responses were registered. Are you "
+"done uploading?"
+msgstr ""
+"{0} nye tests, {1} nye opgaver og {2} nye besvarelser blev registreret. Er "
+"du færdig med at uploade?"
+
+#: js/opencoding.js:511
+msgid "Password copied to clipboard"
+msgstr "Kodeordet er kopieret til udklipsholderen"
+
+#: js/opencoding.js:587
+msgid ""
+"You haven't selected coders to add. Click on the name to put it to the group "
+"of coders to add."
+msgstr ""
+"Du har ikke valgt kodere der skal tilføjes. Klik på navnet for at flytte det "
+"ned til gruppen af kodere der skal tilføjes."

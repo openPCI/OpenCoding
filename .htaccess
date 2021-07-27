@@ -1,0 +1,7 @@
+Options +FollowSymLinks
+
+<IfModule mod_rewrite.c>
+RewriteEngine Off
+SetEnv HTTP_MOD_REWRITE off
+
+</IfModule>
