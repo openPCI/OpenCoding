@@ -6,7 +6,7 @@ include_once($shareddir."database.php");
 checkperm("projectadmin");
 $log.=print_r($_POST,true);
 $unittype=$_POST["unittype"];
-$unit_id=$_SESSION["project_id"];
+$unit_id=($unittype=="opencodingadmin"?0:$_SESSION["project_id"]);
 if($_POST["given"]=="true")
 	$q='insert IGNORE into user_permissions (`user_id`, `unittype`,`unit_id`) VALUES ('.$_POST["user_id"].',"'.$unittype.'",'.$unit_id.')';
 else 

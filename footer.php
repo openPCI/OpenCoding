@@ -6,7 +6,7 @@
 </div>
 <div class="alert alert-success OpenCodingMessage" style="position: fixed;width:30%;z-index:1051;top:50%;left:50%;margin-left:-15%;text-align:center;display:none; " role="alert">
 </div>
-
+<div><br><br></div>
 <footer class="footer d-print-none py-1 mt-auto site-footer fixed-bottom">
 	<div class="row ">
 		<div class="col d-flex ml-2 justify-content-left">
@@ -37,6 +37,7 @@
 </footer>
 
 
+<!-- <script src="./js/sletmig.js" ></script> -->
 <script src="./js/jquery.min.js" ></script>
 <script src="./js/popper.min.js"></script>
 <script src="./js/papaparse.min.js"></script>
@@ -44,7 +45,6 @@
 <script src="./js/jquery-ui.min.js"></script>
 <script src="js/jquery.ui.touch-punch.min.js"></script>
 <script src="./js/translate.js"></script>
-
 <script src="./js/tether.min.js"></script>
 <script src="./js/bootstrap.min.js"></script>
 <script src="./js/bootstrap-timepicker.min.js"></script>
@@ -54,7 +54,9 @@
 
 <script src="js/opencoding.js"></script>
 <script src="js/bootstrap-toggle.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.1.0/highlight.min.js"></script>
 
-    
+<script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
+   
   </body>
 </html>

@@ -1,0 +1,377 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-07-25 11:09+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: backend/trainingresponse.php:11 frontend/flag.php:9
+msgid "Response-id doesn't match."
+msgstr ""
+
+#: templates/users.php:18 templates/users.php:57
+msgid "New user"
+msgstr ""
+
+#: templates/users.php:23
+msgid "OpenCoding Users"
+msgstr ""
+
+#: templates/users.php:27 templates/users.php:65 templates/login.php:8
+#: templates/login.php:9 templates/myUser.php:16
+msgid "Username"
+msgstr ""
+
+#: templates/users.php:28 templates/users.php:69 templates/myUser.php:20
+msgid "E-mail"
+msgstr ""
+
+#: templates/users.php:29
+msgid "Permissions"
+msgstr ""
+
+#: templates/users.php:30
+msgid "Actions"
+msgstr ""
+
+#: templates/users.php:41
+msgid "Remove"
+msgstr ""
+
+#: templates/users.php:42
+msgid "New password"
+msgstr ""
+
+#: templates/users.php:73 templates/login.php:10 templates/login.php:11
+#: templates/myUser.php:25
+msgid "Password"
+msgstr ""
+
+#: templates/users.php:75
+msgid "Create a password"
+msgstr ""
+
+#: templates/users.php:81 templates/tests.php:112
+#: templates/codingmanagement.php:129
+msgid "Close"
+msgstr ""
+
+#: templates/users.php:82
+msgid "Create user"
+msgstr ""
+
+#: templates/contact.php:4 templates/menu.php:4
+msgid "Human Coding of QTI/PCI items"
+msgstr ""
+
+#: templates/contact.php:5
+msgid "Developed by Jeppe Bundsgaard and Elias Toft Hansen."
+msgstr ""
+
+#: templates/contact.php:6
+msgid "Find out more at Github"
+msgstr ""
+
+#: templates/login.php:14
+msgid "Remember Me"
+msgstr ""
+
+#: templates/login.php:17
+msgid "Login"
+msgstr ""
+
+#: templates/upload.php:6
+#, php-format
+msgid ""
+"Your server limits the number of cases to be uploaded to %d. You can change "
+"that in the php-ini-file on the server. Or keep the number of cases down in "
+"each upload."
+msgstr ""
+
+#: templates/upload.php:12
+msgid "Test name"
+msgstr ""
+
+#: templates/upload.php:14
+msgid ""
+"Use a unique name for the test. If an existing name in this project is used, "
+"the tasks will be part of the existing test."
+msgstr ""
+
+#: templates/upload.php:18
+msgid "Choose a CSV-file"
+msgstr ""
+
+#: templates/upload.php:24
+msgid ""
+"Click on the username-column, then the testing time-column, and finally on "
+"the columns containing responses"
+msgstr ""
+
+#: templates/upload.php:30
+msgid "Test taker username"
+msgstr ""
+
+#: templates/upload.php:31
+msgid "Test time"
+msgstr ""
+
+#: templates/upload.php:32
+msgid "Tasks"
+msgstr ""
+
+#: templates/upload.php:37
+msgid "Filter the responses"
+msgstr ""
+
+#: templates/upload.php:42
+msgid "Test taker username (regular expression accepted)"
+msgstr ""
+
+#: templates/upload.php:46
+msgid "Only include responses with test time before"
+msgstr ""
+
+#: templates/upload.php:50
+msgid "Only include responses with test time after"
+msgstr ""
+
+#: templates/upload.php:57
+msgid "Upload"
+msgstr ""
+
+#: templates/coding.php:105
+msgid "Flag response."
+msgstr ""
+
+#: templates/coding.php:106
+msgid "This response is used in coder training. Difficulty: "
+msgstr ""
+
+#: templates/coding.php:106
+msgid "Mark response as used in coder training."
+msgstr ""
+
+#: templates/coding.php:134
+msgid ""
+"Use TAB and SHIFT+TAB to shift forward and back between item-codes. Use "
+"ARROWS to increase and decrease codes. Hit ENTER when in the last item-code "
+"to go to next response."
+msgstr ""
+
+#: templates/coding.php:146
+msgid "Flagged by:"
+msgstr ""
+
+#: templates/coding.php:149
+msgid "Add comment"
+msgstr ""
+
+#: templates/coding.php:156 templates/autocoding.php:78 templates/myUser.php:31
+msgid "Finish"
+msgstr ""
+
+#: templates/tests.php:28
+msgid "Task name"
+msgstr ""
+
+#: templates/tests.php:29
+msgid "Task description"
+msgstr ""
+
+#: templates/tests.php:30
+msgid "Task image"
+msgstr ""
+
+#: templates/tests.php:31
+msgid "Task type"
+msgstr ""
+
+#: templates/tests.php:32
+msgid "Task variables"
+msgstr ""
+
+#: templates/tests.php:33
+msgid "Items"
+msgstr ""
+
+#: templates/tests.php:34
+msgid "Coding rubrics"
+msgstr ""
+
+#: templates/tests.php:35 templates/codingmanagement.php:43
+msgid "Count"
+msgstr ""
+
+#: templates/tests.php:100
+msgid "Upload image"
+msgstr ""
+
+#: templates/tests.php:113 templates/codingmanagement.php:130
+#: templates/autocoding.php:77
+msgid "Save"
+msgstr ""
+
+#: templates/mytasks.php:34 templates/codingmanagement.php:42
+#: templates/training.php:16
+msgid "Test/task name"
+msgstr ""
+
+#: templates/mytasks.php:35 templates/codingmanagement.php:44
+msgid "Coded"
+msgstr ""
+
+#: templates/mytasks.php:36 templates/codingmanagement.php:47
+msgid "Flagged"
+msgstr ""
+
+#: templates/codingmanagement.php:45
+msgid "Double coded"
+msgstr ""
+
+#: templates/codingmanagement.php:46
+msgid "Agreement"
+msgstr ""
+
+#: templates/codingmanagement.php:48
+msgid "Resolved"
+msgstr ""
+
+#: templates/codingmanagement.php:49
+msgid "Assigned Coders"
+msgstr ""
+
+#: templates/codingmanagement.php:75
+msgid "Item names are not the same"
+msgstr ""
+
+#: templates/codingmanagement.php:91 templates/codingmanagement.php:92
+msgid "Add coder"
+msgstr ""
+
+#: templates/codingmanagement.php:108 templates/codingmanagement.php:124
+msgid "Add coders"
+msgstr ""
+
+#: templates/codingmanagement.php:114
+msgid "Coders on project"
+msgstr ""
+
+#: templates/codingmanagement.php:119
+msgid "Find coder"
+msgstr ""
+
+#: templates/training.php:17
+msgid "# training responses"
+msgstr ""
+
+#: templates/training.php:18
+msgid "# completed"
+msgstr ""
+
+#: templates/training.php:19
+msgid "Correct (items)"
+msgstr ""
+
+#: templates/training.php:36
+msgid "of"
+msgstr ""
+
+#: templates/myUser.php:14
+msgid "User Data"
+msgstr ""
+
+#: templates/myUser.php:22
+msgid ""
+"You are welcome to change your e-mail. Please remember to use the new "
+"address for login in the future."
+msgstr ""
+
+#: templates/myUser.php:26
+msgid "Unchanged"
+msgstr ""
+
+#: header.php:12 header.php:30 header.php:36 header.php:12 header.php:30
+#: header.php:36
+msgid "Human coding of test responses"
+msgstr ""
+
+#: header.php:46 header.php:46
+msgid "Code"
+msgstr ""
+
+#: header.php:49 header.php:49
+msgid "Training"
+msgstr ""
+
+#: header.php:52 header.php:52
+msgid "Manage"
+msgstr ""
+
+#: header.php:56 header.php:56
+msgid "Coding Management"
+msgstr ""
+
+#: header.php:61 header.php:61
+msgid "Project Admin"
+msgstr ""
+
+#: dirs.php:8 dirs.php:8
+msgid "You don't have access here"
+msgstr ""
+
+#: frontend/getresponse.php:13
+msgid "Response-id is not correct: "
+msgstr ""
+
+#: frontend/getresponse.php:28
+msgid "You need to set the flag to send negative values."
+msgstr ""
+
+#: frontend/getresponse.php:101
+msgid "No more responses"
+msgstr ""
+
+#: shared/login.php:28
+msgid "Welcome back!"
+msgstr ""
+
+#: shared/login.php:36
+msgid "Username or password was wrong"
+msgstr ""
+
+#: shared/login.php:37
+msgid "No username"
+msgstr ""
+
+#: footer.php:15 footer.php:32 footer.php:15 footer.php:32
+msgid "Cookies"
+msgstr ""
+
+#: footer.php:20 footer.php:20
+msgid "Profile and projects"
+msgstr ""
+
+#: footer.php:21 footer.php:21
+msgid "Log out"
+msgstr ""
+
+#: footer.php:26 footer.php:26
+msgid "Log in"
+msgstr ""
+
+#: footer.php:33 footer.php:33
+msgid "Contact"
+msgstr ""

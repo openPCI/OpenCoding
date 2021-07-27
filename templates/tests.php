@@ -22,69 +22,69 @@ while($r=$result->fetch_assoc()) {
 
     <div id="test<?= $r["test_id"];?>" class="collapse" aria-labelledby="test_name<?= $r["test_id"];?>" data-parent="#accordion">
 		<div class="card-body">
-		<table class="table">
-			<thead>
-				<tr>
-				<th scope="col"><?= _("Task name");?></th>
-				<th scope="col"><?= _("Task description");?></th>
-				<th scope="col"><?= _("Task image");?></th>
-				<th scope="col"><?= _("Task type");?></th>
-				<th scope="col"><?= _("Task variables");?></th>
-				<th scope="col"><?= _("Items");?></th>
-				<th scope="col"><?= _("Coding rubrics");?></th>
-				<th scope="col"><?= _("Count");?></th>
-				</tr>
-			</thead>
-			<tbody id="tasklist">
-		<?php
-			$q="select t.*,count(r.response_id) as rcount,tasktype_name,i.variables from tasks t left join tasktypes i on i.tasktype_id=t.tasktype_id left join responses r on r.task_id=t.task_id where test_id=".$r["test_id"]." GROUP BY 1 order by `group_id`";
-			
-////////////////
-// 		Due to this bug: https://bugs.mysql.com/bug.php?id=103225
-//
-// 			sudo nano /etc/mysql/mysql.conf.d/mysqld.cnf
-// 			sort_buffer_size = 512000000
-// 			sudo service mysql restart
-// 			
-			
-			$result1=$mysqli->query($q);
-			while($r1=$result1->fetch_assoc()) {
-			?>
-				<tr data-task_id="<?= $r1["task_id"];?>" class="group_target" <?= ($r1["group_id"]>0?'data-group_id="'.$r1["group_id"].'"':'');?>>
-				<th scope="row"><?= $r1["task_name"];?></th>
-				<td class="editable" data-edittype="task_description" contenteditable><?= $r1["task_description"];?></td>
-				<td class="uploadedimg" data-toggle="modal" data-target="#uploadedimg" ><?= ($r1["task_image"]?'<img src="'.$r1["task_image"].'">':'');?></td>
-				<td class="selectable" data-edittype="tasktype_id" data-tasktype_id="<?= $r1["tasktype_id"];?>"><?= $r1["tasktype_name"];?></td>
-				<td class="variables">
-				<?php 
-				if($r1["variables"]) {
-					$tasktype_variables=json_decode($r1["tasktype_variables"],true);
-					$variables=json_decode($r1["variables"]);
-					include($backenddir."gettasktypevariables.php");
+			<table class="table">
+				<thead>
+					<tr>
+					<th scope="col"><?= _("Task name");?></th>
+					<th scope="col"><?= _("Task description");?></th>
+					<th scope="col"><?= _("Task image");?></th>
+					<th scope="col"><?= _("Task type");?></th>
+					<th scope="col"><?= _("Task variables");?></th>
+					<th scope="col"><?= _("Items");?></th>
+					<th scope="col"><?= _("Coding rubrics");?></th>
+					<th scope="col"><?= _("Count");?></th>
+					</tr>
+				</thead>
+				<tbody id="tasklist">
+			<?php
+				$q="select t.*,count(r.response_id) as rcount,tasktype_name,i.variables from tasks t left join tasktypes i on i.tasktype_id=t.tasktype_id left join responses r on r.task_id=t.task_id where test_id=".$r["test_id"]." GROUP BY 1 order by `group_id`";
+				
+	////////////////
+	// 		Due to this bug: https://bugs.mysql.com/bug.php?id=103225
+	//
+	// 			sudo nano /etc/mysql/mysql.conf.d/mysqld.cnf
+	// 			sort_buffer_size = 512000000
+	// 			sudo service mysql restart
+	// 			
+				
+				$result1=$mysqli->query($q);
+				while($r1=$result1->fetch_assoc()) {
+				?>
+					<tr data-task_id="<?= $r1["task_id"];?>" class="group_target" <?= ($r1["group_id"]>0?'data-group_id="'.$r1["group_id"].'"':'');?>>
+					<th scope="row"><?= $r1["task_name"];?></th>
+					<td class="editable" data-edittype="task_description" contenteditable><?= $r1["task_description"];?></td>
+					<td class="uploadedimg" data-toggle="modal" data-target="#uploadedimg" ><?= ($r1["task_image"]?'<img src="'.$r1["task_image"].'">':'');?></td>
+					<td class="selectable" data-edittype="tasktype_id" data-tasktype_id="<?= $r1["tasktype_id"];?>"><?= $r1["tasktype_name"];?></td>
+					<td class="variables">
+					<?php 
+					if($r1["variables"]) {
+						$tasktype_variables=json_decode($r1["tasktype_variables"],true);
+						$variables=json_decode($r1["variables"]);
+						include($backenddir."gettasktypevariables.php");
+					}
+					?>
+					</td>
+					<td><?php
+					$items=json_decode($r1["items"],true); 
+					echo implode("\n",
+						array_map(
+							function($v,$k) {
+								return '<div><span class="editable first" data-oldvalue="'.$k.'" data-edittype="items"  data-edittype2="name" contenteditable>'.$k.'</span>: 0-<span class="editable" data-edittype="item"  data-edittype2="value" contenteditable>'.$v.'</span><span class="deleteitem float-right"><i class="fa fa-trash"></i></span></div>';
+							},
+							$items,
+							array_keys($items)
+						)
+					);
+					?><div class="additem"><i class="fas fa-plus"></i></div></td>
+					<td class="editable" data-edittype="coding_rubrics" contenteditable><?= $r1["coding_rubrics"];?></td>
+					<td><?= $r1["rcount"];?></td>
+					</tr>
+				
+				<?php
 				}
 				?>
-				</td>
-				<td><?php
-				$items=json_decode($r1["items"],true); 
- 				echo implode("\n",
- 					array_map(
- 						function($v,$k) {
- 							return '<div><span class="editable" data-oldvalue="'.$k.'" data-edittype="items"  data-edittype2="name" contenteditable>'.$k.'</span>: 0-<span class="editable" data-edittype="item"  data-edittype2="value" contenteditable>'.$v.'</span></div>';
- 						},
- 						$items,
- 						array_keys($items)
- 					)
- 				);
-				?><div class="additem"><i class="fas fa-plus"></i></div></td>
-				<td class="editable" data-edittype="coding_rubrics" contenteditable><?= $r1["coding_rubrics"];?></td>
-				<td><?= $r1["rcount"];?></td>
-				</tr>
-			
-			<?php
-			}
-			?>
-
-
+				</tbody>
+			</table>
 		</div>
     </div>
   </div>

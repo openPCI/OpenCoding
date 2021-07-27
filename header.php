@@ -11,6 +11,10 @@
 
     <title>OpenCoding - <?=_('Human coding of test responses');?> ...</title>
     
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.1.0/styles/default.min.css">
+	<link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.1.0/styles/github.min.css" rel="stylesheet">
+	<link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+
 	<link rel="stylesheet" href="./css/bootstrap.min.css">
     <link rel="stylesheet" href="./css/jquery-ui.min.css">
     <link rel="stylesheet" href="./css/bootstrap-toggle.min.css">
@@ -59,6 +63,11 @@
 				if($_SESSION["perms"]["projectadmin"][$_SESSION["project_id"]]) { ?>
 				<li class="nav-item active d-flex justify-content-end">
 					<a class="nav-link menulink" href="./?p=projectadmin"><?= _('Project Admin');?></a>
+				</li>
+				<?php }
+				if($_SESSION["perms"]["opencodingadmin"][0]) { ?>
+				<li class="nav-item active d-flex justify-content-end">
+					<a class="nav-link menulink" href="./?p=opencodingadmin"><?= _('OpenCoding Admin');?></a>
 				</li>
 				<?php } ?>
 			</ul>

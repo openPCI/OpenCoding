@@ -103,6 +103,7 @@ function afterRender(json) {
 			gotcodingmanagement(json)
 		break;
 		case "projectadmin":
+		case "opencodingadmin":
 			if(json.links) {
 				for(link of json.links) $("#"+link).click(function() {
 					var link=$(this).attr("id")
@@ -112,8 +113,154 @@ function afterRender(json) {
 		break;
 	}
 }
+function gottasktypes(json) {
+	$("#scripting").on("shown.bs.modal",function(e) {
+		var tasktype_id=$(e.relatedTarget).closest("tr").data("tasktype_id")
+		var edittype=$(e.relatedTarget).data("edittype")
+		$("#savecode").data("tasktype_id",tasktype_id)
+		$("#savecode").data("edittype",edittype)
+		$("#editor").attr("class","language-"+$(e.relatedTarget).data("language"))
+		$(".OpenCodingMessage").html(_("Rendering the code can take very long time. Please be patient."))
+		$(".OpenCodingMessage").show()
+		quill.setContents([
+			{ insert: '\n' }
+		]);	
+		send("tasktypecontent","gottasktypecontent",{tasktype_id:tasktype_id,edittype:edittype,getsave:"get"},"backend")
+	})
+	$("#savecode").click(function() {
+		var tasktype_id=$(this).data("tasktype_id")
+		var edittype=$(this).data("edittype")
+		var content=quill.getText(0).replace(/\\n/,"&slashn;")//$("#editor").find("pre").text()
+// 		console.log(quill.getText(0))
+		send("tasktypecontent","savedtasktypecontent",{tasktype_id:tasktype_id,content:content,edittype:edittype,getsave:"save"},"backend")
+		var row=$("[data-tasktype_id="+tasktype_id+"]")
+		row.children("[data-edittype="+edittype+"]").addClass("text-info").removeClass("text-muted")
+	})
+	hljs.configure({   // optionally configure hljs
+		languages: ['javascript', 'html', 'css','handlebars']
+	});
+
+	quill = new Quill('#editor', {
+	modules: {
+		syntax: true,              // Include syntax module
+		toolbar: false //[['code-block']]  // Include button in toolbar
+	},
+	theme: 'snow'
+	});
+	$(".editable").unbind("keydown").keydown(isEnter)
+	$(".editable").unbind("blur").on("blur",tasktypeedited)
+	maketasktypesactive()
+}
+function tasktypeedited() {
+	var tasktype_id=$(this).closest("tr").data("tasktype_id")
+	var edittype=$(this).data("edittype")
+	var edittype2=$(this).data("edittype2")
+	var oldvalue=(edittype2=="value"?$(this).prev().data("oldvalue"):$(this).data("oldvalue"))
+	var value=$(this).text().trim()
+	$(this).data("oldvalue",value)
+	send("edited","wasedited",{task_id:task_id,edittype:edittype,edittype2:edittype2,oldvalue:oldvalue,value:value,edittable:"tasktypes"},"backend")
+}
+function addvariable() {
+	var variablename='variable'+($(this).index()+1)
+	$(this).before('<div><span class="editable first" data-edittype="variables" data-edittype2="name" data-oldvalue="'+variablename+'" contenteditable>'+variablename+'</span>: <span class="editable" data-edittype="variables"  data-edittype2="value" contenteditable>'+_('Default value')+'</span><span class="deletevariable float-right"><i class="fa fa-trash"></i></span><div>')
+	$(this).prev().children(".editable").keydown(isEnter).on("blur",edited)
+	var tasktype_id=$(this).closest("tr").data("tasktype_id")
+	send("edited","wasedited",{tasktype_id:tasktype_id,edittype:"variables",edittype2:"value",oldvalue:variablename,value:"",edittable:"tasktypes"},"backend")
+}
+function deletevariable() {
+	var oldvalue=$(this).siblings(".first").data("oldvalue")
+	var tasktype_id=$(this).closest("tr").data("tasktype_id")
+	send("edited","wasedited",{tasktype_id:tasktype_id,edittype:"variables",edittype2:"delete",oldvalue:oldvalue,edittable:"tasktypes"},"backend")
+	$(this).parent().remove()
+}
+
+function maketasktypesactive() {
+	$(".editable").unbind("keydown").keydown(isEnter)
+	$(".editable").unbind("blur").on("blur",edited)
+	$(".manualautotoggle").unbind("click").click(togglemanualauto)
+	$(".addvariable").unbind("click").click(addvariable)
+	$(".deletevariable").unbind("click").click(deletevariable)
+	$("#newtasktype").click("click",function() {
+		send("newtasktype","newtasktypecreated",{},"backend")
+	}
+	)
+}
+function newtasktypecreated() {
+	get_template("tasktypes",{},"gottasktypes")
+}
+function togglemanualauto() {
+	var manualauto=($(this).data("manualauto")=="auto"?"manual":"auto")
+	$(this).data("manualauto",manualauto).text(manualauto)
+	var tasktype_id=$(this).closest("tr").data("tasktype_id")
+	send("edited","wasedited",{tasktype_id:tasktype_id,edittype:"manualauto",value:manualauto,edittable:"tasktypes"},"backend")
+}
+function savedtasktypecontent() {
+	$("#scripting").modal("hide")
+}
+function gottasktypecontent(json) {
+	quill.setContents([
+	{ insert: json.content.replace("&slashn;","\\n")},//, attributes: {'code-block':true}}, //Did not format html ...
+	{ insert: '\n' }
+	]);	
+	quill.formatLine(0,quill.getLength(),"code-block",true)
+ 	$(".OpenCodingMessage").hide()
+
+}
 function codeTask(special="") {
 	$(".codeTask").click(function () {get_template("coding",{task_id:$(this).data("task_id"),maxcodedresponse_id:$(this).data("maxcodedresponse_id"),special:special,first_id:$(this).data("first_id")},"gotcoding")});
+	$(".autocodeTask").click(function () {get_template("autocoding",{task_id:$(this).data("task_id"),maxcodedresponse_id:$(this).data("maxcodedresponse_id"),special:special,first_id:$(this).data("first_id")},"gotautocoding")});
+}
+function gotautocoding(json) {
+// 	$(".nextresponse").click(function() { getautoresponse($(this).data("next"))})
+// 	$("#response_id").dblclick(function() {$(this).prop("readonly",false)}).change(function() { getautoresponse(0)})
+	if($(".quill").length>0) {
+		hljs.configure({   // optionally configure hljs
+			languages: ['javascript', 'html', 'css','handlebars']
+		});
+
+		quill = new Quill('.quill', {
+		modules: {
+			syntax: true,              // Include syntax module
+			toolbar: false //[['code-block']]  // Include button in toolbar
+		},
+		theme: 'snow'
+		});
+		quill.formatLine(0,quill.getLength(),"code-block",true)
+
+	}
+	$("#updatestats").click(function() {
+		$(".itemstat").each(function() {
+			var item_name=$(this).data("item_name")
+			// Hack? Should the script save the responses to sessionStorage, and then we take it from there...
+			var val=responses.reduce(function(a,c){return a+(Number.isNaN(Number(c[item_name]))?0:Number(c[item_name]))},0)
+			$(this).text(val)
+		})
+	})
+	send("initauto","initauto",{task_id:$("#playarea").data("task_id")},"frontend")
+}
+function initauto(json) {
+	console.log(json)
+	// openCoding gets the data (as JSON) saved earlier by the tasktype, and the responses.
+	// Everything is put in sessionStorage for the tasktype script to fetch. 
+	// initDone should be defined by the tasktype custom script
+	sessionStorage.setItem("data", JSON.stringify(json.data)); 
+	sessionStorage.setItem("items", JSON.stringify(json.items));
+	sessionStorage.setItem("responses", JSON.stringify(json.responses));
+	$(".autosave").click(autosave)
+	if(typeof init!="function" || typeof save!="function" ) {
+		alert("Please provide init() and save() functions in your tasktype-script.")
+	} else init()
+}
+function autosave() {
+	save()
+	send("autosave",$(this).data("type"),{responses:JSON.parse(sessionStorage.getItem("responses")),data:JSON.parse(sessionStorage.getItem("data")),task_id:$("#playarea").data("task_id")},"frontend")
+}
+function saved() {
+	showMessage(_("Coding saved"))
+}
+function finish() { 
+	get_template("mytasks")
+	
 }
 function gotcoding(json) {
 	$("#sendcomment").click(sendcomment)
@@ -201,7 +348,7 @@ function getresponse(next) {
 	}
 }
 function gotresponse(json) {
-	if(json.dodouble) showMessage("This is double coding");
+// 	if(json.dodouble) showMessage("This is double coding");
 	if(json.warning || typeof json.returnto!="undefined") {
 		if(typeof json.returnto!="undefined") get_template(json.returnto)
 	} else {
@@ -270,6 +417,7 @@ function maketasksactive() {
 	$(".editable").unbind("blur").on("blur",edited)
 	$(".selectable").unbind("click").click(initselectable)
 	$(".additem").unbind("click").click(additem)
+	$(".deleteitem").unbind("click").click(deleteitem)
 	$(".tasktype_variable").change(function() {
 // 		console.log({task_id:$(this).closest("tr").data("task_id"),edittype:"tasktype_variables",variable:$(this).data("variablename"),value:$(this).val()})
 		send("edited","wassaved",{task_id:$(this).closest("tr").data("task_id"),edittype:"tasktype_variables",variable:$(this).data("variablename"),value:$(this).val()},"backend")
@@ -304,10 +452,16 @@ function disenablegroup() {
 function groupmade() {}
 function additem() {
 	var itemname='item'+($(this).index()+1)
-	$(this).before('<div><span class="editable" data-edittype="items" data-edittype2="name" data-oldvalue="'+itemname+'" contenteditable>'+itemname+'</span>: 0-<span class="editable" data-edittype="items"  data-edittype2="value" contenteditable>1</span><div>')
+	$(this).before('<div><span class="editable first" data-edittype="items" data-edittype2="name" data-oldvalue="'+itemname+'" contenteditable>'+itemname+'</span>: 0-<span class="editable" data-edittype="items"  data-edittype2="value" contenteditable>1</span><span class="deleteitem float-right"><i class="fa fa-trash"></i></span><div>')
 	$(this).prev().children(".editable").keydown(isEnter).on("blur",edited)
 	var task_id=$(this).closest("tr").data("task_id")
 	send("edited","wasedited",{task_id:task_id,edittype:"items",edittype2:"value",oldvalue:itemname,value:1},"backend")
+}
+function deleteitem() {
+	var oldvalue=$(this).siblings(".first").data("oldvalue")
+	var task_id=$(this).closest("tr").data("task_id")
+	send("edited","wasedited",{task_id:task_id,edittype:"items",edittype2:"delete",oldvalue:oldvalue},"backend")
+	$(this).parent().remove()
 }
 function revertgroup() {
 	send("revertgroup","groupmade",{member:$(this).data("taskContent").data("task_id")},"backend")
@@ -335,12 +489,13 @@ function selected() {
 }
 function edited() {
 	var task_id=$(this).closest("tr").data("task_id")
+	var tasktype_id=$(this).closest("tr").data("tasktype_id")
 	var edittype=$(this).data("edittype")
 	var edittype2=$(this).data("edittype2")
 	var oldvalue=(edittype2=="value"?$(this).prev().data("oldvalue"):$(this).data("oldvalue"))
 	var value=$(this).text().trim()
 	$(this).data("oldvalue",value)
-	send("edited","wasedited",{task_id:task_id,edittype:edittype,edittype2:edittype2,oldvalue:oldvalue,value:value},"backend")
+	send("edited","wasedited",{task_id:task_id,tasktype_id:tasktype_id,edittype:edittype,edittype2:edittype2,oldvalue:oldvalue,value:value,edittable:$("#edittable").data("edittable")},"backend")
 }
 function wasedited(json) {
 	if(typeof json.variables!="undefined") $("tr[data-task_id="+json.task_id+"] .variables").html(json.variables)
@@ -480,7 +635,7 @@ function gotusers() {
 		$('#password').attr("title",_("Password copied to clipboard")).tooltip('show')
 		setTimeout(function() { $("#password").tooltip('hide')}, 2000);
 	})
-	$("#newuser").on("show-bs-modal",function() {$(".userinput").val("")})
+	$("#newuser").on("shown.bs.modal",function() {$(".userinput").val("")})
 	$("#savenewuser").click(function() {
 		var userinfo=flattenObj($(".userinput").map(function() {return {[$(this).attr("id")]:$(this).val()}}).get())
 		send("savenewuser","newusersaved",{userinfo:userinfo},"backend")
@@ -510,7 +665,9 @@ function changePermissions() {
 	console.log(permissions)
 	td.html(permissions)
 }
-function permissionschanged() {}
+function permissionschanged() {
+	get_template("users",{},"gotusers")
+}
 function flattenObj(arr) {
 	const flatObject = {};
 	for(obj of arr){
@@ -551,8 +708,9 @@ function addcoder() {
 	$(this).appendTo($(($(this).closest("#newcoders").length==0?"#newcoders":"#knowncoders")))
 }
 function addcoders() {
-	console.log($(this))
-	send("addcoders","codersadded",{unittype:$(this).data("unittype"),unit_id:$(this).data("unit_id"),user_ids:$("#newcoders .addcoder").map(function() {return $(this).data("user_id")}).get()},"backend")
+	var user_ids=$("#newcoders .addcoder").map(function() {return $(this).data("user_id")}).get()
+	if(user_ids.length>0) send("addcoders","codersadded",{unittype:$(this).data("unittype"),unit_id:$(this).data("unit_id"),user_ids:user_ids},"backend")
+	else showWarning(_("You haven't selected coders to add. Click on the name to put it to the group of coders to add."))
 }
 function deletecoder() {
 	send("deletecoder","coderdeleted",{unittype:$(this).closest("tr").data("unittype"),unit_id:$(this).closest("tr").data("unit_id"),user_id:$(this).data("user_id")},"backend")
@@ -560,9 +718,9 @@ function deletecoder() {
 
 function codersadded() {
 	$("#addcodermodal").modal("hide")
-	get_template("codingmanagement",{},"gotcodingmanagement")
+	get_template("codingmanagement",{})
 }
 function coderdeleted() {
-	get_template("codingmanagement",{},"gotcodingmanagement")
+	get_template("codingmanagement",{})
 }
 

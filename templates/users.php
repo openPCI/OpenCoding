@@ -1,11 +1,12 @@
 <?php
 	$relative="../";
 	include_once($functionsdir."database.php");
-	
-checkperm("projectadmin");
+$oca=(strpos($_SERVER["HTTP_REFERER"],"p=opencodingadmin"));
+if($oca) checkperm("opencodingadmin");
+else checkperm("projectadmin");
 	global $res;
-	$res["org_id"]=$_POST["org_id"];
-	$q='select u.user_id,u.username,u.email,group_concat(p.unittype separator ", ") as permissions from users u left join user_permissions p on u.user_id=p.user_id and unit_id='.$_SESSION["project_id"].' where 1 group by 1 order by username ';//org_id=".($_POST["org_id"]?$_POST["org_id"]:$_SESSION["user_id"]);
+// 	$res["org_id"]=$_POST["org_id"];
+	$q='select u.user_id,u.username,u.email,group_concat(p.unittype separator ", ") as permissions from users u left join user_permissions p on u.user_id=p.user_id where '.($oca?1:'unit_id='.$_SESSION["project_id"]).' group by 1 order by username ';//org_id=".($_POST["org_id"]?$_POST["org_id"]:$_SESSION["user_id"]);
 // 	echo $q;
 	$result=$mysqli->query($q);
 	
@@ -87,7 +88,9 @@ checkperm("projectadmin");
   <div class="d-none" >
 	<div id="permissiontypes" class="form-group-inline">
 	<?php
-		foreach(array("codingadmin","projectadmin") as $unittype) {
+	$permtypes=array("codingadmin","projectadmin");
+	if($oca) $permtypes[]="opencodingadmin";
+		foreach($permtypes as $unittype) {
 			?>
 			<input type="checkbox" class="form-check-control <?= $unittype; ?>" value="<?= $unittype; ?>" >
 			<label for=".<?= _($unittype); ?>"><?= _($unittype); ?></label>

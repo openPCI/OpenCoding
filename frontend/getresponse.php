@@ -3,8 +3,8 @@ session_start();
 $relative="../";
 include_once($relative."dirs.php");
 include_once($shareddir."database.php");
-$log.=print_r($_POST,true);
-$log.=print_r($_SESSION,true);
+// $log.=print_r($_POST,true);
+// $log.=print_r($_SESSION,true);
 $res=array();
 if($_POST["task_id"]) {
 	$flaghandling=($_POST["flaghandling"]=="true");

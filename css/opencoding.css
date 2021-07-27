@@ -52,24 +52,8 @@
 
 
 #playarea {
-width:800px;
+/* width:800px; */
 border: 1px solid gray;
-}
-#extrainfo {
-background-color: rgb(240,240,240);
-
-}
-#extrainfo > * {
-}
-#codeTable {
-}
-#codeTable table {
-}
-#codeTable tr th {
-}
-#codeTable td {
-}
-#codeTable tr > td:last-child {
 }
 .codingarea {
 /*       position:relative;
@@ -89,4 +73,20 @@ max-width:80px;
 
 .training {
 	background-color:#ffffed;
+}
+
+
+
+.shortview {
+	max-height:100px;
+	overflow:scroll;
+}
+.shortview:focus {
+	max-height:500px;
+}
+
+.ql-snow .ql-editor pre.ql-syntax {
+    background-color: inherit;
+    color: inherit;
+    overflow: scroll;
 }
