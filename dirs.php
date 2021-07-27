@@ -16,7 +16,20 @@ $jsdir=$relative."js/";
 $secretdir=$relative."secrets/";#/var/www/opencodingsecrets/";
 
 
-$locale="da_DK"; //en_US//$_SESSION["locale"];
+if(!$_SESSION["locale"]) {
+	$accept=explode(",",$_SERVER['HTTP_ACCEPT_LANGUAGE']);
+	$keyaccept=array();
+	foreach($accept as $la) {
+		$tmp=explode(";q=",$la);
+		$keyaccept[$tmp[0]]=($tmp[1]?$tmp[1]:1);
+	}
+
+	$langs=array("en"=>"en_US","us"=>"en_US","au"=>"en_US","sg"=>"en_US","hk"=>"en_US","nz"=>"en_US","da"=>"da_DK","en_US"=>"en_US","da_DK"=>"da_DK");
+	$preferred=key(array_intersect_key($keyaccept,$langs));
+	if(!$preferred) $preferred="en";
+	$_SESSION["locale"]=$langs[$preferred];
+}
+$locale=$_SESSION["locale"];
 putenv("LANGUAGE=".$locale.".UTF-8");
 setlocale(LC_ALL,$locale.".UTF-8",$locale);
 $domain="messages";
