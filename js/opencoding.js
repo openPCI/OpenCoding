@@ -6,10 +6,19 @@ var maximgheight=800
 $(function() {
 	$("#showloginform").click(function () {get_template("login",{},"loginready")})
 	var p=window.location.search.replace(/.*[?&]p=([^&]*)(&|$).*/,"$1")
+	$("#userinfo").click(function() {get_template("myUser",{},"gotmyuser")})
   	if(p=="") get_template("main",{},"dologin")
 	else get_template(p)
 //	afterRender({template:(p?p:"main")})
 })
+function gotmyuser() {
+	setTimeout(function() {
+		$(".userinput").change(function() { send("useredit","useredited",{type:$(this).attr("id"),value:$(this).val()},"backend")})
+	},100) // To give the browser time to autofill password...
+}
+function useredited(json) {
+	if(json.message) showMessage(json.message)
+}
 function dologin(json) {
 	if(typeof json.getlogin!="undefined") get_template("login",{},"loginready")
 }
@@ -635,10 +644,27 @@ function gotusers() {
 		$('#password').attr("title",_("Password copied to clipboard")).tooltip('show')
 		setTimeout(function() { $("#password").tooltip('hide')}, 2000);
 	})
-	$("#newuser").on("shown.bs.modal",function() {$(".userinput").val("")})
-	$("#savenewuser").click(function() {
+	$(".deleteuser").click(function() {
+		if(window.confirm(_("Are you sure you want to delete this user?"))) {
+			var user_id=$(this).closest("tr").data("user_id")
+			send("deleteuser","editusersaved",{user_id:user_id},"backend")
+		}
+	})
+	$("#edituser").on("shown.bs.modal",function(e) {
+		var user_id=$(e.relatedTarget).closest("tr").data("user_id")
+		if(typeof user_id!="undefined") {
+			var row=$(e.relatedTarget).closest("tr")
+			$("#user_id").val(user_id)
+			$("#username").val(row.find('[data-type="username"]').text())
+			$("#email").val(row.find('[data-type="email"]').text())
+			$("#password").attr("placeholder",_("Unchanged"))
+		} else
+		$(".userinput").val("")
+		
+	})
+	$("#saveuser").click(function() {
 		var userinfo=flattenObj($(".userinput").map(function() {return {[$(this).attr("id")]:$(this).val()}}).get())
-		send("savenewuser","newusersaved",{userinfo:userinfo},"backend")
+		send("saveuser","editusersaved",{userinfo:userinfo},"backend")
 	})
 	$(".changePermissions").click(changePermissionsselect)
 }
@@ -677,8 +703,8 @@ function flattenObj(arr) {
    };
    return flatObject;
 }
-function newusersaved() {
-	$("#newuser").modal("hide")
+function editusersaved() {
+	$("#edituser").modal("hide")
 	get_template("users",{},"gotusers")
 }
 function gotcodingmanagement() {

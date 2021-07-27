@@ -16,7 +16,7 @@ else checkperm("projectadmin");
 
 	<div class="row">
 		<div class="col">
-			<button class="btn btn-primary" data-toggle="modal" data-target="#newuser"><?= _("New user"); ?></button>
+			<button class="btn btn-primary" data-toggle="modal" data-target="#edituser"><?= _("New user"); ?></button>
 		</div>
 	</div>
 	<div class="row">
@@ -35,13 +35,14 @@ else checkperm("projectadmin");
 				<?php
 					while($r=$result->fetch_assoc()) { ?>
 						<tr data-user_id=<?= $r["user_id"];?>>
-							<td><?= $r["username"];?></td>
-							<td><?= $r["email"];?></td>
+							<td data-type="username"><?= $r["username"];?></td>
+							<td data-type="email"><?= $r["email"];?></td>
 							<td class="changePermissions" data-user="<?= $r["user_id"];?>"><?= $r["permissions"];?></td>
-							<td><?php if($_SESSION["user_id"]==1) { ?>
-								<button type="button" class="btn btn-danger remove" data-user="<?= $r["user_id"];?>"><?= _('Remove');?></button>
-								<button type="button" class="btn btn-primary newpass" data-user="<?= $r["user_id"];?>"><?= _('New password');?></button>
-							<?php } ?></td>
+							<td><?php if($oca) { ?>
+ 								<button type="button" class="btn btn-danger deleteuser"><?= _('Delete user');?></button>
+								<?php } ?>
+								<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#edituser" ><?= _('Edit');?></button>
+							</td>
 						<tr>
 				<?php	}
 				?>
@@ -51,11 +52,11 @@ else checkperm("projectadmin");
 	</div>
 </div>
 
-<div class="modal" tabindex="-1" role="dialog" id="newuser">
+<div class="modal" tabindex="-1" role="dialog" id="edituser">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title"><?= _("New user"); ?></h5>
+        <h5 class="modal-title"><?= _("User"); ?></h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
@@ -76,11 +77,12 @@ else checkperm("projectadmin");
 					<input type="password" class="form-control userinput password" id="password" value=""> <button class="btn btn-small btn-info" id="createpass"><?= _("Create a password"); ?></button>
 				</div>
 			</div>
+			<input type="hidden" class="userinput" id="user_id" value="">
 		</div>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal"><?= _("Close"); ?></button>
-        <button type="button" class="btn btn-primary" id="savenewuser"><?= _("Create user"); ?></button>
+        <button type="button" class="btn btn-primary" id="saveuser"><?= _("Save information"); ?></button>
       </div>
     </div>
   </div>

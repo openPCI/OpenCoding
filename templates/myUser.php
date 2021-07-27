@@ -1,7 +1,7 @@
 <?php
-	$relative="../";
-	include_once($relative."/settings/conf.php");
-	include_once($GLOBALS["backenddir"]."checklogin.php");
+session_start();
+include_once($shareddir."database.php");
+if(!$_SESSION["user_id"]) exit;
 	
 	$q="select * from users where user_id=".$_SESSION["user_id"];
 	$result=$mysqli->query($q);
@@ -27,9 +27,6 @@
 			</div>
 			<?php if($r["org_id"]) { ?>
 			<?php } ?>
-			<div class="form-group">
-				<button class="btn btn-primary" id="finish" data-pagetype="frontpage"><?=_('Finish');?></button>
-			</div>
 		</div>
 	</div>
 </div>

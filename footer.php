@@ -15,12 +15,16 @@
 			<a class="footer-link text-center mr-3 mr-lg-4 d-none d-md-inline" href="?cookies=1"><?= _('Cookies');?></a>
 		</div>-->
 		<div class="col d-flex justify-content-end">
-			<div class="collapse <?= ($_SESSION["user_id"]?"show":"")?>" id="logoutform">
-				<form method="POST" action="?<?=$_SERVER['QUERY_STRING'];?>" class="form-inline">
-<!-- 					<span class="pb-0 mr-1 text-muted " title="<?= _('Profile and projects');?>" id="userinfo" ><i class="far fa-user"></i></span> -->
-					<button class="btn pb-0 text-muted mr-1 logout" id="logout" title="<?= _('Log out');?>"><i class="fas fa-sign-out-alt"></i></button>
-					<input type="hidden" name="logout" value="true">
-				</form>
+			<div class="row collapse <?= ($_SESSION["user_id"]?"show":"")?>" id="logoutform">
+				<div class="col">
+					<button class="btn pb-0 text-muted " title="<?= _('My user');?>" id="userinfo" ><i class="far fa-user"></i></button>
+				</div>
+				<div class="col">
+					<form method="POST" action="?<?=$_SERVER['QUERY_STRING'];?>" class="form-inline">
+						<button class="btn pb-0 text-muted mr-1 logout" id="logout" title="<?= _('Log out');?>"><i class="fas fa-sign-out-alt"></i></button>
+						<input type="hidden" name="logout" value="true">
+					</form>
+				</div>
 			</div>
 			<div class="collapse <?= (!$_SESSION["user_id"]?"show":"")?>" id="loginform">
 				<button class="btn pb-0 text-muted ml-auto" id="showloginform" title="<?= _('Log in');?>"><i class="fas fa-sign-in-alt"></i></button>
