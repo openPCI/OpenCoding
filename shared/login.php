@@ -4,16 +4,19 @@ $relative="../";
 include_once($relative."dirs.php");
 include_once($shareddir."database.php");
 include_once($shareddir."templates.php");
-$log.=print_r($_POST,true);
+
 if($_POST["inputUser"]) {
-	$password=crypt($_POST["inputPassword"],base64_encode($_POST["inputPassword"]));
 	$useremail=$mysqli->real_escape_string($_POST["inputUser"]);
-	$q='select * from users where (username LIKE "'.$useremail.'" or email  LIKE "'.$useremail.'") and password LIKE "'.$password.'"';
+	$q='select * from users where (username LIKE "'.$useremail.'" or email  LIKE "'.$useremail.'")';
 	$log.=$q;
 	$res=$mysqli->query($q);
-	
+	$accept=false;	
 	if($res->num_rows) {
-		$r=$res->fetch_assoc();
+		while(!$accept and $r=$res->fetch_assoc()) {
+			$accept=password_verify($_POST["inputPassword"],$r["password"]);
+		}
+	}
+	if($accept) {
 		$_SESSION["user_id"]=$r["user_id"];
 		$q='select DISTINCT unit_id, unittype from  user_permissions p where p.user_id='.$r["user_id"];
 // 		echo $q;
