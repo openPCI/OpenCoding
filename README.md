@@ -10,13 +10,13 @@ Create af file called .htdatabase in a "secrets" folder. Fill in information abo
 
 Log in using admin user, no password. Change the password.
 
-Manually create a project (using phpmyadmin).
+Go to OpenCoding Admin
+
+Create a project.
 
 Import data from csv-files. 
 
-Manage the project. 
-
-Assign tasktypes to tasks. 
+Go to Administer Tests. Upload images, write descriptions and rubrics, define items, and assign tasktypes to tasks. 
 
 Create your own tasktypes, if you miss some. Please share. Twig-templates are used, so you can include variables and iterate over them.
 

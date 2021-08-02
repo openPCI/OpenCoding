@@ -274,6 +274,7 @@ ALTER TABLE `responses`
 --
 ALTER TABLE `tasks`
   ADD PRIMARY KEY (`task_id`),
+  ADD UNIQUE KEY `task_name` (`task_name`,`test_id`),
   ADD KEY `test_id` (`test_id`),
   ADD KEY `group_id` (`group_id`);
 
