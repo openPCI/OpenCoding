@@ -20,7 +20,8 @@ $ntasks=count($tasks);
 $newtasks=0;
 $log.=print_r($tasks,true);
 for($i=0;$i<$ntasks;$i++) {
-	$q='insert into tasks (task_name,tasktype_id,items,tasktype_variables,task_data,test_id) VALUES ("'.$tasks[$i].'",0,"{}","{}","{}",'.$test_id.')';
+	$q='insert into tasks (task_name,tasktype_id,items,tasktype_variables,task_data,test_id) VALUES ("'.$tasks[$i].'",0,"{}","{}","{}",'.$test_id.') on duplicate key UPDATE task_id=LAST_INSERT_ID(task_id)';
+	// If the task_name exists in this test, these responses are added to that instead of created as new task.
 	$mysqli->query($q);
 	$task_ids[$i]=$mysqli->insert_id;
 	$newtasks+=$mysqli->affected_rows;

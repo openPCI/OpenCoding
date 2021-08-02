@@ -403,6 +403,33 @@ function gotupload() {
 		$(this).daterangepicker({autoApply: true,showWeekNumbers:true,timePicker: true,timePicker24Hour: true,timePickerIncrement: 15,locale: {format: 'YYYY/MM/DD HH:mm'},showDropdowns: true,singleDatePicker: true})
 	}); 
 }
+function gotprojects() {
+	$("#newproject").click(function() {
+		var project_name=window.prompt(_("Name of the new project?"))
+		send("newproject","projectedited",{project_name:project_name},"backend")
+	})
+	$(".deleteproject").click(function() {
+		if(window.confirm(_("Are you REALLY sure you want to delete this project? YOU WILL LOOSE ALL DATA AND CODING RELATED TO THIS PROJECT!"))) {
+			var project_id=$(this).closest("tr").data("project_id")
+			send("deleteproject","projectedited",{project_id:project_id},"backend")
+		}
+	})
+	$(".changeproject").click(function() {
+		var project_id=$(this).closest("tr").data("project_id")
+		changeproject(project_id,"projectadmin")
+	})
+}
+function changeproject(project_id,page) {
+	send("changeproject","projectchanged",{project_id: project_id,page},"shared")
+}
+function projectchanged(json) {
+	let stateObj = { }
+	history.pushState(stateObj, _("Open Coding"), "?p="+json.page)
+	location.reload();
+}
+function projectedited() {
+	get_template("projects",{},"gotprojects");
+}
 function gottests() {
 	$(".edittest").click(function() {alert("Edit of test not implemented")})
 	maketasksactive() 

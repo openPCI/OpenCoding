@@ -30,13 +30,23 @@
   <body>
 <!-- Header --><!-- add? fixed-top -->
 <nav class="navbar navbar-expand-sm navbar-dark justify-content-between sticky-top">
-	<div class="col-2 col-md-4">
+	<div class="col col-md">
 <!-- 		<a class="align-left" href="/" aria-label="OpenCoding - <?=_('Human coding of test responses');?>"> -->
 			<span class="opencoding-logo"><i class="fas fa-user-edit fa-3x"></i></span>
 <!-- 			<img class="opencoding-logo" src="img/<?= ($settings->logo?$settings->logo:'logo.png');?>"> -->
 <!-- 		</a> -->
 	</div>
-	<div class="col-2 col-md-4 opencoding text-center align-left">
+<?php if($_SESSION["project_id"]) {
+	if(!$_SESSION["project_name"]) {
+		include_once($shareddir."database.php");
+		$q='select project_name from projects where project_id='.$_SESSION["project_id"];
+		$result=$mysqli->query($q);
+		$_SESSION["project_name"]=$result->fetch_assoc()["project_name"];
+	}
+
+}?>
+	<div class="col text-center d-none opencoding d-md-block small"><?=$_SESSION["project_name"];?></div>
+	<div class="col col-md opencoding text-center align-left">
 		OpenCoding<span class="d-none d-md-block small">&#8211; <?=_('Human coding of test responses');?></span><span class="d-block" id="OpenCodingHeader"></span>
 	</div>
 	<div class="col-3 d-md-none">
@@ -55,7 +65,7 @@
 <!--				<li class="nav-item active d-flex justify-content-end">
 					<a class="nav-link menulink" href="./?p=manage"><?= _('Manage');?></a>
 				</li>-->
-				<?php session_start(); if($_SESSION["perms"]["codingadmin"][$_SESSION["project_id"]]) {?>
+				<?php if($_SESSION["perms"]["codingadmin"][$_SESSION["project_id"]]) {?>
 				<li class="nav-item active d-flex justify-content-end">
 					<a class="nav-link menulink" href="./?p=codingmanagement"><?= _('Coding Management');?></a>
 				</li>

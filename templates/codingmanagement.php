@@ -58,7 +58,7 @@ $coderbadges=implode(" ",$coderbadges);
 						<tr data-unit_id="<?= $r["unit_id"];?>" data-unittype="<?= ($r["coltype"]==1?"test":"task");?>" class="<?= ($r["coltype"]==1?"table-warning":"");?>">
 							<?= ($r["coltype"]==1?'<th scope="row">':"<td>");?><?= $r["name"];?><?= ($r["coltype"]==1?'</th>':"</td>");?>
 							<td class="text-right"><?= ($r["coltype"]==2?$r["unitcount"]:"");?></td>
-							<td class="text-right"><?= ($r["coltype"]==2?$r["coded"]." (".number_format($r["coded"]/$r["unitcount"]*100,1,$l["decimal_point"],$l["thousands_sep"])." %)":"");?></td>
+							<td class="text-right"><?= ($r["coltype"]==2?($r["unitcount"]==0?0:$r["coded"]." (".number_format($r["coded"]/$r["unitcount"]*100,1,$l["decimal_point"],$l["thousands_sep"])." %)"):"");?></td>
 							<td class="text-right"><?= ($r["coltype"]==2?$r["doublecoded"]." (".number_format(($r["coded"]>0?$r["doublecoded"]/$r["coded"]*100:0),1,$l["decimal_point"],$l["thousands_sep"])." %)":"");?></td>
 							<td class="text-right"><?php
 							if($r["coltype"]==2) {
@@ -82,7 +82,7 @@ $coderbadges=implode(" ",$coderbadges);
 									$agreement=array_merge(...$agreement);
 									$agree=array_sum($agreement);
 									$total=count($agreement);
-									echo ($total?$agree." of ".$total." (".($agree/$total*100)."%)":"0");
+									echo ($total?$agree." of ".$total." (".number_format(($agree/$total*100),1,$l["decimal_point"],$l["thousands_sep"])." %)":"0");
 								} else echo 0;
 							}
 							?></td>
