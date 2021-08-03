@@ -7,71 +7,136 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-07-25 11:09+0200\n"
-"PO-Revision-Date: 2021-07-25 12:42+0200\n"
+"POT-Creation-Date: 2021-08-04 00:28+0200\n"
+"PO-Revision-Date: 2021-08-04 00:33+0200\n"
+"Last-Translator: \n"
 "Language-Team: \n"
+"Language: da_DK\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Poedit 2.4.2\n"
-"Last-Translator: \n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"Language: da_DK\n"
+
+#: backend/useredit.php:12
+msgid "Changed"
+msgstr "Ændret"
+
+#: backend/doDownload.php:51
+msgid "opencoding"
+msgstr "opencoding"
 
 #: backend/trainingresponse.php:11 frontend/flag.php:9
 msgid "Response-id doesn't match."
 msgstr "Response-id stemmer ikke overens."
 
-#: templates/users.php:18 templates/users.php:57
-msgid "New user"
-msgstr "Ny bruger"
+#: templates/tasktypes.php:10
+msgid "New task type"
+msgstr "Ny opgavetype"
 
-#: templates/users.php:23
-msgid "OpenCoding Users"
-msgstr "OpenCoding-brugere"
+#: templates/tasktypes.php:11
+msgid "Task types"
+msgstr "Opgavetyper"
 
-#: templates/users.php:27 templates/users.php:65 templates/login.php:8
-#: templates/login.php:9 templates/myUser.php:16
-msgid "Username"
-msgstr "Brugernavn"
+#: templates/tasktypes.php:15
+msgid "Name"
+msgstr "Navn"
 
-#: templates/users.php:28 templates/users.php:69 templates/myUser.php:20
-msgid "E-mail"
-msgstr "E-mail"
+#: templates/tasktypes.php:16
+msgid "Manual/auto coding"
+msgstr "Manuel-/auto-kodning"
 
-#: templates/users.php:29
-msgid "Permissions"
-msgstr "Tilladelser"
+#: templates/tasktypes.php:17
+msgid "Description"
+msgstr "Beskrivelse"
 
-#: templates/users.php:30
-msgid "Actions"
-msgstr "Handlinger"
+#: templates/tasktypes.php:18
+msgid "Instructions"
+msgstr "Vejledning"
 
-#: templates/users.php:41
-msgid "Remove"
-msgstr "Fjern"
+#: templates/tasktypes.php:19
+msgid "Playarea template"
+msgstr "Playarea-skabelon"
 
-#: templates/users.php:42
-msgid "New password"
-msgstr "Nyt kodeord"
+#: templates/tasktypes.php:20
+msgid "Responsearea template"
+msgstr "Responsearea-skabelon"
 
-#: templates/users.php:73 templates/login.php:10 templates/login.php:11
-#: templates/myUser.php:25
-msgid "Password"
-msgstr "Kodeord"
+#: templates/tasktypes.php:21
+msgid "Codearea template"
+msgstr "Codearea-skabelon"
 
-#: templates/users.php:75
-msgid "Create a password"
-msgstr "Skab et kodeord"
+#: templates/tasktypes.php:22
+msgid "Script"
+msgstr "Script"
 
-#: templates/users.php:81 templates/tests.php:112
+#: templates/tasktypes.php:23
+msgid "Styles"
+msgstr "Formater"
+
+#: templates/tasktypes.php:24
+msgid "Variables"
+msgstr "Variable"
+
+#: templates/tasktypes.php:69 templates/users.php:44
+msgid "Edit"
+msgstr "Rediger"
+
+#: templates/tasktypes.php:81 templates/users.php:84 templates/tests.php:115
 #: templates/codingmanagement.php:129
 msgid "Close"
 msgstr "Luk"
 
-#: templates/users.php:82
-msgid "Create user"
-msgstr "Opret bruger"
+#: templates/tasktypes.php:82 templates/tests.php:116
+#: templates/codingmanagement.php:130 templates/autocoding.php:58
+msgid "Save"
+msgstr "Gem"
+
+#: templates/users.php:19
+msgid "New user"
+msgstr "Ny bruger"
+
+#: templates/users.php:24
+msgid "OpenCoding Users"
+msgstr "OpenCoding-brugere"
+
+#: templates/users.php:28 templates/users.php:67 templates/login.php:8
+#: templates/login.php:9 templates/myUser.php:16
+msgid "Username"
+msgstr "Brugernavn"
+
+#: templates/users.php:29 templates/users.php:71 templates/myUser.php:20
+msgid "E-mail"
+msgstr "E-mail"
+
+#: templates/users.php:30 templates/projects.php:26
+msgid "Permissions"
+msgstr "Tilladelser"
+
+#: templates/users.php:31 templates/projects.php:27
+msgid "Actions"
+msgstr "Handlinger"
+
+#: templates/users.php:42
+msgid "Delete user"
+msgstr "Slet bruger"
+
+#: templates/users.php:59
+msgid "User"
+msgstr "Bruger"
+
+#: templates/users.php:75 templates/login.php:10 templates/login.php:11
+#: templates/myUser.php:25
+msgid "Password"
+msgstr "Kodeord"
+
+#: templates/users.php:77
+msgid "Create a password"
+msgstr "Skab et kodeord"
+
+#: templates/users.php:85
+msgid "Save information"
+msgstr "Gem information"
 
 #: templates/contact.php:4 templates/menu.php:4
 msgid "Human Coding of QTI/PCI items"
@@ -190,50 +255,50 @@ msgstr "Markeret til eftersyn af:"
 msgid "Add comment"
 msgstr "Tilføj bemærkning"
 
-#: templates/coding.php:156 templates/autocoding.php:78 templates/myUser.php:31
+#: templates/coding.php:156 templates/autocoding.php:59
 msgid "Finish"
 msgstr "Afslut"
 
-#: templates/tests.php:28
+#: templates/tests.php:11 templates/download.php:10
+msgid "You don't have any tests in this project. Upload data to create tests."
+msgstr ""
+"Du har ikke nogen tests i dette projekt. Upload data for at oprette tests."
+
+#: templates/tests.php:30
 msgid "Task name"
 msgstr "Opgavenavn"
 
-#: templates/tests.php:29
+#: templates/tests.php:31
 msgid "Task description"
 msgstr "Opgavebeskrivelse"
 
-#: templates/tests.php:30
+#: templates/tests.php:32
 msgid "Task image"
 msgstr "Opgavebillede"
 
-#: templates/tests.php:31
+#: templates/tests.php:33
 msgid "Task type"
 msgstr "Opgavetype"
 
-#: templates/tests.php:32
+#: templates/tests.php:34
 msgid "Task variables"
 msgstr "Opgavevariable"
 
-#: templates/tests.php:33
+#: templates/tests.php:35
 msgid "Items"
 msgstr "Items"
 
-#: templates/tests.php:34
+#: templates/tests.php:36
 msgid "Coding rubrics"
 msgstr "Koderegler"
 
-#: templates/tests.php:35 templates/codingmanagement.php:43
+#: templates/tests.php:37 templates/codingmanagement.php:43
 msgid "Count"
 msgstr "Antal"
 
-#: templates/tests.php:100
+#: templates/tests.php:103
 msgid "Upload image"
 msgstr "Upload billede"
-
-#: templates/tests.php:113 templates/codingmanagement.php:130
-#: templates/autocoding.php:77
-msgid "Save"
-msgstr "Gem"
 
 #: templates/mytasks.php:34 templates/codingmanagement.php:42
 #: templates/training.php:16
@@ -247,6 +312,30 @@ msgstr "Kodet"
 #: templates/mytasks.php:36 templates/codingmanagement.php:47
 msgid "Flagged"
 msgstr "Markeret til eftersyn"
+
+#: templates/projects.php:15
+msgid "New project"
+msgstr "Nyt projekt"
+
+#: templates/projects.php:20
+msgid "OpenCoding Projects"
+msgstr "OpenCoding-projekter"
+
+#: templates/projects.php:24
+msgid "Project"
+msgstr "Projekt"
+
+#: templates/projects.php:25
+msgid "Double-coding percent"
+msgstr "Dobbelkodningsprocent"
+
+#: templates/projects.php:38
+msgid "Change to this project"
+msgstr "Skift til dette projekt"
+
+#: templates/projects.php:39
+msgid "Delete project"
+msgstr "Slet projekt"
 
 #: templates/codingmanagement.php:45
 msgid "Double coded"
@@ -284,6 +373,18 @@ msgstr "Kodere på projektet"
 msgid "Find coder"
 msgstr "Find koder"
 
+#: templates/autocoding.php:119
+msgid "Statistics"
+msgstr "Statistik"
+
+#: templates/autocoding.php:120
+msgid "Update"
+msgstr "Opdater"
+
+#: templates/download.php:46
+msgid "Download"
+msgstr "Download"
+
 #: templates/training.php:17
 msgid "# training responses"
 msgstr "Antal træningsbesvarelser"
@@ -316,29 +417,33 @@ msgstr ""
 msgid "Unchanged"
 msgstr "Uændret"
 
-#: header.php:12 header.php:30 header.php:36
+#: header.php:12 header.php:34 header.php:50
 msgid "Human coding of test responses"
 msgstr "Menneskelig kodning af testbesvarelser"
 
-#: header.php:46
+#: header.php:60
 msgid "Code"
 msgstr "Kodning"
 
-#: header.php:49
+#: header.php:63
 msgid "Training"
 msgstr "Træning"
 
-#: header.php:52
+#: header.php:66
 msgid "Manage"
 msgstr "Administration"
 
-#: header.php:56
+#: header.php:70
 msgid "Coding Management"
 msgstr "Kodningsadministration"
 
-#: header.php:61
+#: header.php:75
 msgid "Project Admin"
 msgstr "Projektadministration"
+
+#: header.php:80
+msgid "OpenCoding Admin"
+msgstr "OpenCoding-administration"
 
 #: dirs.php:8
 msgid "You don't have access here"
@@ -356,34 +461,43 @@ msgstr "Du skal markere til eftersyn for at sende negative værdier."
 msgid "No more responses"
 msgstr "Ikke flere besvarelser"
 
-#: shared/login.php:28
+#: shared/login.php:31
 msgid "Welcome back!"
 msgstr "Velkommen tilbage!"
 
-#: shared/login.php:36
+#: shared/login.php:39
 msgid "Username or password was wrong"
 msgstr "Brugernavn eller kodeord var forkert"
 
-#: shared/login.php:37
+#: shared/login.php:40
 msgid "No username"
 msgstr "Ikke noget brugernavn"
 
-#: footer.php:15 footer.php:32
+#: footer.php:15 footer.php:36
 msgid "Cookies"
 msgstr "Cookies"
 
 #: footer.php:20
-msgid "Profile and projects"
-msgstr "Profil og projekter"
+msgid "My user"
+msgstr "Min bruger"
 
-#: footer.php:21
+#: footer.php:24
 msgid "Log out"
 msgstr "Log ud"
 
-#: footer.php:26
+#: footer.php:30
 msgid "Log in"
 msgstr "Log ind"
 
-#: footer.php:33
+#: footer.php:37
 msgid "Contact"
 msgstr "Kontakt"
+
+#~ msgid "Remove"
+#~ msgstr "Fjern"
+
+#~ msgid "New password"
+#~ msgstr "Nyt kodeord"
+
+#~ msgid "Profile and projects"
+#~ msgstr "Profil og projekter"

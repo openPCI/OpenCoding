@@ -403,6 +403,75 @@ function gotupload() {
 		$(this).daterangepicker({autoApply: true,showWeekNumbers:true,timePicker: true,timePicker24Hour: true,timePickerIncrement: 15,locale: {format: 'YYYY/MM/DD HH:mm'},showDropdowns: true,singleDatePicker: true})
 	}); 
 }
+function gotdownload() {
+	$(".testcheck").click(function() {
+		$(this).siblings("ul").find('input[type=checkbox]').prop("checked",$(this).prop("checked"))//function(i,p) {console.log(p); return (!p)})
+	})
+	$(".taskcheck").click(function() {
+		var checked=$(this).closest("ul").find('input[type=checkbox]').map(function() {return $(this).prop("checked")}).get()
+		var all=checked.indexOf(false)==-1
+		var some=checked.indexOf(true)>-1 && !all
+		var cb=$(this).closest(".testli").find("ul").siblings("input[type=checkbox]")
+		cb.prop("checked",all)
+		cb.prop("indeterminate",some)
+	})
+	$("#doDownload").click(doDownload)
+}
+function doDownload() {
+var tasks=$(".taskcheck").map(function() { return $(this).data("task_id") }).get()
+
+// 	initprogress("scoresheet")
+	var formData=new FormData();
+	formData.append("tasks", JSON.stringify(tasks));
+  let xhr = new XMLHttpRequest();
+  xhr.responseType = 'arraybuffer';
+  xhr.open('POST', 'backend/doDownload.php');
+  xhr.send(formData); 
+
+  xhr.onload = function(e) {
+      if (this.status == 200) {
+          var blob = new Blob([this.response], {type: 'text/csv'});
+          let a = document.createElement("a");
+          a.style = "display: none";
+          document.body.appendChild(a);
+          let url = window.URL.createObjectURL(blob);
+          a.href = url;
+          a.download = _('opencoding')+'.csv';
+          a.click();
+          window.URL.revokeObjectURL(url);
+// 		  $("#progressmodal").modal("hide")
+// 		  clearTimeout(progresstimeout)
+      }else{
+          //deal with your error state here
+      }
+  };
+}
+function initprogress(progresstype) {
+	$("#progressbar").val("0")
+	$("#progressbar").html("0 %")
+	$("#progressmodal").modal("show")
+	send("resetprogress","doNothing",{progresstype:progresstype})
+	progress(progresstype)
+}
+var progresstimeout;
+function progress(progresstype){
+	$.ajax({
+		url: "./frontend/progress.php",
+		data: {progresstype:progresstype},
+		type: "POST",
+		dataType : "text",
+		cache: false,
+		success: function( progressval ) {
+			progressval=parseInt(progressval,10)
+			$("#progressbar").val(progressval)
+			$("#progressbar").html(progressval+" %")
+			if(progressval<100) {
+				progresstimeout=window.setTimeout(progress,100,progresstype)
+			} else $("#progressmodal").modal("hide")
+		}
+	})	
+}
+
 function gotprojects() {
 	$("#newproject").click(function() {
 		var project_name=window.prompt(_("Name of the new project?"))
@@ -451,6 +520,7 @@ function maketasksactive() {
 	})
 	$(".editable").unbind("keydown").keydown(isEnter)
 	$(".editable").unbind("blur").on("blur",edited)
+	$(".htmleditable").click(edithtml)
 	$(".selectable").unbind("click").click(initselectable)
 	$(".additem").unbind("click").click(additem)
 	$(".deleteitem").unbind("click").click(deleteitem)
@@ -474,6 +544,36 @@ function maketasksactive() {
 	}
 	)
 	disenablegroup()
+}
+function edithtml() {
+	var id=$(this).find(".htmleditablediv").attr("id")
+	var content=$(this).find(".htmleditablediv").html();
+	$(".htmleditable").unbind("click")
+	$(this).append('<button class="btn btn-success" onclick="savehtml(event)">'+_("Save")+'</button>')
+	quill = new Quill('#'+id, {
+		modules: {
+		},
+		theme: 'snow'
+		});
+	$(this).find(".ql-editor").html(content)
+
+}
+function savehtml(e) {
+	var th=$(event.currentTarget)
+	var div=th.siblings(".htmleditablediv")
+	var content=div.find(".ql-editor").html()
+	var task_id=th.closest("tr").data("task_id")
+	var edittype=div.data("edittype")
+	send("edited","waseditedhtml",{task_id:task_id,edittype:edittype,value:content},"backend")
+}
+function waseditedhtml(json) {
+	console.log(json)
+	$(".htmleditable").click(edithtml)
+	var div=$(".ql-editor")
+	div.html(json.value)
+	div.attr("class","htmleditablediv")
+	div.parent().html(div)
+	
 }
 function wassaved() {
 	$("#uploadedimg").modal("hide")
@@ -529,7 +629,7 @@ function edited() {
 	var edittype=$(this).data("edittype")
 	var edittype2=$(this).data("edittype2")
 	var oldvalue=(edittype2=="value"?$(this).prev().data("oldvalue"):$(this).data("oldvalue"))
-	var value=$(this).text().trim()
+	var value=$(this).html().trim().replace(/[\n\r]/,"<br>")
 	$(this).data("oldvalue",value)
 	send("edited","wasedited",{task_id:task_id,tasktype_id:tasktype_id,edittype:edittype,edittype2:edittype2,oldvalue:oldvalue,value:value,edittable:$("#edittable").data("edittable")},"backend")
 }

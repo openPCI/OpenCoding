@@ -90,3 +90,8 @@ max-width:80px;
     color: inherit;
     overflow: scroll;
 }
+.disabledcheck {
+	background-color:gray;
+	margin:100px;
+	padding:100px;
+}

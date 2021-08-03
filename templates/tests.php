@@ -54,7 +54,7 @@ else {
 					?>
 						<tr data-task_id="<?= $r1["task_id"];?>" class="group_target" <?= ($r1["group_id"]>0?'data-group_id="'.$r1["group_id"].'"':'');?>>
 						<th scope="row"><?= $r1["task_name"];?></th>
-						<td class="editable" data-edittype="task_description" contenteditable><?= $r1["task_description"];?></td>
+						<td class="htmleditable" ><div class="htmleditablediv" id="description_<?= $r1["task_id"];?>"  data-edittype="task_description" ><?= $r1["task_description"];?></div></td>
 						<td class="uploadedimg" data-toggle="modal" data-target="#uploadedimg" ><?= ($r1["task_image"]?'<img src="'.$r1["task_image"].'">':'');?></td>
 						<td class="selectable" data-edittype="tasktype_id" data-tasktype_id="<?= $r1["tasktype_id"];?>"><?= $r1["tasktype_name"];?></td>
 						<td class="variables">
@@ -78,7 +78,7 @@ else {
 							)
 						);
 						?><div class="additem"><i class="fas fa-plus"></i></div></td>
-						<td class="editable" data-edittype="coding_rubrics" contenteditable><?= $r1["coding_rubrics"];?></td>
+						<td class="htmleditable"><div  class="htmleditablediv" id="rubrics_<?= $r1["task_id"];?>" data-edittype="coding_rubrics"><?= $r1["coding_rubrics"];?></div></td>
 						<td><?= $r1["rcount"];?></td>
 						</tr>
 					

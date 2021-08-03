@@ -11,6 +11,7 @@ $value=$mysqli->real_escape_string(trim($_POST["value"], "\x00..\x1F\xA0\xAD\xC2
 $edittype=$mysqli->real_escape_string(trim($_POST["edittype"], "\x00..\x1F\xA0\xAD\xC2\xE2\x80\x8B"));
 $variable=$mysqli->real_escape_string(trim($_POST["variable"], "\x00..\x1F\xA0\xAD\xC2\xE2\x80\x8B"));
 $oldvalue=$mysqli->real_escape_string(trim($_POST["oldvalue"], "\x00..\x1F\xA0\xAD\xC2\xE2\x80\x8B"));
+$res["value"]=$_POST["value"];
 switch($edittype) {
 	case "items": 
 	case "variables":
@@ -45,8 +46,8 @@ if($_POST["edittable"]=="tasktypes")
 	$q='update tasktypes set `'.$edittype.'`='.$value.' where tasktype_id='.$_POST["tasktype_id"];
 else $q='update tasks set `'.$edittype.'`='.$value.' where task_id='.$_POST["task_id"];
 
-$mysqli->query($q);
-$test_id=$mysqli->insert_id;
+if(!$mysqli->query($q)) $res["warning"]=$mysqli->error;
+
 $log.="\n".$q;
 $res["task_id"]=$_POST["task_id"];
 $res["log"]=$log;

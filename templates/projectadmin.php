@@ -11,7 +11,7 @@ $actions=array(
 "upload"=>"Upload data",
 "tests"=>"Administer Tests",
 "users"=>"Users",
-#"projectsettings"=>"Project settings"
+"download"=>"Download coded data"
 );
 $res["links"]=array_keys($actions);
 foreach($actions as $action=>$name) {
