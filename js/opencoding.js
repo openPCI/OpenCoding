@@ -569,7 +569,7 @@ function savehtml(e) {
 function waseditedhtml(json) {
 	console.log(json)
 	$(".htmleditable").click(edithtml)
-	var div=$(".ql-editor")
+	var div=$(".ql-editor").closest(".htmleditablediv")
 	div.html(json.value)
 	div.attr("class","htmleditablediv")
 	div.parent().html(div)

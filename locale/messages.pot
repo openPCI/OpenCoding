@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-08-04 00:28+0200\n"
+"POT-Creation-Date: 2021-08-04 00:39+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -33,7 +33,7 @@ msgstr ""
 msgid "New task type"
 msgstr ""
 
-#: templates/tasktypes.php:11
+#: templates/tasktypes.php:11 templates/opencodingadmin.php:11
 msgid "Task types"
 msgstr ""
 
@@ -157,6 +157,22 @@ msgstr ""
 msgid "Login"
 msgstr ""
 
+#: templates/projectadmin.php:11
+msgid "Upload data"
+msgstr ""
+
+#: templates/projectadmin.php:12
+msgid "Administer Tests"
+msgstr ""
+
+#: templates/projectadmin.php:13 templates/opencodingadmin.php:12
+msgid "Users"
+msgstr ""
+
+#: templates/projectadmin.php:14
+msgid "Download coded data"
+msgstr ""
+
 #: templates/upload.php:6
 #, php-format
 msgid ""
@@ -215,6 +231,10 @@ msgstr ""
 
 #: templates/upload.php:57
 msgid "Upload"
+msgstr ""
+
+#: templates/opencodingadmin.php:13
+msgid "Projects"
 msgstr ""
 
 #: templates/coding.php:105

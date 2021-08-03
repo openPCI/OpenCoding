@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-08-04 00:28+0200\n"
-"PO-Revision-Date: 2021-08-04 00:33+0200\n"
+"POT-Creation-Date: 2021-08-04 00:39+0200\n"
+"PO-Revision-Date: 2021-08-04 00:40+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: da_DK\n"
@@ -34,7 +34,7 @@ msgstr "Response-id stemmer ikke overens."
 msgid "New task type"
 msgstr "Ny opgavetype"
 
-#: templates/tasktypes.php:11
+#: templates/tasktypes.php:11 templates/opencodingadmin.php:11
 msgid "Task types"
 msgstr "Opgavetyper"
 
@@ -158,6 +158,22 @@ msgstr "Husk mig"
 msgid "Login"
 msgstr "Login"
 
+#: templates/projectadmin.php:11
+msgid "Upload data"
+msgstr "Upload data"
+
+#: templates/projectadmin.php:12
+msgid "Administer Tests"
+msgstr "Administrer tests"
+
+#: templates/projectadmin.php:13 templates/opencodingadmin.php:12
+msgid "Users"
+msgstr "Brugere"
+
+#: templates/projectadmin.php:14
+msgid "Download coded data"
+msgstr "Download kodet data"
+
 #: templates/upload.php:6
 #, php-format
 msgid ""
@@ -224,6 +240,10 @@ msgstr "Inkluder kun besvarelser med testtid efter"
 #: templates/upload.php:57
 msgid "Upload"
 msgstr "Upload"
+
+#: templates/opencodingadmin.php:13
+msgid "Projects"
+msgstr "Projekter"
 
 #: templates/coding.php:105
 msgid "Flag response."

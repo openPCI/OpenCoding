@@ -8,10 +8,10 @@ checkperm("projectadmin");
 <div class="list-group list-group-flush">
 <?php
 $actions=array(
-"upload"=>"Upload data",
-"tests"=>"Administer Tests",
-"users"=>"Users",
-"download"=>"Download coded data"
+"upload"=>_("Upload data"),
+"tests"=>_("Administer Tests"),
+"users"=>_("Users"),
+"download"=>_("Download coded data")
 );
 $res["links"]=array_keys($actions);
 foreach($actions as $action=>$name) {

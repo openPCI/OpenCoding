@@ -8,9 +8,9 @@ checkperm("opencodingadmin");
 <div class="list-group list-group-flush">
 <?php
 $actions=array(
-"tasktypes"=>"Task types",
-"users"=>"Users",
-"projects"=>"Projects",
+"tasktypes"=>_("Task types"),
+"users"=>_("Users"),
+"projects"=>_("Projects"),
 );
 $res["links"]=array_keys($actions);
 foreach($actions as $action=>$name) {
