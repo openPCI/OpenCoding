@@ -8,7 +8,9 @@ $q='select task_data,items from tasks where task_id='.$_POST["task_id"];
 $result=$mysqli->query($q);
 $task=$result->fetch_assoc();
 $res["data"]=json_decode($task["task_data"]);
-$res["items"]=json_decode($task["items"]);
+$itemobj=json_decode($task["items"],true); 
+
+$res["items"]=$itemobj["items"];
 $q='select response,response_id
 				from responses 
 				where task_id='.$_POST["task_id"];

@@ -10,6 +10,7 @@ $all=$result->fetch_all(MYSQLI_ASSOC);
 ?>
     <div class="container">
 		<div class="row">
+			<h3><?= _("Training tasks");?></h3>
 			<table class="table">
 				<thead>
 					<tr>

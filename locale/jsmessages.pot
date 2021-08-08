@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-08-04 00:39+0200\n"
+"POT-Creation-Date: 2021-08-05 10:27+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,92 +17,92 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: js/opencoding.js:132
+#: js/opencoding.js:134
 msgid "Rendering the code can take very long time. Please be patient."
 msgstr ""
 
-#: js/opencoding.js:174
+#: js/opencoding.js:176
 msgid "Default value"
 msgstr ""
 
-#: js/opencoding.js:268
+#: js/opencoding.js:270
 msgid "Coding saved"
 msgstr ""
 
-#: js/opencoding.js:288
+#: js/opencoding.js:290
 msgid ""
 "Please specify the difficulty of coding the response (on a scale from 0 to "
 "255) (used for ordering the responses in training, the ones with lowest "
 "difficulty will be presented first)"
 msgstr ""
 
-#: js/opencoding.js:290
+#: js/opencoding.js:292
 msgid "Please give a number between 0 and 255"
 msgstr ""
 
-#: js/opencoding.js:304
+#: js/opencoding.js:306
 msgid "Mark flag resolved."
 msgstr ""
 
-#: js/opencoding.js:307
+#: js/opencoding.js:309
 msgid "Flag response."
 msgstr ""
 
-#: js/opencoding.js:339
+#: js/opencoding.js:341
 msgid "You need to fill out all codes before proceeding to the next response."
 msgstr ""
 
-#: js/opencoding.js:347
+#: js/opencoding.js:349
 msgid "The value of {0} is out of range"
 msgstr ""
 
-#: js/opencoding.js:439
+#: js/opencoding.js:441
 msgid "opencoding"
 msgstr ""
 
-#: js/opencoding.js:477
+#: js/opencoding.js:479
 msgid "Name of the new project?"
 msgstr ""
 
-#: js/opencoding.js:481
+#: js/opencoding.js:483
 msgid ""
 "Are you REALLY sure you want to delete this project? YOU WILL LOOSE ALL DATA "
 "AND CODING RELATED TO THIS PROJECT!"
 msgstr ""
 
-#: js/opencoding.js:496
+#: js/opencoding.js:498
 msgid "Open Coding"
 msgstr ""
 
-#: js/opencoding.js:552
+#: js/opencoding.js:572
 msgid "Save"
 msgstr ""
 
-#: js/opencoding.js:705
+#: js/opencoding.js:732
 msgid ""
 "You are about to import {0} columns of data from {1} test-takers. Do you "
 "want to proceed?"
 msgstr ""
 
-#: js/opencoding.js:710
+#: js/opencoding.js:737
 msgid ""
 "{0} new tests, {1} new tasks, and {2} new responses were registered. Are you "
 "done uploading?"
 msgstr ""
 
-#: js/opencoding.js:771
+#: js/opencoding.js:798
 msgid "Password copied to clipboard"
 msgstr ""
 
-#: js/opencoding.js:775
+#: js/opencoding.js:802
 msgid "Are you sure you want to delete this user?"
 msgstr ""
 
-#: js/opencoding.js:787
+#: js/opencoding.js:814
 msgid "Unchanged"
 msgstr ""
 
-#: js/opencoding.js:866
+#: js/opencoding.js:893
 msgid ""
 "You haven't selected coders to add. Click on the name to put it to the group "
 "of coders to add."

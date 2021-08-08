@@ -23,19 +23,28 @@ if($_POST["inputUser"]) {
 		$res=$mysqli->query($q);
 		
 		
-		$perms=array();
+		$projects=$perms=array();
 		while($r2=$res->fetch_assoc()) {
 			$perms[$r2["unittype"]][$r2["unit_id"]]=true;
+			$projects[]=$r2["unit_id"];
 		}
-		$_SESSION["perms"]=$perms;
-		$welcome=_("Welcome back!");
-		if($_POST["rememberMe"]) $_SESSION["rememberMe"]=true;
-		$log.="p".$_POST["p"];
-		$template=get_template($_POST["p"])["template"];
-		
-		#HACK!!!
-		if(!$_SESSION["project_id"]) $_SESSION["project_id"]=1;
+		$log.=print_r($projects,true);
+		$projects=array_diff(array_unique($projects),array(0));
+		$log.=print_r($projects,true);
+		if(!$projects) $warning=_("You are not authorized to work on any projects. Please ask your manager to assign a task to you.");
+		else {
+			$_SESSION["perms"]=$perms;
+			$welcome=_("Welcome back!");
+			if($_POST["rememberMe"]) $_SESSION["rememberMe"]=true;
+			#$log.="p".$_POST["p"];
+			#$template=get_template($_POST["p"])["template"];
+			if(count($projects)>1) {
+				$chooseproject=true;
+				$_SESSION["projects"]=$projects;
+			}
+			else $_SESSION["project_id"]=array_pop($projects);
+		}
 	}
  	else $warning=_("Username or password was wrong");
 } else $warning=_("No username");
-echo json_encode(array("log"=>$log,"warning"=>$warning,"user_id"=>$_SESSION["user_id"],"welcome"=>$welcome,"p"=>$_POST["p"],"template"=>$template));
+echo json_encode(array("log"=>$log,"warning"=>$warning,"user_id"=>$_SESSION["user_id"],"welcome"=>$welcome,"p"=>$_POST["p"],"template"=>$template,"chooseproject"=>$chooseproject));

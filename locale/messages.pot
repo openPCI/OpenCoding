@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-08-04 00:39+0200\n"
+"POT-Creation-Date: 2021-08-05 10:27+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -21,7 +21,7 @@ msgstr ""
 msgid "Changed"
 msgstr ""
 
-#: backend/doDownload.php:51
+#: backend/doDownload.php:56
 msgid "opencoding"
 msgstr ""
 
@@ -33,7 +33,7 @@ msgstr ""
 msgid "New task type"
 msgstr ""
 
-#: templates/tasktypes.php:11 templates/opencodingadmin.php:11
+#: templates/tasktypes.php:11 templates/opencodingadmin.php:12
 msgid "Task types"
 msgstr ""
 
@@ -81,12 +81,12 @@ msgstr ""
 msgid "Edit"
 msgstr ""
 
-#: templates/tasktypes.php:81 templates/users.php:84 templates/tests.php:115
+#: templates/tasktypes.php:81 templates/users.php:84 templates/tests.php:118
 #: templates/codingmanagement.php:129
 msgid "Close"
 msgstr ""
 
-#: templates/tasktypes.php:82 templates/tests.php:116
+#: templates/tasktypes.php:82 templates/tests.php:119
 #: templates/codingmanagement.php:130 templates/autocoding.php:58
 msgid "Save"
 msgstr ""
@@ -157,19 +157,23 @@ msgstr ""
 msgid "Login"
 msgstr ""
 
-#: templates/projectadmin.php:11
-msgid "Upload data"
+#: templates/projectadmin.php:8
+msgid "Project administration"
 msgstr ""
 
 #: templates/projectadmin.php:12
+msgid "Upload data"
+msgstr ""
+
+#: templates/projectadmin.php:13
 msgid "Administer Tests"
 msgstr ""
 
-#: templates/projectadmin.php:13 templates/opencodingadmin.php:12
+#: templates/projectadmin.php:14 templates/opencodingadmin.php:13
 msgid "Users"
 msgstr ""
 
-#: templates/projectadmin.php:14
+#: templates/projectadmin.php:15
 msgid "Download coded data"
 msgstr ""
 
@@ -233,7 +237,11 @@ msgstr ""
 msgid "Upload"
 msgstr ""
 
-#: templates/opencodingadmin.php:13
+#: templates/opencodingadmin.php:8
+msgid "OpenCoding administration"
+msgstr ""
+
+#: templates/opencodingadmin.php:14
 msgid "Projects"
 msgstr ""
 
@@ -249,22 +257,22 @@ msgstr ""
 msgid "Mark response as used in coder training."
 msgstr ""
 
-#: templates/coding.php:134
+#: templates/coding.php:140
 msgid ""
 "Use TAB and SHIFT+TAB to shift forward and back between item-codes. Use "
 "ARROWS to increase and decrease codes. Hit ENTER when in the last item-code "
 "to go to next response."
 msgstr ""
 
-#: templates/coding.php:146
+#: templates/coding.php:152
 msgid "Flagged by:"
 msgstr ""
 
-#: templates/coding.php:149
+#: templates/coding.php:155
 msgid "Add comment"
 msgstr ""
 
-#: templates/coding.php:156 templates/autocoding.php:59
+#: templates/coding.php:162 templates/autocoding.php:59
 msgid "Finish"
 msgstr ""
 
@@ -296,6 +304,10 @@ msgstr ""
 msgid "Items"
 msgstr ""
 
+#: templates/tests.php:35
+msgid "Sort"
+msgstr ""
+
 #: templates/tests.php:36
 msgid "Coding rubrics"
 msgstr ""
@@ -304,7 +316,7 @@ msgstr ""
 msgid "Count"
 msgstr ""
 
-#: templates/tests.php:103
+#: templates/tests.php:106
 msgid "Upload image"
 msgstr ""
 
@@ -329,7 +341,7 @@ msgstr ""
 msgid "OpenCoding Projects"
 msgstr ""
 
-#: templates/projects.php:24
+#: templates/projects.php:24 header.php:72 header.php:72
 msgid "Project"
 msgstr ""
 
@@ -381,11 +393,11 @@ msgstr ""
 msgid "Find coder"
 msgstr ""
 
-#: templates/autocoding.php:119
+#: templates/autocoding.php:125
 msgid "Statistics"
 msgstr ""
 
-#: templates/autocoding.php:120
+#: templates/autocoding.php:126
 msgid "Update"
 msgstr ""
 
@@ -433,23 +445,15 @@ msgid "Code"
 msgstr ""
 
 #: header.php:63 header.php:63
-msgid "Training"
+msgid "Train"
 msgstr ""
 
-#: header.php:66 header.php:66
+#: header.php:67 header.php:67
 msgid "Manage"
 msgstr ""
 
-#: header.php:70 header.php:70
-msgid "Coding Management"
-msgstr ""
-
-#: header.php:75 header.php:75
-msgid "Project Admin"
-msgstr ""
-
-#: header.php:80 header.php:80
-msgid "OpenCoding Admin"
+#: header.php:77 header.php:77
+msgid "System"
 msgstr ""
 
 #: dirs.php:8 dirs.php:8
@@ -480,22 +484,22 @@ msgstr ""
 msgid "No username"
 msgstr ""
 
-#: footer.php:15 footer.php:36 footer.php:15 footer.php:36
+#: footer.php:25 footer.php:48 footer.php:25 footer.php:48
 msgid "Cookies"
 msgstr ""
 
-#: footer.php:20 footer.php:20
+#: footer.php:30 footer.php:30
 msgid "My user"
 msgstr ""
 
-#: footer.php:24 footer.php:24
+#: footer.php:34 footer.php:34
 msgid "Log out"
 msgstr ""
 
-#: footer.php:30 footer.php:30
+#: footer.php:40 footer.php:40
 msgid "Log in"
 msgstr ""
 
-#: footer.php:37 footer.php:37
+#: footer.php:49 footer.php:49
 msgid "Contact"
 msgstr ""

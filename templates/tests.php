@@ -6,23 +6,24 @@ include_once($shareddir."database.php");
 $q="select * from tests where project_id=".$_SESSION["project_id"];
 $result=$mysqli->query($q);
 	?>
-<div class="accordion" id="accordion">
+<div class="" id="accordion">
 <?php 
 if($result->num_rows==0) echo _("You don't have any tests in this project. Upload data to create tests.");
 else {
 	while($r=$result->fetch_assoc()) {
 		?>
 	<div class="card">
-		<div class="card-header" id="headingOne">
-		<h2 class="mb-0 float-left">
+		<div class="card-header" >
+		<h2 class="mb-0 float-left test_name" data-test_id="<?= $r["test_id"];?>">
 			<button class="btn btn-link btn-block text-left" type="button" data-toggle="collapse" data-target="#test<?= $r["test_id"];?>" aria-expanded="true" aria-controls="collapseOne">
 			<?= $r["test_name"];?>
 			</button>
 		</h2>
+		<span class="deletetest text-danger float-right ml-2" title="<?= _("Delete test");?>"><i class="fa fa-trash-alt"></i></span>
 		<span class="edittest float-right"><i class="fas fa-edit"></i></span>
 		</div>
 
-		<div id="test<?= $r["test_id"];?>" class="collapse" aria-labelledby="test_name<?= $r["test_id"];?>" data-parent="#accordion">
+		<div id="test<?= $r["test_id"];?>" data-test_id="<?= $r["test_id"];?>" class="collapse show testdiv" aria-labelledby="test_name<?= $r["test_id"];?>" data-parent="#accordion">
 			<div class="card-body">
 				<table class="table">
 					<thead>
@@ -32,12 +33,13 @@ else {
 						<th scope="col"><?= _("Task image");?></th>
 						<th scope="col"><?= _("Task type");?></th>
 						<th scope="col"><?= _("Task variables");?></th>
-						<th scope="col"><?= _("Items");?></th>
+						<th scope="col"><?= _("Items");?> <span class="itemsort" title="<?= _("Sort");?>"><i class="fas fa-random"></i></span></th>
 						<th scope="col"><?= _("Coding rubrics");?></th>
 						<th scope="col"><?= _("Count");?></th>
+						<th scope="col"><?= _("Action");?></th>
 						</tr>
 					</thead>
-					<tbody id="tasklist">
+					<tbody id="tasklist<?= $r["test_id"];?>">
 				<?php
 					$q="select t.*,count(r.response_id) as rcount,tasktype_name,i.variables from tasks t left join tasktypes i on i.tasktype_id=t.tasktype_id left join responses r on r.task_id=t.task_id where test_id=".$r["test_id"]." GROUP BY 1 order by `group_id`";
 					
@@ -66,20 +68,24 @@ else {
 						}
 						?>
 						</td>
-						<td><?php
-						$items=json_decode($r1["items"],true); 
+						<td><div class="itemsdiv"><?php
+						$itemobj=json_decode($r1["items"],true); 
+						$items=$itemobj["items"];
+						$itemorder=$itemobj["order"]?$itemobj["order"]:array();
+						$extra=array_diff(array_keys($items),$itemorder);
+						$itemorder=array_merge($itemorder,$extra);
 						echo implode("\n",
 							array_map(
-								function($v,$k) {
-									return '<div><span class="editable first" data-oldvalue="'.$k.'" data-edittype="items"  data-edittype2="name" contenteditable>'.$k.'</span>: 0-<span class="editable" data-edittype="item"  data-edittype2="value" contenteditable>'.$v.'</span><span class="deleteitem float-right"><i class="fa fa-trash"></i></span></div>';
+								function($k) use($items) {
+									return '<div><span class="editable first name" data-oldvalue="'.$k.'" data-edittype="items"  data-edittype2="name" contenteditable>'.$k.'</span>: 0-<span class="editable" data-edittype="item"  data-edittype2="value" contenteditable>'.$items[$k].'</span><span class="deleteitem float-right"><i class="fa fa-trash-alt"></i></span></div>';
 								},
-								$items,
-								array_keys($items)
+								$itemorder
 							)
 						);
-						?><div class="additem"><i class="fas fa-plus"></i></div></td>
+						?><div><div class="additem"><i class="fas fa-plus"></i></div></td>
 						<td class="htmleditable"><div  class="htmleditablediv" id="rubrics_<?= $r1["task_id"];?>" data-edittype="coding_rubrics"><?= $r1["coding_rubrics"];?></div></td>
 						<td><?= $r1["rcount"];?></td>
+						<td><span class="deletetask text-warning float-right ml-2" title="<?= _("Delete task");?>"><i class="fa fa-trash-alt"></i></span></td>
 						</tr>
 					
 					<?php

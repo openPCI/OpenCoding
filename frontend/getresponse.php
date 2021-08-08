@@ -14,12 +14,14 @@ if($_POST["task_id"]) {
 		elseif($training) {
 			$q="select codes from coded c left join trainingresponses tr on tr.response_id=c.response_id and c.coder_id=tr.manager_id where tr.response_id=".$_POST["response_id"];
 			$result=$mysqli->query($q);
-			$correctcodes=json_decode($result->fetch_assoc()["codes"],true);
-			$codes=$_POST["codes"];
-			function to_assoc($a) { foreach($a as $o) { $newa[$o["item_name"]]=$o["code"];} return $newa;};
-			$_SESSION["training"][$_POST["response_id"]]["codes"]=$codes;#;
-			$_SESSION["training"][$_POST["response_id"]]["correctcodes"]=$correctcodes;#to_assoc($correctcodes);
-			$_SESSION["training"][$_POST["response_id"]]["correct"]=array_intersect_assoc(to_assoc($correctcodes),to_assoc($codes));#array_map(function($key) use ($codes,$correctcodes)  { return $codes[$key]==$correctcodes[$key]; },array_keys($correctcodes));
+			if($result->num_rows) {
+				$correctcodes=json_decode($result->fetch_assoc()["codes"],true);
+				$codes=$_POST["codes"];
+				function to_assoc($a) { foreach($a as $o) { $newa[$o["item_name"]]=$o["code"];} return $newa;};
+				$_SESSION["training"][$_POST["response_id"]]["codes"]=$codes;#;
+				$_SESSION["training"][$_POST["response_id"]]["correctcodes"]=$correctcodes;#to_assoc($correctcodes);
+				$_SESSION["training"][$_POST["response_id"]]["correct"]=array_intersect_assoc(to_assoc($correctcodes),to_assoc($codes));#array_map(function($key) use ($codes,$correctcodes)  { return $codes[$key]==$correctcodes[$key]; },array_keys($correctcodes));
+			} else $warning=sprintf(_("No correct codes for this response. Please contact the scoring manager. Response id: %d"),$_POST["response_id"]);
 		}
 		else {
 			if($_POST["flagged"]!="true") {
@@ -38,8 +40,9 @@ if($_POST["task_id"]) {
 	if(!$warning and $_POST["next"]!="finish") {
 		$success=false;
 		$tries=0;
+		$revise=($_POST["codetype"]=="revise");
 		while(!$success and $tries<2) {
-			$dodouble=($tries==0 and !$training and !$flaghandling and rand(1,100/$_SESSION["doublecodingpct"][$_POST["task_id"]])==1);
+			$dodouble=(!$revise and $_SESSION["doublecodingpct"]>0 and $tries==0 and !$training and !$flaghandling and rand(1,round(100/$_SESSION["doublecodingpct"]))==1);
 			$tries++;
 			if(!$dodouble) $tries++;
 			else {
@@ -63,7 +66,7 @@ if($_POST["task_id"]) {
 				($flaghandling?'
 				where f.flag_id'
 				:'
-				where '.($dodouble?'(c.coder_id!='.$_SESSION["user_id"].' and c.coder_id IS NOT NULL) and ':'(c.coder_id='.$_SESSION["user_id"].' or c.coder_id IS NULL) and ').'
+				where '.($dodouble?'(c.coder_id!='.$_SESSION["user_id"].' and c.coder_id IS NOT NULL) and ':($revise?'c.coder_id='.$_SESSION["user_id"]:'(c.coder_id='.$_SESSION["user_id"].' or c.coder_id IS NULL) and ')).'
 				r.response_id'))
 				.($_POST["next"]?(is_numeric($_POST["next"])?"=".$_POST["next"]:$_POST["next"].($training?"=":"").$_SESSION[$flaghandling?"flag_id":($training?"difficulty":"response_id")]):($_POST["response_id"]?"=".$_POST["response_id"]:(($_SESSION["response_id"] and $_SESSION["activetask"]==$_POST["task_id"])?">".$_SESSION["response_id"]:">0"))).
 				(($training and !is_numeric($_POST["next"]))?' and r.response_id!='.$_SESSION["response_id"].' and (difficulty>'.$_SESSION["difficulty"].' or r.response_id>'.$_SESSION["response_id"].')':'').'
@@ -99,6 +102,7 @@ if($_POST["task_id"]) {
 			
 		} else {
 			$warning=_("No more responses");
+			unset($_SESSION["response_id"]);
 		}
 	} 
 	if($warning or $_POST["next"]=="finish") $res["returnto"]=($training?"training":($flaghandling?"codingmanagement":"mytasks"));

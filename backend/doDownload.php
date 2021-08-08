@@ -13,7 +13,12 @@ $log.="\n".$q;
 $list=array();
 $allitems=array();
 while($r=$result->fetch_assoc()) {
-	$items=array_keys(json_decode($r["items"],true));
+	$itemobj=json_decode($task["items"],true); 
+	$items=$itemobj["items"];
+	$itemorder=$itemobj["order"]?$itemobj["order"]:array();
+	$extra=array_diff(array_keys($items),$itemorder);
+	$items=array_merge($itemorder,$extra);
+
 	$allitems=array_unique(array_merge($allitems,$items));
 	$codes=json_decode($r["codes"],true);
 	$tmpcodes=array();

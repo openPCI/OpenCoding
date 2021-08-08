@@ -5,6 +5,7 @@ $res=array("log"=>"test");
 checkperm("opencodingadmin");
 
 ?>
+<h2><?= _("OpenCoding administration");?></h2>
 <div class="list-group list-group-flush">
 <?php
 $actions=array(

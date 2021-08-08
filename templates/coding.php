@@ -7,6 +7,20 @@ include_once($shareddir."database.php");
 
 $codingadmin=$_SESSION["perms"]["codingadmin"][$_SESSION["project_id"]];
 
+$q="select (select doublecodingpct from projects where project_id=".$_SESSION["project_id"].") as doublecodingpct, count(*) as numresponses,sum(isdoublecode) as numdoublecoded,sum(if(c.response_id IS NOT NULL and c.isdoublecode=0,1,0)) as numcoded from responses r left join coded c on r.response_id=c.response_id where r.task_id=".$_POST["task_id"];
+
+// echo $q;
+if(!$result=$mysqli->query($q)) echo $mysqli->error;
+else $r=$result->fetch_assoc();
+//reviseddoublecodedpct=number of responses to doublecoding 
+$numbertodoublecode=$r["numresponses"]*$r["doublecodingpct"]/100;
+$remainingtodoublecode=$numbertodoublecode-$r["numdoublecoded"];
+$remaining=$r["numresponses"]-$r["numcoded"];
+$reviseddoublecodedpct=($remaining>0?$remainingtodoublecode/$remaining*100:0);
+$_SESSION["doublecodingpct"]=$reviseddoublecodedpct;
+
+// echo "revised: " .$reviseddoublecodedpct;
+
 if($_POST["maxcodedresponse_id"]) $_SESSION["response_id"]=$_POST["maxcodedresponse_id"];
 $q="select tt.* from tasks t left join tasktypes tt on t.tasktype_id=tt.tasktype_id where task_id=".$_POST["task_id"];
 $result=$mysqli->query($q);
@@ -106,11 +120,17 @@ function insertResponse(json) {
 					<?php if($codingadmin) {?><span class="float-right text-muted mr-2" data-toggle="tooltip" data-placement="top" id="trainingresponse" data-used="<?= _("This response is used in coder training. Difficulty: ");?>" data-notused="<?= _("Mark response as used in coder training.");?>" title=""><i class="fas fa-check-double"></i></span><?php } ?>
 
 					<?php 
-						foreach(json_decode($task["items"]) as $item_name=>$maxvalue) {
+						$itemobj=json_decode($task["items"],true); 
+						$items=$itemobj["items"];
+						$itemorder=$itemobj["order"]?$itemobj["order"]:array();
+						$extra=array_diff(array_keys($items),$itemorder);
+						$itemorder=array_merge($itemorder,$extra);
+
+						foreach($itemorder as $item_name) {
 						?>
 							<div class="form-group">
 								<label for="item<?= $item_name;?>"><?= $item_name;?></label>
-								<input type="number" data-item_name="<?= $item_name;?>" class="form-control itemvalue" name="<?= $item_name;?>" placeholder="" min="-1" max="<?= $maxvalue;?>" step="1" required>
+								<input type="number" data-item_name="<?= $item_name;?>" class="form-control itemvalue" name="<?= $item_name;?>" placeholder="" min="-1" max="<?= $items[$item_name];?>" step="1" required>
 							</div>
 						<?php
 						}
@@ -118,7 +138,7 @@ function insertResponse(json) {
 				</div>
 			</div>
 			<!-- Navigation Container -->
-			<div class="row" style="max-width:300px;">
+			<div class="row" style="">
 				<div class="col text-center">
 					<button class="btn btn-primary nextresponse" data-next="&lt;">&lt;</button>
 				</div>
@@ -127,6 +147,9 @@ function insertResponse(json) {
 				</div>
 				<div class="col text-center">
 					<button class="btn btn-primary nextresponse" data-next="&gt;">&gt;</button>
+				</div>
+				<div class="col-6">
+					<button class="btn btn-secondary nextresponse float-right" data-next="finish"><?= _("Finish");?></button>
 				</div>
 			</div>
 			<div class="row">
@@ -150,11 +173,5 @@ function insertResponse(json) {
 		</div>
 			
 	</div>
-	<div class="row">
-<!-- 		<div class="content codingarea"> -->
-		<div class="col d-flex justify-content-end">
-			<button class="btn btn-primary nextresponse" data-next="finish"><?= _("Finish");?></button>
-		</div> 
-	</div> 
     
 </div>

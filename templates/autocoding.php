@@ -91,11 +91,17 @@ $tasksettings["subtasks"]=$subtasks;
 					<?php 
 					}
 					else {
-						foreach(json_decode($task["items"]) as $item_name=>$maxvalue) {
+						$itemobj=json_decode($task["items"],true); 
+						$items=$itemobj["items"];
+						$itemorder=$itemobj["order"]?$itemobj["order"]:array();
+						$extra=array_diff(array_keys($items),$itemorder);
+						$itemorder=array_merge($itemorder,$extra);
+
+						foreach($itemorder as $item_name) {
 						?>
 							<div class="form-group col-3">
 								<label for="item<?= $item_name;?>"><?= $item_name;?></label>
-								<input type="number" data-item_name="<?= $item_name;?>" class="form-control itemvalue" name="<?= $item_name;?>" placeholder="" min="-1" max="<?= $maxvalue;?>" step="1" disabled>
+								<input type="number" data-item_name="<?= $item_name;?>" class="form-control itemvalue" name="<?= $item_name;?>" placeholder="" min="-1" max="<?= $items[$item_name];?>" step="1" disabled>
 							</div>
 						<?php
 						}

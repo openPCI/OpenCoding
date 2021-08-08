@@ -14,8 +14,7 @@ $all=$result->fetch_all(MYSQLI_ASSOC);
 $unit_ids=array_map(function($x) { return $x["unit_id"];},$all);
 
 
-$qstart='SELECT GROUP_CONCAT(CONCAT(username," <span class=\'deletecoder\' data-user_id=\'",u.user_id,"\'><i class=\'fas fa-trash\'></i></span>") order by username SEPARATOR ", ") as coders, 
-GROUP_CONCAT(CONCAT("<a href=\'#\' class=\'badge badge-primary mr-2 column addcoder\' data-user_id=\'",u.user_id,"\'>",username," (",email,")</a>") order by username SEPARATOR " ; ") as coderbadges, ';
+$qstart='SELECT GROUP_CONCAT(CONCAT(username," <span class=\'deletecoder\' data-user_id=\'",u.user_id,"\'><i class=\'fas fa-trash\'></i></span>") order by username SEPARATOR ", ") as coders, ';
 
 $qarr["test"]=$qstart.' a.`test_id` as `unit_id` from `assign_test` a left join tests t on a.test_id=t.test_id left join users u on a.coder_id=u.user_id where project_id='.$_SESSION["project_id"].' group by unit_id';
 $qarr["task"]=$qstart.' a.`task_id` as `unit_id` from `assign_task` a left join tasks tt on tt.task_id=a.task_id left join tests t on tt.test_id=t.test_id left join users u on a.coder_id=u.user_id where project_id='.$_SESSION["project_id"].' group by unit_id';
@@ -27,15 +26,14 @@ foreach($qarr as $unittype=>$q) {
 	$allcoders=$result->fetch_all(MYSQLI_ASSOC);
 	foreach($allcoders as $c) {
 		$coders[$unittype][$c["unit_id"]]=$c["coders"];
-		$coderbadges=array_unique(array_merge($coderbadges,explode(" ; ",$c["coderbadges"])));
 	}
 }
 // print_r($coders);
-$coderbadges=implode(" ",$coderbadges);
 ?>
     <div >
 		<div class="row">
 			<div class="col">
+				<h3><?= _("Coding Management");?></h3>
 				<table class="table">
 					<thead>
 						<tr>
@@ -113,7 +111,13 @@ $coderbadges=implode(" ",$coderbadges);
 			<div class="modal-body">
 				<label for="knowncoders"><?= _('Coders on project') ?></label>
 				<div id="knowncoders">
-				<?= $coderbadges; ?>
+				<?php
+					$q='SELECT CONCAT("<a href=\'#\' class=\'badge badge-primary mr-2 column addcoder\' data-user_id=\'",u.user_id,"\'>",username," (",email,")</a>") as coderbadge	from user_permissions p left join users u on p.user_id=p.user_id where unittype="coding" and unit_id='.$_SESSION["project_id"].' order by username';
+					$result=$mysqli->query($q);
+					while($c=$result->fetch_assoc())
+						$coderbadges[]=$c["coderbadge"];
+					echo implode(" ",array_unique($coderbadges));
+				?>
 				</div>
 				<div>
 					<label for="newcoder"><?= _('Find coder') ?></label>

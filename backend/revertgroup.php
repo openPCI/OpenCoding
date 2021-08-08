@@ -7,6 +7,8 @@ if($_POST["member"]) {
 	$q='update tasks set `group_id`=0 where task_id='.$_POST["member"];
 	$mysqli->query($q);
 }
+$res["taskContent"]=$_POST["taskContent"];
+$res["test_id"]=$_POST["test_id"];
 $res["log"]=$log;
 
 

@@ -7,7 +7,7 @@ if(!$templatesdir) { //Then we have a call from js
 	echo json_encode(get_template($_POST["template"],$_POST));
 }
 function get_template($filename,$args=array()) {
-	global $log,$templatesdir,$shareddir,$mysqli,$relative,$backenddir;;
+	global $log,$templatesdir,$shareddir,$mysqli,$relative,$backenddir,$res;;
 	extract($args);
 	$istemplate=true;
 // 	print_r($templatesdir.$filename.".php");

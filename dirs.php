@@ -15,6 +15,7 @@ $backenddir=$relative."backend/";
 $jsdir=$relative."js/";
 $secretdir=$relative."secrets/";#/var/www/opencodingsecrets/";
 
+if($_GET["setlang"]) $_SESSION["locale"]=$_GET["setlang"];
 
 if(!$_SESSION["locale"]) {
 	$accept=explode(",",$_SERVER['HTTP_ACCEPT_LANGUAGE']);

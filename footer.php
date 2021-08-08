@@ -8,6 +8,16 @@
 </div>
 <div><br><br></div>
 <footer class="footer d-print-none py-1 mt-auto site-footer fixed-bottom">
+	<div class="collapse row" id="collapseLang">
+		<div class="col justify-content-right">
+			<?php
+			$tag1='<img class="newLang flag-img float-right" src="locale/flags/';
+			$tag2='.png">';
+			$langs=array("da_DK","en_US");
+			echo $tag1.implode($tag2.$tag1,$langs).$tag2;
+			?>
+		</div>
+	</div>
 	<div class="row ">
 		<div class="col d-flex ml-2 justify-content-left">
 	        &copy; OpenCoding 2021
@@ -16,20 +26,22 @@
 		</div>-->
 		<div class="col d-flex justify-content-end">
 			<div class="row collapse <?= ($_SESSION["user_id"]?"show":"")?>" id="logoutform">
-				<div class="col">
-					<button class="btn pb-0 text-muted " title="<?= _('My user');?>" id="userinfo" ><i class="far fa-user"></i></button>
+				<div class="col p-0">
+					<button class="btn btn-link pb-0 text-muted " title="<?= _('My user');?>" id="userinfo" ><i class="far fa-user"></i></button>
 				</div>
-				<div class="col">
+				<div class="col p-0">
 					<form method="POST" action="?<?=$_SERVER['QUERY_STRING'];?>" class="form-inline">
-						<button class="btn pb-0 text-muted mr-1 logout" id="logout" title="<?= _('Log out');?>"><i class="fas fa-sign-out-alt"></i></button>
+						<button class="btn btn-link pb-0 text-muted logout" id="logout" title="<?= _('Log out');?>"><i class="fas fa-sign-out-alt"></i></button>
 						<input type="hidden" name="logout" value="true">
 					</form>
 				</div>
 			</div>
-			<div class="collapse <?= (!$_SESSION["user_id"]?"show":"")?>" id="loginform">
-				<button class="btn pb-0 text-muted ml-auto" id="showloginform" title="<?= _('Log in');?>"><i class="fas fa-sign-in-alt"></i></button>
+			<div class="collapse p-0 <?= (!$_SESSION["user_id"]?"show":"")?>" id="loginform">
+				<button class="btn btn-link pb-0 text-muted ml-auto" id="showloginform" title="<?= _('Log in');?>"><i class="fas fa-sign-in-alt"></i></button>
 			</div>
 		</div>
+		<div  class="icon-link  p-0" id="chooselang"><span><button class="btn btn-link pb-0 ml-auto"><img data-toggle="collapse" href="#collapseLang" role="button" aria-expanded="false" aria-controls="collapseLang" class="flag-img" src="locale/flags/<?= $locale; ?>.png"></button></div>
+
 	</div>
 	<div class="row ">
 		<div class="col d-flex justify-content-center">

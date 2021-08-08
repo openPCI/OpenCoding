@@ -60,7 +60,7 @@ if ($handle = opendir($basedir)) {
 								array_walk($itemcols,function(&$v) use($taskpos) {$v=$v+$taskpos+1;});
 								
 								$items1=array_fill_keys($items,1);
-								$q='insert into tasks (task_name,tasktype_id,items,tasktype_variables,task_data,test_id) VALUES ("'.$task.'",0,\''.json_encode($items1).'\',"{}","{}",'.$test_id.') on duplicate key UPDATE items=\''.json_encode($items1).'\', task_id=LAST_INSERT_ID(task_id)';
+								$q='insert into tasks (task_name,tasktype_id,items,tasktype_variables,task_data,test_id) VALUES ("'.$task.'",0,\'"items":{'.json_encode($items1).'}\',"{}","{}",'.$test_id.') on duplicate key UPDATE items=\'"items":{'.json_encode($items1).'}\', task_id=LAST_INSERT_ID(task_id)';
 									// If the task_name exists in this test, these responses are added to that instead of created as new task.
 // 								echo "\n".$q;
 	 							$mysqli->query($q);

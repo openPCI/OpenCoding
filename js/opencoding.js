@@ -7,6 +7,8 @@ $(function() {
 	$("#showloginform").click(function () {get_template("login",{},"loginready")})
 	var p=window.location.search.replace(/.*[?&]p=([^&]*)(&|$).*/,"$1")
 	$("#userinfo").click(function() {get_template("myUser",{},"gotmyuser")})
+	$(".newLang").click(function() {var search=window.location.search; window.location.replace((search?search+"&":"?")+"setlang="+$(this).attr("src").replace(".png","").split("/")[2])});
+
   	if(p=="") get_template("main",{},"dologin")
 	else get_template(p)
 //	afterRender({template:(p?p:"main")})
@@ -32,7 +34,7 @@ function checklogin(json) {
 //  	console.log(json)
 	if(!json.warning) {
 		showMessage(json.welcome);
-		window.location.assign(window.location.search)
+		window.location.assign(json.chooseproject?"?p=chooseproject":window.location.search)
 	}
 }
 function send(page,f,d,place) {
@@ -101,6 +103,9 @@ function afterRender(json) {
 	if(!json.template) return
 		console.log(json.function)
 	switch (json.function) {
+		case "chooseproject":
+			chooseproject()
+			break
 		case "mytasks":
 			codeTask()
 			break
@@ -121,6 +126,12 @@ function afterRender(json) {
 			}
 		break;
 	}
+}
+function chooseproject(json) {
+	$(".selectproject").click(function(){ send("selectproject","projectselected",{project_id:$(this).data("project_id")},"frontend")})
+}
+function projectselected() {
+	window.location.assign("?p=main")
 }
 function gottasktypes(json) {
 	$("#scripting").on("shown.bs.modal",function(e) {
@@ -171,7 +182,7 @@ function tasktypeedited() {
 }
 function addvariable() {
 	var variablename='variable'+($(this).index()+1)
-	$(this).before('<div><span class="editable first" data-edittype="variables" data-edittype2="name" data-oldvalue="'+variablename+'" contenteditable>'+variablename+'</span>: <span class="editable" data-edittype="variables"  data-edittype2="value" contenteditable>'+_('Default value')+'</span><span class="deletevariable float-right"><i class="fa fa-trash"></i></span><div>')
+	$(this).before('<div><span class="editable first" data-edittype="variables" data-edittype2="name" data-oldvalue="'+variablename+'" contenteditable>'+variablename+'</span>: <span class="editable" data-edittype="variables"  data-edittype2="value" contenteditable>'+_('Default value')+'</span><span class="deletevariable float-right"><i class="fa fa-trash-alt"></i></span><div>')
 	$(this).prev().children(".editable").keydown(isEnter).on("blur",edited)
 	var tasktype_id=$(this).closest("tr").data("tasktype_id")
 	send("edited","wasedited",{tasktype_id:tasktype_id,edittype:"variables",edittype2:"value",oldvalue:variablename,value:"",edittable:"tasktypes"},"backend")
@@ -216,8 +227,11 @@ function gottasktypecontent(json) {
 
 }
 function codeTask(special="") {
-	$(".codeTask").click(function () {get_template("coding",{task_id:$(this).data("task_id"),maxcodedresponse_id:$(this).data("maxcodedresponse_id"),special:special,first_id:$(this).data("first_id")},"gotcoding")});
-	$(".autocodeTask").click(function () {get_template("autocoding",{task_id:$(this).data("task_id"),maxcodedresponse_id:$(this).data("maxcodedresponse_id"),special:special,first_id:$(this).data("first_id")},"gotautocoding")});
+	$(".docode").click(function () {
+		var codetype=$(this).data("codetype")
+		var auto=(codetype=="auto"?"auto":"")
+		get_template(auto+"coding",{task_id:$(this).closest("tr").data("task_id"),maxcodedresponse_id:$(this).closest("tr").data("maxcodedresponse_id"),special:special,codetype:codetype,first_id:$(this).closest("tr").data("first_id")},"got"+auto+"coding")
+	});
 }
 function gotautocoding(json) {
 // 	$(".nextresponse").click(function() { getautoresponse($(this).data("next"))})
@@ -284,15 +298,19 @@ function trainingresponse() {
 	$("#trainingresponse").toggleClass("text-primary text-muted")
 	var used=$("#trainingresponse").hasClass("text-primary")
 	var difgiven=false
+	var cancelling=false
 	while(used && !difgiven) {
 		difficulty=window.prompt(_("Please specify the difficulty of coding the response (on a scale from 0 to 255) (used for ordering the responses in training, the ones with lowest difficulty will be presented first)"))
+		if(difficulty===null) { cancelling=true; break;}
 		if(!/^[0-9]+$/.test(difficulty)) {
 			alert(_("Please give a number between 0 and 255"))
 		} else difgiven=true
 	}
-	var status=(used?"istrainingresponse":"nottrainingresponse")
-	$("#trainingresponse").attr("title",used?$("#trainingresponse").data("used")+difficulty:$("#trainingresponse").data("notused"))
-	send("trainingresponse","trainingresponsedone",{status:status,response_id:$("#response_id").val(),difficulty:difficulty},"backend")
+	if(!cancelling) {
+		var status=(used?"istrainingresponse":"nottrainingresponse")
+		$("#trainingresponse").attr("title",used?$("#trainingresponse").data("used")+difficulty:$("#trainingresponse").data("notused"))
+		send("trainingresponse","trainingresponsedone",{status:status,response_id:$("#response_id").val(),difficulty:difficulty},"backend")
+	}
 }
 function trainingresponsedone() {
 	
@@ -329,6 +347,7 @@ function getresponse(next) {
 	console.log(typeof next)
 	var codes=[]
 	var go=true
+	var nocodes=false
 	var flagged=$("#flag").hasClass("text-danger")
 	if(typeof next=="string") {
 		var empty=$('.itemvalue').filter(function(x) {return $(this).val().trim()==""})
@@ -337,7 +356,7 @@ function getresponse(next) {
 			else if(next==">") {
 				go=false
 				showWarning(_("You need to fill out all codes before proceeding to the next response."))
-			} 
+			} else nocodes=true
 		}
 		$(".itemvalue").each(function() {
 			var val=parseInt($(this).val())
@@ -347,7 +366,7 @@ function getresponse(next) {
 				showWarning(_("The value of {0} is out of range",$(this).data("item_name")))
 			}
 		})
-		if(go)
+		if(go && !nocodes)
 			codes=$(".itemvalue").map(function() {return {item_name:$(this).data("item_name"),code:parseInt($(this).val())}}).get()
 	}
 	if(go) {
@@ -500,34 +519,72 @@ function projectedited() {
 	get_template("projects",{},"gotprojects");
 }
 function gottests() {
-	$(".edittest").click(function() {alert("Edit of test not implemented")})
+	$(".edittest").click(function() {
+		var div=$(this).siblings(".test_name")
+		var newtestname=window.prompt(_("Enter new name of test"),div.text().trim())	
+		if(newtestname) send("edited","testedited",{edittype:"test_name",edittable:"tests",value:newtestname,test_id:div.data("test_id")},"backend")
+	})
 	maketasksactive() 
 }
 function maketasksactive() {
+	
 	$('[data-group_id]').each(function() { 
 		$('<div class="group_member"><i class="fas fa-level-up-alt fa-rotate-90"></i> '+$(this).children().first().text()+"</div>").appendTo($('[data-task_id='+$(this).data("group_id")+']').children().first()).data("taskContent",$(this)).dblclick(revertgroup)
 		$(this).remove()
 	})
-	$(".picture").change(showImage)
-	$("#saveimg").click(function() {
+	$(".picture").unbind("change").change(showImage)
+	$("#saveimg").unbind("click").click(function() {
 		var imgsrc=$("#modalimg>img").attr("src")
-		send("edited","wassaved",{task_id:$(this).data("task_id"),edittype:"task_image",value:imgsrc},"backend")
-		$("tr[data-task_id] .uploadedimg>img").attr("src",imgsrc)
+		$("#uploadedimg").modal("hide")
+		send("edited","testedited",{task_id:$(this).data("task_id"),edittype:"task_image",value:imgsrc},"backend")
+		
 	})
-	$("#uploadedimg").on("show.bs.modal",function(e) {
+	$("#uploadedimg").unbind("show.bs.modal").on("show.bs.modal",function(e) {
 		$("#modalimg").html($(e.relatedTarget).html());
 		$("#saveimg").data("task_id",$(e.relatedTarget).closest("tr").data("task_id"))
 	})
+	$(".itemsort").unbind("click").click(function() {
+		var active=$( ".itemsdiv" ).sortable( "option", "disabled" )
+		$(".itemsdiv").sortable(active?"enable":"disable")
+		$(this).toggleClass("text-success",active)
+	})
+	$(".itemsdiv").sortable({
+		placeholder: "ui-state-highlight",
+		handle: ".editable",
+		stop: function(event,ui) {
+			send("itemsorted","itemsortdone",{order:$(event.target).find(".name").map(function() {return $(this).text()}).get(),task_id:$(this).closest("tr").data("task_id")},"backend")
+		}
+	}).sortable("disable")
 	$(".editable").unbind("keydown").keydown(isEnter)
 	$(".editable").unbind("blur").on("blur",edited)
-	$(".htmleditable").click(edithtml)
+	$(".htmleditable").unbind("click").click(edithtml)
 	$(".selectable").unbind("click").click(initselectable)
 	$(".additem").unbind("click").click(additem)
 	$(".deleteitem").unbind("click").click(deleteitem)
-	$(".tasktype_variable").change(function() {
+	$(".tasktype_variable").unbind("change").change(function() {
 // 		console.log({task_id:$(this).closest("tr").data("task_id"),edittype:"tasktype_variables",variable:$(this).data("variablename"),value:$(this).val()})
 		send("edited","wassaved",{task_id:$(this).closest("tr").data("task_id"),edittype:"tasktype_variables",variable:$(this).data("variablename"),value:$(this).val()},"backend")
 	})
+	$(".deletetask").click(function() {
+		if(window.confirm(_("Are you REALLY sure you want to delete this task? YOU WILL LOOSE ALL DATA AND CODING RELATED TO THIS TASK!"))) {
+			var task_id=$(this).closest("tr").data("task_id")
+			send("deletetask","testedited",{task_id:task_id},"backend")
+		}
+	})
+	$(".deletetest").click(function() {
+		if(window.confirm(_("Are you REALLY sure you want to delete this test? YOU WILL LOOSE ALL DATA AND CODING RELATED TO THIS TEST!"))) {
+			var test_id=$(this).closest("tr").data("test_id")
+			send("deletetest","testedited",{test_id:test_id},"backend")
+		}
+	})
+
+	makegroupsdraggable()
+	disenablegroup()
+}
+function testedited() {
+	get_template("tests",{},"gottests")
+}
+function makegroupsdraggable() {
 	$(".group_target").draggable({ 
 		revert: "invalid",      
 		containment: "document",
@@ -535,6 +592,7 @@ function maketasksactive() {
 		cursor: "move",
 		handle: "th"
 	}).droppable({
+		accept: ".group_target",
 		drop: function( event, ui ) {
 			$('<div class="group_member"><i class="fas fa-level-up-alt fa-rotate-90"></i> '+ui.draggable.children().first().text()+"</div>").appendTo($(this).children().first()).data("taskContent",ui.draggable).dblclick(revertgroup)
 			send("makegroup","groupmade",{parent:$(this).data("task_id"),member:ui.draggable.data("task_id")},"backend")
@@ -543,7 +601,8 @@ function maketasksactive() {
       }
 	}
 	)
-	disenablegroup()
+}
+function itemsortdone() {
 }
 function edithtml() {
 	var id=$(this).find(".htmleditablediv").attr("id")
@@ -576,7 +635,7 @@ function waseditedhtml(json) {
 	
 }
 function wassaved() {
-	$("#uploadedimg").modal("hide")
+	
 }
 function disenablegroup() {
 	$('.group_target:has(.group_member)').draggable( "disable" );	
@@ -587,10 +646,12 @@ function disenablegroup() {
 }
 function groupmade() {}
 function additem() {
-	var itemname='item'+($(this).index()+1)
-	$(this).before('<div><span class="editable first" data-edittype="items" data-edittype2="name" data-oldvalue="'+itemname+'" contenteditable>'+itemname+'</span>: 0-<span class="editable" data-edittype="items"  data-edittype2="value" contenteditable>1</span><span class="deleteitem float-right"><i class="fa fa-trash"></i></span><div>')
-	$(this).prev().children(".editable").keydown(isEnter).on("blur",edited)
-	var task_id=$(this).closest("tr").data("task_id")
+	var add=$(this).parent()
+	var itemname=_('item')+(add.index()+1)
+	var div=add.parent()
+	add.before('<div><span class="editable first" data-edittype="items" data-edittype2="name" data-oldvalue="'+itemname+'" contenteditable>'+itemname+'</span>: 0-<span class="editable" data-edittype="items"  data-edittype2="value" contenteditable>1</span><span class="deleteitem float-right"><i class="fa fa-trash-alt"></i></span><div>')
+	add.prev().children(".editable").keydown(isEnter).on("blur",edited)
+	var task_id=add.closest("tr").data("task_id")
 	send("edited","wasedited",{task_id:task_id,edittype:"items",edittype2:"value",oldvalue:itemname,value:1},"backend")
 }
 function deleteitem() {
@@ -600,12 +661,18 @@ function deleteitem() {
 	$(this).parent().remove()
 }
 function revertgroup() {
-	send("revertgroup","groupmade",{member:$(this).data("taskContent").data("task_id")},"backend")
-	var t=$(this).data("taskContent")
+	var taskContent=$(this).data("taskContent")[0].outerHTML
+	var member=$(this).data("taskContent").data("task_id")
+	var test_id=$(this).closest(".testdiv").data("test_id")
 	$(this).remove()
-	$(t).appendTo($("#tasklist"))
+	send("revertgroup","groupreverted",{member:member,taskContent:taskContent,test_id:test_id},"backend")
+}
+function groupreverted(json) {
+	var elem=$(json.taskContent).removeClass("ui-draggable-disabled").data("group_id",null)
+	$("#tasklist"+json.test_id).append(elem)
 	disenablegroup()
 	maketasksactive()
+
 }
 function isEnter(e) {if((e.keyCode === 13)) $(this).blur();}
 function initselectable() {
@@ -811,12 +878,13 @@ function changePermissionsselect() {
 }
 function changePermissions() {
 	console.log($(this).prop("checked"))
-	send("changePermissions","permissionschanged",{user_id:$(this).closest("tr").data("user_id"),unittype:$(this).val(),given:$(this).prop("checked")},"backend")
-	var td=$(this).closest(".changePermissions")
-	td.click(changePermissionsselect)
-	var permissions=td.find("input").map(function() {if($(this).prop("checked")) return $(this).val()}).get().join(", ")
-	console.log(permissions)
-	td.html(permissions)
+	console.log({user_id:$(this).closest("tr").data("user_id"),unittype:$(this).val(),given:$(this).prop("checked")})
+	send("changePermissions","permissionschanged",{user_id:$(this).closest("tr").data("user_id"),unittype:$(this).val(),unit_id:$(this).closest(".changePermissions").data("unit_id"),given:$(this).prop("checked")},"backend")
+// 	var td=$(this).closest(".changePermissions")
+// 	td.click(changePermissionsselect)
+// 	var permissions=td.find("input").map(function() {if($(this).prop("checked")) return $(this).val()}).get().join(", ")
+// 	console.log(permissions)
+// 	td.html(permissions)
 }
 function permissionschanged() {
 	get_template("users",{},"gotusers")

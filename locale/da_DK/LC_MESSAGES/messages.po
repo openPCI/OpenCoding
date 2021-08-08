@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-08-04 00:39+0200\n"
-"PO-Revision-Date: 2021-08-04 00:40+0200\n"
+"POT-Creation-Date: 2021-08-05 10:27+0200\n"
+"PO-Revision-Date: 2021-08-05 10:27+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: da_DK\n"
@@ -22,7 +22,7 @@ msgstr ""
 msgid "Changed"
 msgstr "Ændret"
 
-#: backend/doDownload.php:51
+#: backend/doDownload.php:56
 msgid "opencoding"
 msgstr "opencoding"
 
@@ -34,7 +34,7 @@ msgstr "Response-id stemmer ikke overens."
 msgid "New task type"
 msgstr "Ny opgavetype"
 
-#: templates/tasktypes.php:11 templates/opencodingadmin.php:11
+#: templates/tasktypes.php:11 templates/opencodingadmin.php:12
 msgid "Task types"
 msgstr "Opgavetyper"
 
@@ -82,12 +82,12 @@ msgstr "Variable"
 msgid "Edit"
 msgstr "Rediger"
 
-#: templates/tasktypes.php:81 templates/users.php:84 templates/tests.php:115
+#: templates/tasktypes.php:81 templates/users.php:84 templates/tests.php:118
 #: templates/codingmanagement.php:129
 msgid "Close"
 msgstr "Luk"
 
-#: templates/tasktypes.php:82 templates/tests.php:116
+#: templates/tasktypes.php:82 templates/tests.php:119
 #: templates/codingmanagement.php:130 templates/autocoding.php:58
 msgid "Save"
 msgstr "Gem"
@@ -158,19 +158,23 @@ msgstr "Husk mig"
 msgid "Login"
 msgstr "Login"
 
-#: templates/projectadmin.php:11
+#: templates/projectadmin.php:8
+msgid "Project administration"
+msgstr "Projektadministration"
+
+#: templates/projectadmin.php:12
 msgid "Upload data"
 msgstr "Upload data"
 
-#: templates/projectadmin.php:12
+#: templates/projectadmin.php:13
 msgid "Administer Tests"
 msgstr "Administrer tests"
 
-#: templates/projectadmin.php:13 templates/opencodingadmin.php:12
+#: templates/projectadmin.php:14 templates/opencodingadmin.php:13
 msgid "Users"
 msgstr "Brugere"
 
-#: templates/projectadmin.php:14
+#: templates/projectadmin.php:15
 msgid "Download coded data"
 msgstr "Download kodet data"
 
@@ -241,7 +245,11 @@ msgstr "Inkluder kun besvarelser med testtid efter"
 msgid "Upload"
 msgstr "Upload"
 
-#: templates/opencodingadmin.php:13
+#: templates/opencodingadmin.php:8
+msgid "OpenCoding administration"
+msgstr "OpenCoding-administration"
+
+#: templates/opencodingadmin.php:14
 msgid "Projects"
 msgstr "Projekter"
 
@@ -257,7 +265,7 @@ msgstr "Denne besvarelse bruges ved kodertræning. Sværhedsgrad: "
 msgid "Mark response as used in coder training."
 msgstr "Marker besvarelsen til anvendelse i kodertræning."
 
-#: templates/coding.php:134
+#: templates/coding.php:140
 msgid ""
 "Use TAB and SHIFT+TAB to shift forward and back between item-codes. Use "
 "ARROWS to increase and decrease codes. Hit ENTER when in the last item-code "
@@ -267,15 +275,15 @@ msgstr ""
 "PILETASTER til at forøge og formindske koder. Tast ENTER når den sidste item-"
 "kode er angivet for at gå videre til næste besvarelse."
 
-#: templates/coding.php:146
+#: templates/coding.php:152
 msgid "Flagged by:"
 msgstr "Markeret til eftersyn af:"
 
-#: templates/coding.php:149
+#: templates/coding.php:155
 msgid "Add comment"
 msgstr "Tilføj bemærkning"
 
-#: templates/coding.php:156 templates/autocoding.php:59
+#: templates/coding.php:162 templates/autocoding.php:59
 msgid "Finish"
 msgstr "Afslut"
 
@@ -308,6 +316,10 @@ msgstr "Opgavevariable"
 msgid "Items"
 msgstr "Items"
 
+#: templates/tests.php:35
+msgid "Sort"
+msgstr "Sorter"
+
 #: templates/tests.php:36
 msgid "Coding rubrics"
 msgstr "Koderegler"
@@ -316,7 +328,7 @@ msgstr "Koderegler"
 msgid "Count"
 msgstr "Antal"
 
-#: templates/tests.php:103
+#: templates/tests.php:106
 msgid "Upload image"
 msgstr "Upload billede"
 
@@ -341,7 +353,7 @@ msgstr "Nyt projekt"
 msgid "OpenCoding Projects"
 msgstr "OpenCoding-projekter"
 
-#: templates/projects.php:24
+#: templates/projects.php:24 header.php:72
 msgid "Project"
 msgstr "Projekt"
 
@@ -393,11 +405,11 @@ msgstr "Kodere på projektet"
 msgid "Find coder"
 msgstr "Find koder"
 
-#: templates/autocoding.php:119
+#: templates/autocoding.php:125
 msgid "Statistics"
 msgstr "Statistik"
 
-#: templates/autocoding.php:120
+#: templates/autocoding.php:126
 msgid "Update"
 msgstr "Opdater"
 
@@ -443,27 +455,19 @@ msgstr "Menneskelig kodning af testbesvarelser"
 
 #: header.php:60
 msgid "Code"
-msgstr "Kodning"
+msgstr "Kod"
 
 #: header.php:63
-msgid "Training"
-msgstr "Træning"
+msgid "Train"
+msgstr "Træn"
 
-#: header.php:66
+#: header.php:67
 msgid "Manage"
 msgstr "Administration"
 
-#: header.php:70
-msgid "Coding Management"
-msgstr "Kodningsadministration"
-
-#: header.php:75
-msgid "Project Admin"
-msgstr "Projektadministration"
-
-#: header.php:80
-msgid "OpenCoding Admin"
-msgstr "OpenCoding-administration"
+#: header.php:77
+msgid "System"
+msgstr "System"
 
 #: dirs.php:8
 msgid "You don't have access here"
@@ -493,25 +497,34 @@ msgstr "Brugernavn eller kodeord var forkert"
 msgid "No username"
 msgstr "Ikke noget brugernavn"
 
-#: footer.php:15 footer.php:36
+#: footer.php:25 footer.php:48
 msgid "Cookies"
 msgstr "Cookies"
 
-#: footer.php:20
+#: footer.php:30
 msgid "My user"
 msgstr "Min bruger"
 
-#: footer.php:24
+#: footer.php:34
 msgid "Log out"
 msgstr "Log ud"
 
-#: footer.php:30
+#: footer.php:40
 msgid "Log in"
 msgstr "Log ind"
 
-#: footer.php:37
+#: footer.php:49
 msgid "Contact"
 msgstr "Kontakt"
+
+#~ msgid "Coding Management"
+#~ msgstr "Kodningsadministration"
+
+#~ msgid "Project Admin"
+#~ msgstr "Projektadministration"
+
+#~ msgid "OpenCoding Admin"
+#~ msgstr "OpenCoding-administration"
 
 #~ msgid "Remove"
 #~ msgstr "Fjern"

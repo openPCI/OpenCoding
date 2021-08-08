@@ -5,6 +5,7 @@ $res=array("log"=>"test");
 checkperm("projectadmin");
 
 ?>
+<h2><?= _("Project administration");?></h2>
 <div class="list-group list-group-flush">
 <?php
 $actions=array(

@@ -45,7 +45,12 @@
 	}
 
 }?>
-	<div class="col text-center d-none opencoding d-md-block small"><?=$_SESSION["project_name"];?></div>
+	<div class="col text-center d-none d-md-block opencoding">
+		<span class=""><?=$_SESSION["project_name"];?></span>
+		<?php if($_SESSION["projects"]) { ?>
+			<span class="small text-muted"><br><a class="text-secondary" href="./?p=chooseproject"><?= _('Change Project');?></a></span>
+		<?php } ?>
+	</div>
 	<div class="col col-md opencoding text-center align-left">
 		OpenCoding<span class="d-none d-md-block small">&#8211; <?=_('Human coding of test responses');?></span><span class="d-block" id="OpenCodingHeader"></span>
 	</div>
@@ -56,28 +61,26 @@
 	</div>
 	<div class="collapse navbar-collapse col-6 col-md-4 justify-content-end float-right" id="navbarToggler">
 			<ul class="navbar-nav">
+				<?php if($_SESSION["project_id"]) {?>
 				<li class="nav-item active d-flex justify-content-end">
 					<a class="nav-link menulink" href="./?p=mytasks"><?= _('Code');?></a>
 				</li>
 				<li class="nav-item active d-flex justify-content-end">
-					<a class="nav-link menulink" href="./?p=training"><?= _('Training');?></a>
+					<a class="nav-link menulink" href="./?p=training"><?= _('Train');?></a>
 				</li>
-<!--				<li class="nav-item active d-flex justify-content-end">
-					<a class="nav-link menulink" href="./?p=manage"><?= _('Manage');?></a>
-				</li>-->
-				<?php if($_SESSION["perms"]["codingadmin"][$_SESSION["project_id"]]) {?>
+				<?php } if($_SESSION["perms"]["codingadmin"][$_SESSION["project_id"]]) {?>
 				<li class="nav-item active d-flex justify-content-end">
-					<a class="nav-link menulink" href="./?p=codingmanagement"><?= _('Coding Management');?></a>
+					<a class="nav-link menulink" href="./?p=codingmanagement"><?= _('Manage');?></a>
 				</li>
 				<?php } 
 				if($_SESSION["perms"]["projectadmin"][$_SESSION["project_id"]]) { ?>
 				<li class="nav-item active d-flex justify-content-end">
-					<a class="nav-link menulink" href="./?p=projectadmin"><?= _('Project Admin');?></a>
+					<a class="nav-link menulink" href="./?p=projectadmin"><?= _('Project');?></a>
 				</li>
 				<?php }
 				if($_SESSION["perms"]["opencodingadmin"][0]) { ?>
 				<li class="nav-item active d-flex justify-content-end">
-					<a class="nav-link menulink" href="./?p=opencodingadmin"><?= _('OpenCoding Admin');?></a>
+					<a class="nav-link menulink" href="./?p=opencodingadmin"><?= _('System');?></a>
 				</li>
 				<?php } ?>
 			</ul>

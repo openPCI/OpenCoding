@@ -28,7 +28,7 @@
     padding-right:0;
 }
 .site-footer {
-	background-color:#00aff0;
+	background-color:#f8f9fa;
 }
 /* Bootstrap Toggle v2.2.2 corrections for Bootsrtap 4*/
 .toggle-off {
@@ -50,6 +50,12 @@
 	cursor:pointer;
 }
 
+.flag-img {
+	width:20px;
+	height:20px;
+	margin-right: 14px;
+	margin-bottom: 3px;
+}
 
 #playarea {
 /* width:800px; */
