@@ -9,9 +9,9 @@ $result=$mysqli->query($q);
 ?>
 <button class="btn btn-primary float-right" id="newtasktype"><?= _("New task type");?></button>
 <h1><?= _("Task types");?></h1>
-<table class="table" id="edittable" data-edittable="tasktypes">
-	<thead>
-		<tr>
+<table class="table sticky-column" id="edittable" data-edittable="tasktypes">
+	<thead class="sticky-top">
+		<tr class="table-light">
 		<th scope="col"><?= _("Name");?></th>
 		<th scope="col"><?= _("Manual/auto coding");?></th>
 		<th scope="col"><?= _("Description");?></th>
@@ -28,7 +28,7 @@ $result=$mysqli->query($q);
 <?php
 	while($r=$result->fetch_assoc()) {
 	?>
-		<tr data-tasktype_id="<?= $r["tasktype_id"];?>" >
+		<tr class="table-light" data-tasktype_id="<?= $r["tasktype_id"];?>" >
 			<th scope="row" class="editable" data-edittype="tasktype_name" contenteditable><?= $r["tasktype_name"];?></th>
 			<td class="manualautotoggle" data-manualauto="<?= $r["manualauto"];?>"><?= _($r["manualauto"]);?></td>
 			<td class="editable" data-edittype="tasktype_description" contenteditable><?= $r["tasktype_description"];?></td>

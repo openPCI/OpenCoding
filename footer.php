@@ -68,7 +68,7 @@
 <script src="./js/daterangepicker.js"></script>
 <script src="./js/md5.min.js"></script>
 
-<script src="js/opencoding.js"></script>
+<script src="js/opencoding.js?<?=$v;?>"></script>
 <script src="js/bootstrap-toggle.min.js"></script>
 <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.1.0/highlight.min.js"></script>
 

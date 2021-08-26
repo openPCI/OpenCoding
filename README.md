@@ -1,5 +1,5 @@
 # OpenCoding
-Human coding of test taker responses to PCI and QTI items. Still work-in-progress. But does the basic tasks of importing responses, managing coders, traing, coding, flagging and handling flags, double coding, autocoding etc.
+Human coding of test taker responses to PCI and QTI items. Importing responses, creating task types, managing projects, coders, traning, coding, flagging and handling flags, double coding, autocoding etc. Fully localizable.
 
 Integrates PCI's in the coding application.
 

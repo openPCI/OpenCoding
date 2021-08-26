@@ -2,17 +2,16 @@
 // $relative="../";
 // include($relative."dirs.php");
 $res=array("log"=>"test");
-checkperm("projectadmin");
+checkperm("codingadmin");
 
 ?>
-<h2><?= _("Project administration");?></h2>
+<h2><?= _("Management");?></h2>
 <div class="list-group list-group-flush">
 <?php
 $actions=array(
 // "upload"=>_("Upload data"),
-"tests"=>_("Administer Tests"),
-"users"=>_("Users"),
-"download"=>_("Download coded data")
+"codingmanagement"=>_("Coding management"),
+"codermanagement"=>_("Coder management")
 );
 $res["links"]=array_keys($actions);
 foreach($actions as $action=>$name) {

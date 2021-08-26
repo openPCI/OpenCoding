@@ -8,12 +8,9 @@ include_once($relative."dirs.php");
 include_once($shareddir."database.php");
 checkperm("codingadmin");
 
- if($_SESSION["response_id"]!=$_POST["response_id"]) $warning=_("Response-id doesn't match.");
- else {
-	if($_POST["status"]=="istrainingresponse") $q='insert into trainingresponses (response_id,difficulty,manager_id) VALUE ('.$_POST["response_id"].','.$_POST["difficulty"].','.$_SESSION["user_id"].')';
+	if($_POST["status"]=="istrainingresponse") $q='insert into trainingresponses (response_id,difficulty,manager_id) VALUE ('.$_POST["response_id"].','.$_POST["difficulty"].','.$_SESSION["user_id"].') on duplicate key update difficulty=values(difficulty)';
 	else $q='delete from trainingresponses where response_id='.$_POST["response_id"];
-if(!$mysqli->query($q)) $res["warning"]=$mysqli->error;
- }
+	if(!$mysqli->query($q)) $res["warning"]=$mysqli->error;
 $log.="\n".$q;
 $res["log"]=$log;
 $res["warning"]=$warning;

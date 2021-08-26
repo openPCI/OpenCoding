@@ -6,12 +6,16 @@ include_once($shareddir."database.php");
 // $log.=print_r($_POST,true);
 // $log.=print_r($_SESSION,true);
 $res=array();
-if($_POST["task_id"]) {
+$codingadmin=$_SESSION["perms"]["codingadmin"][$_SESSION["project_id"]];
+$task_id=$_POST["task_id"];
+$finish=($_POST["next"]=="finish");
+if($task_id) {
 	$flaghandling=($_POST["flaghandling"]=="true");
 	$training=($_POST["training"]=="true");
 	if($_POST["codes"]) {
-		if($_SESSION["response_id"]!=$_POST["response_id"]) $warning=_("Response-id is not correct: ".$_SESSION["response_id"]." and ".$_POST["response_id"]);
-		elseif($training) {
+// 		if($_SESSION["response_id"]!=$_POST["response_id"]) $warning=_("Response-id is not correct: ".$_SESSION["response_id"]." and ".$_POST["response_id"]);
+// 		else
+		if($training) {
 			$q="select codes from coded c left join trainingresponses tr on tr.response_id=c.response_id and c.coder_id=tr.manager_id where tr.response_id=".$_POST["response_id"];
 			$result=$mysqli->query($q);
 			if($result->num_rows) {
@@ -30,17 +34,28 @@ if($_POST["task_id"]) {
 			if($hasminus) $warning=_("You need to set the flag to send negative values.");
 			else {
 				$codes=json_encode($_POST["codes"]);
-				if($flaghandling) $q="update coded set codes=CAST('".$codes."' as JSON) where coder_id=".$_SESSION["coder_id"];
-				else $q="insert into coded (response_id,coder_id,codes,isdoublecode) value (".$_POST["response_id"].",".$_SESSION["user_id"].",CAST('".$codes."' as JSON),".($_SESSION["isdoublecode"]?1:0).") on duplicate key update codes=CAST('".$codes."' as JSON)";
+				if($flaghandling) $q="update coded set codes=CAST('".$codes."' as JSON) where response_id=".$_POST["response_id"]." and coder_id=".$_SESSION["coder_id"];
+				else $q="insert into coded (response_id,coder_id,codes,isdoublecode) value (".$_POST["response_id"].",".$_SESSION["user_id"].",CAST('".$codes."' as JSON),".($_SESSION["isdoublecode"]?1:0).") on duplicate key update codes=values(codes), code_id=LAST_INSERT_ID(code_id)";
 				$mysqli->query($q);
+				if(!$flaghandling) $_SESSION["code_id"]=$mysqli->insert_id;
 				$log.=$q;
 			}
 		}
 	}
-	if(!$warning and $_POST["next"]!="finish") {
+	$revise=($_POST["revise"]=="true" or $_POST["next"]=="<" or ($_SESSION["stoprevision"] and $_SESSION["stoprevision"]>$_SESSION["code_id"]));
+	if(!$revise and $_SESSION["stoprevision"]>0 and $_POST["next"]!="<" and $_SESSION["response_id"][$task_id]!=$_POST["response_id"]) { 
+			$_POST["next"]=$_SESSION["response_id"][$task_id];
+			$_SESSION["response_id"][$task_id]=0;
+			$directtonew=true;
+	}
+	$_SESSION["stoprevision"]=(($revise and $_POST["revise"]!="true")?max($_SESSION["stoprevision"],$_SESSION["code_id"]):0);
+
+// 	if(!$training and $_POST["next"]!="<" and $_SESSION["stoprevision"]>0 and $_SESSION["stoprevision"]==$_SESSION["code_id"]) {
+// 		$revise=$_SESSION["stoprevision"]=0;
+// 	}
+	if(!$warning and !$finish) {
 		$success=false;
 		$tries=0;
-		$revise=($_POST["codetype"]=="revise");
 		while(!$success and $tries<2) {
 			$dodouble=(!$revise and $_SESSION["doublecodingpct"]>0 and $tries==0 and !$training and !$flaghandling and rand(1,round(100/$_SESSION["doublecodingpct"]))==1);
 			$tries++;
@@ -48,38 +63,66 @@ if($_POST["task_id"]) {
 			else {
 				$res["dodouble"]=true;
 			}
+			$justcoding=(!$training and !$flaghandling and !$revise);
+			$direct=($_POST["next"]>0);
 			$_SESSION["isdoublecode"]=($dodouble?1:0);
 			$q='select task_name,r.task_id,response,testtaker,response_time,r.response_id'.
 			($training?'':($dodouble?'':',codes').',flagstatus').
 			($flaghandling?',f.coder_id,flag_id':'').
-			(($_SESSION["codingadmin"] or $training)?',difficulty':'').' 
+			(($codingadmin or $training)?',difficulty':'').' 
 				from responses r 
-				'.(($_SESSION["codingadmin"] or $training)?'left join trainingresponses tr on tr.response_id=r.response_id':'').' 
-				'.
+				'.(($codingadmin or $training or $justcoding)?'left join trainingresponses tr on tr.response_id=r.response_id':'').
 				($training?'
-				left join tasks t on r.task_id=t.task_id 
-				where difficulty'
+					left join tasks t on r.task_id=t.task_id 
+					where '.(!$direct?' difficulty':' 1')
 				:'
-				left join tasks t on r.task_id=t.task_id 
-				left join coded c on r.response_id=c.response_id 
-				left join flags f on f.response_id=r.response_id '.($_SESSION["codingadmin"]?'and f.coder_id=c.coder_id':'').
-				($flaghandling?'
-				where f.flag_id'
-				:'
-				where '.($dodouble?'(c.coder_id!='.$_SESSION["user_id"].' and c.coder_id IS NOT NULL) and ':($revise?'c.coder_id='.$_SESSION["user_id"]:'(c.coder_id='.$_SESSION["user_id"].' or c.coder_id IS NULL) and ')).'
-				r.response_id'))
-				.($_POST["next"]?(is_numeric($_POST["next"])?"=".$_POST["next"]:$_POST["next"].($training?"=":"").$_SESSION[$flaghandling?"flag_id":($training?"difficulty":"response_id")]):($_POST["response_id"]?"=".$_POST["response_id"]:(($_SESSION["response_id"] and $_SESSION["activetask"]==$_POST["task_id"])?">".$_SESSION["response_id"]:">0"))).
-				(($training and !is_numeric($_POST["next"]))?' and r.response_id!='.$_SESSION["response_id"].' and (difficulty>'.$_SESSION["difficulty"].' or r.response_id>'.$_SESSION["response_id"].')':'').'
+					left join tasks t on r.task_id=t.task_id 
+					left join flags f on f.response_id=r.response_id 
+					'.($codingadmin?'left join coded c on f.response_id=c.response_id ':'left join coded c on r.response_id=c.response_id ').
+					($flaghandling?'
+						where flagstatus="'.$_POST["flagstatus"].'"'.(!$direct?' and f.flag_id':'')
+					:'
+						where '.
+						($dodouble?
+							'(c.coder_id!='.$_SESSION["user_id"].' and c.coder_id IS NOT NULL) '
+						:
+							((!$directtonew and ($revise or $direct))?
+								'c.coder_id='.$_SESSION["user_id"].(!$direct?' and code_id ':'')
+							:
+								'c.coder_id IS NULL and tr.response_id is NULL ')
+						)
+					)
+				)
+				.(($_POST["next"] and (!$justcoding or $_POST["next"]!=">"))?
+					(is_numeric($_POST["next"])?
+						" and r.response_id=".$_POST["next"]
+					:
+						$_POST["next"].(($training or ($revise and !$_POST["codes"]))?"=":"").$_SESSION[$flaghandling?"flag_id":($training?"difficulty":"code_id")]
+					)
+				:
+					($flaghandling?'>0':'')
+// 					($_POST["response_id"]?
+// 						"=".$_POST["response_id"]
+// 					:
+// 						(($_SESSION["response_id"] and $_SESSION["activetask"]==$task_id)?">".$_SESSION["response_id"]:">0")
+// 					)
+				).
+				(($training and !$direct)?
+					' and r.response_id!='.$_POST["response_id"].(!$revise?' and (difficulty>'.$_SESSION["difficulty"].' or r.response_id>'.$_POST["response_id"].')':'')
+				:
+					''
+				).'
 				and 
-				r.task_id='.$_POST["task_id"].' 
-				order by '.($training?'difficulty,r.response_id':($flaghandling?'flag_id':'r.response_id')).' '.($_POST["next"]=="<"?"DESC":"").' limit 1';
+				r.task_id='.$task_id.' 
+				order by '.($training?'difficulty':($flaghandling?'flag_id':($revise?'code_id':'RAND()'))).($_POST["next"]=="<"?' DESC':' ASC').'
+				limit 1';
 		$log.=$q;
 			$result=$mysqli->query($q);
 			$success=($result->num_rows>0);
 		}
 		if($success) {
 			$r=$result->fetch_assoc();
-			$_SESSION["response_id"]=$r["response_id"];
+			if(!$revise) $_SESSION["response_id"][$task_id]=$r["response_id"];
 			if($flaghandling) {
 				$_SESSION["coder_id"]=$r["coder_id"];
 				$_SESSION["flag_id"]=$r["flag_id"];
@@ -87,7 +130,6 @@ if($_POST["task_id"]) {
 			if($training) {
 				$_SESSION["difficulty"]=$r["difficulty"];
 			}
-			$_SESSION["activetask"]=$_POST["task_id"];
 			$codes=($r["codes"]?json_decode($r["codes"]):(($training and $_SESSION["training"][$r["response_id"]]["codes"])?$_SESSION["training"][$r["response_id"]]["codes"]:array()));
 			
 			if($_POST["subtask_ids"]) {
@@ -102,10 +144,11 @@ if($_POST["task_id"]) {
 			
 		} else {
 			$warning=_("No more responses");
+			$finish=true;
 			unset($_SESSION["response_id"]);
 		}
 	} 
-	if($warning or $_POST["next"]=="finish") $res["returnto"]=($training?"training":($flaghandling?"codingmanagement":"mytasks"));
+	if($finish) $res["returnto"]=($training?"training":($flaghandling?"codingmanagement":"mytasks"));
 
 }
 $res["log"]=$log;

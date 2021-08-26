@@ -7,21 +7,21 @@ include_once($shareddir."database.php");
 
 $codingadmin=$_SESSION["perms"]["codingadmin"][$_SESSION["project_id"]];
 
-$q="select (select doublecodingpct from projects where project_id=".$_SESSION["project_id"].") as doublecodingpct, count(*) as numresponses,sum(isdoublecode) as numdoublecoded,sum(if(c.response_id IS NOT NULL and c.isdoublecode=0,1,0)) as numcoded from responses r left join coded c on r.response_id=c.response_id where r.task_id=".$_POST["task_id"];
+if($_POST["codetype"]=="code") {
+	$q="select (select doublecodingpct from projects where project_id=".$_SESSION["project_id"].") as doublecodingpct, count(*) as numresponses,sum(isdoublecode) as numdoublecoded,sum(if(c.response_id IS NOT NULL and c.isdoublecode=0,1,0)) as numcoded from responses r left join coded c on r.response_id=c.response_id where r.task_id=".$_POST["task_id"];
 
-// echo $q;
-if(!$result=$mysqli->query($q)) echo $mysqli->error;
-else $r=$result->fetch_assoc();
-//reviseddoublecodedpct=number of responses to doublecoding 
-$numbertodoublecode=$r["numresponses"]*$r["doublecodingpct"]/100;
-$remainingtodoublecode=$numbertodoublecode-$r["numdoublecoded"];
-$remaining=$r["numresponses"]-$r["numcoded"];
-$reviseddoublecodedpct=($remaining>0?$remainingtodoublecode/$remaining*100:0);
-$_SESSION["doublecodingpct"]=$reviseddoublecodedpct;
-
+	// echo $q;
+	if(!$result=$mysqli->query($q)) echo $mysqli->error;
+	else $r=$result->fetch_assoc();
+	//reviseddoublecodedpct=number of responses to doublecoding 
+	$numbertodoublecode=$r["numresponses"]*$r["doublecodingpct"]/100;
+	$remainingtodoublecode=$numbertodoublecode-$r["numdoublecoded"];
+	$remaining=$r["numresponses"]-$r["numcoded"];
+	$reviseddoublecodedpct=($remaining>0?$remainingtodoublecode/$remaining*100:0);
+	$_SESSION["doublecodingpct"]=$reviseddoublecodedpct;
+}
 // echo "revised: " .$reviseddoublecodedpct;
 
-if($_POST["maxcodedresponse_id"]) $_SESSION["response_id"]=$_POST["maxcodedresponse_id"];
 $q="select tt.* from tasks t left join tasktypes tt on t.tasktype_id=tt.tasktype_id where task_id=".$_POST["task_id"];
 $result=$mysqli->query($q);
 $tasktype=$result->fetch_assoc();
@@ -34,7 +34,7 @@ $loader = new \Twig\Loader\ArrayLoader([
 ]);
 $twig = new \Twig\Environment($loader);
 
-$q="select * from tasks t where task_id=".$_POST["task_id"]." or group_id=".$_POST["task_id"]." order by group_id";
+$q="select * from tasks t where task_id=".$_POST["task_id"]." or group_id=".$_POST["task_id"]." order by group_id ASC, task_id ASC";
 $result=$mysqli->query($q);
 $task=$result->fetch_assoc();
 $tasksettings=json_decode($task["tasksettings"]);
@@ -54,8 +54,9 @@ if($_POST["special"]) {
 ?><input type="hidden" id="<?= $_POST["special"];?>" value="true"><?php
 	$res[$_POST["special"]]=true;
 }
+if($_POST["flagstatus"]) { ?><input type="hidden" id="flagstatus" value="<?= $_POST["flagstatus"];?>"><?php }
 	
-if($_POST["first_id"]) $res["first_id"]=$_POST["first_id"];
+// if($_POST["first_id"]) $res["first_id"]=$_POST["first_id"];
 ?>
 <script>
 window.addEventListener('message', function(event){
@@ -116,7 +117,7 @@ function insertResponse(json) {
 		<div class="col" id="codeTable">
 			<div class="row">
 				<div class="col">
-					<span class="float-right text-muted" data-toggle="collapse" data-target="#flagcommentsdiv" id="flag" title="<?= _("Flag response.");?>"><i class="fas fa-flag"></i></span>
+					<span class="float-right text-muted" id="flag" title="<?= _("Flag response.");?>"><i class="fas fa-flag"></i></span>
 					<?php if($codingadmin) {?><span class="float-right text-muted mr-2" data-toggle="tooltip" data-placement="top" id="trainingresponse" data-used="<?= _("This response is used in coder training. Difficulty: ");?>" data-notused="<?= _("Mark response as used in coder training.");?>" title=""><i class="fas fa-check-double"></i></span><?php } ?>
 
 					<?php 
@@ -148,7 +149,12 @@ function insertResponse(json) {
 				<div class="col text-center">
 					<button class="btn btn-primary nextresponse" data-next="&gt;">&gt;</button>
 				</div>
-				<div class="col-6">
+				<?php if(count($itemorder)>1) { ?>
+					<div class="col text-center">
+						<button class="btn btn-secondary nextresponse" data-code0="true" data-next="code0"><?= _("Code all 0");?></button>
+					</div>
+				<?php } ?>
+				<div class="col-4">
 					<button class="btn btn-secondary nextresponse float-right" data-next="finish"><?= _("Finish");?></button>
 				</div>
 			</div>

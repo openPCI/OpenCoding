@@ -19,4 +19,5 @@ include_once($shareddir."templates.php");
 ?>
 </div>
 <?php
+//   print_r(ini_get_all());
 include_once("footer.php");

@@ -6,37 +6,38 @@ include_once($shareddir."database.php");
 $q="select * from tests where project_id=".$_SESSION["project_id"];
 $result=$mysqli->query($q);
 	?>
+<div class="row"><div class="col"><button class="btn btn-secondary " data-target=".collapse" data-toggle="collapse"><?= _("Collapse all"); ?></button></div><div class="col"><button class="btn btn-primary float-right" id="newtest"><?= _("New test"); ?></button></div></div>
 <div class="" id="accordion">
 <?php 
-if($result->num_rows==0) echo _("You don't have any tests in this project. Upload data to create tests.");
-else {
+if($result->num_rows>0) {
 	while($r=$result->fetch_assoc()) {
 		?>
 	<div class="card">
 		<div class="card-header" >
-		<h2 class="mb-0 float-left test_name" data-test_id="<?= $r["test_id"];?>">
+		<h2 class="mb-0 float-left test_name" data-test_id="<?= $r["test_id"];?>" data-test_name="<?= htmlentities($r["test_name"]);?>">
 			<button class="btn btn-link btn-block text-left" type="button" data-toggle="collapse" data-target="#test<?= $r["test_id"];?>" aria-expanded="true" aria-controls="collapseOne">
 			<?= $r["test_name"];?>
 			</button>
 		</h2>
 		<span class="deletetest text-danger float-right ml-2" title="<?= _("Delete test");?>"><i class="fa fa-trash-alt"></i></span>
-		<span class="edittest float-right"><i class="fas fa-edit"></i></span>
+		<span class="edittest float-right ml-2"><i class="fas fa-edit"></i></span>
+		<span class="uploadresponses float-right" title="<?= _("Upload responses");?>"><i class="fas fa-file-upload"></i></i></span>
 		</div>
 
 		<div id="test<?= $r["test_id"];?>" data-test_id="<?= $r["test_id"];?>" class="collapse show testdiv" aria-labelledby="test_name<?= $r["test_id"];?>" data-parent="#accordion">
 			<div class="card-body">
-				<table class="table">
-					<thead>
-						<tr>
-						<th scope="col"><?= _("Task name");?></th>
-						<th scope="col"><?= _("Task description");?></th>
-						<th scope="col"><?= _("Task image");?></th>
-						<th scope="col"><?= _("Task type");?></th>
-						<th scope="col"><?= _("Task variables");?></th>
-						<th scope="col"><?= _("Items");?> <span class="itemsort" title="<?= _("Sort");?>"><i class="fas fa-random"></i></span></th>
-						<th scope="col"><?= _("Coding rubrics");?></th>
-						<th scope="col"><?= _("Count");?></th>
-						<th scope="col"><?= _("Action");?></th>
+				<table class="table sticky-column">
+					<thead class="sticky-top">
+						<tr class="table-light">
+							<th scope="col"><?= _("Task name");?></th>
+							<th scope="col"><?= _("Task description");?></th>
+							<th scope="col"><?= _("Task image");?></th>
+							<th scope="col"><?= _("Task type");?></th>
+							<th scope="col"><?= _("Task variables");?></th>
+							<th scope="col"><?= _("Items");?></th>
+							<th scope="col"><?= _("Coding rubrics");?></th>
+							<th scope="col"><?= _("Count");?></th>
+							<th scope="col"><?= _("Action");?></th>
 						</tr>
 					</thead>
 					<tbody id="tasklist<?= $r["test_id"];?>">
@@ -68,7 +69,7 @@ else {
 						}
 						?>
 						</td>
-						<td><div class="itemsdiv"><?php
+						<td><div><span class="itemsort" title="<?= _("Sort");?>"><i class="fas fa-random"></i></span></div><div class="itemsdiv"><?php
 						$itemobj=json_decode($r1["items"],true); 
 						$items=$itemobj["items"];
 						$itemorder=$itemobj["order"]?$itemobj["order"]:array();
@@ -85,7 +86,10 @@ else {
 						?><div><div class="additem"><i class="fas fa-plus"></i></div></td>
 						<td class="htmleditable"><div  class="htmleditablediv" id="rubrics_<?= $r1["task_id"];?>" data-edittype="coding_rubrics"><?= $r1["coding_rubrics"];?></div></td>
 						<td><?= $r1["rcount"];?></td>
-						<td><span class="deletetask text-warning float-right ml-2" title="<?= _("Delete task");?>"><i class="fa fa-trash-alt"></i></span></td>
+						<td>
+							<span class="deletetask text-warning float-right ml-2" title="<?= _("Delete task");?>"><i class="fa fa-trash-alt"></i></span>
+							<span class="movetask text-primary float-right ml-2" title="<?= _("Move task");?>"><i class="fas fa-random"></i></span>
+						</td>
 						</tr>
 					
 					<?php
@@ -133,6 +137,18 @@ else {
 			while($r1=$result1->fetch_assoc()) {
 			?>
 			<option value="<?= $r1["tasktype_id"]; ?>"><?= $r1["tasktype_name"]; ?></option>
+			<?php
+			}
+			?>
+	</select>
+	<select class="custom-select" id="tests">
+		<option><?= _("Move to");?></option>
+	<?php
+		$q="select * from tests where project_id=".$_SESSION["project_id"];
+			$result1=$mysqli->query($q);
+			while($r1=$result1->fetch_assoc()) {
+			?>
+			<option value="<?= $r1["test_id"]; ?>"><?= $r1["test_name"]; ?></option>
 			<?php
 			}
 			?>

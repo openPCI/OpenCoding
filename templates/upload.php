@@ -1,17 +1,16 @@
 <?php
 # Maximum number of cases to import
-$newmax_input_vars=100000;
-ini_set("max_input_vars",$newmax_input_vars);
-$max_input_vars=ini_get("max_input_vars");
-if($newmax_input_vars!=$max_input_vars) echo ('<div class="alert alert-danger" role="alert">'.sprintf(_("Your server limits the number of cases to be uploaded to %d. You can change that in the php-ini-file on the server. Or keep the number of cases down in each upload."),$max_input_vars).'</div>');
+// $newmax_input_vars=100000;
+// ini_set("max_input_vars",$newmax_input_vars);
+// $max_input_vars=ini_get("max_input_vars");
+// if($newmax_input_vars!=$max_input_vars) echo ('<div class="alert alert-danger" role="alert">'.sprintf(_("Your server limits the number of cases to be uploaded to %d (max_input_vars). You can change that in the php-ini-file on the server (/etc/php/7.X/apache2/php.ini). Or keep the number of cases down in each upload."),$max_input_vars).'</div>');
 
 checkperm("projectadmin");
 ?>
 <form>
 	<div class="form-group">
-		<label for="test_name"><?= _("Test name");?></label>
-		<input type="text" class="form-control" id="test_name" aria-describedby="test_namehelp">
-		<small id="test_namehelp" class="form-text text-muted"><?= _("Use a unique name for the test. If an existing name in this project is used, the tasks will be part of the existing test.");?></small>
+		<label for="test_name"><?= sprintf(_("Upload to: %s"),$_POST["test_name"]);?></label>
+		<input type="hidden" id="test_id" value="<?= $_POST["test_id"];?>">
 	</div>
   
 	<div class="form-group">

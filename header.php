@@ -1,3 +1,4 @@
+<?php $v=0.1;?>
 <!DOCTYPE html>
 <html lang="<?= $locale; ?>">
   <head>
@@ -24,7 +25,7 @@
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
 <!-- 	 <script defer src="./js/fontawesome-all.min.js"></script> -->
     <!-- styles for OpenCoding -->
-    <link rel="stylesheet" href="css/opencoding.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/opencoding.css?<?=$v;?>" rel="stylesheet">
   </head>
 
   <body>
@@ -70,7 +71,7 @@
 				</li>
 				<?php } if($_SESSION["perms"]["codingadmin"][$_SESSION["project_id"]]) {?>
 				<li class="nav-item active d-flex justify-content-end">
-					<a class="nav-link menulink" href="./?p=codingmanagement"><?= _('Manage');?></a>
+					<a class="nav-link menulink" href="./?p=management"><?= _('Manage');?></a>
 				</li>
 				<?php } 
 				if($_SESSION["perms"]["projectadmin"][$_SESSION["project_id"]]) { ?>

@@ -74,6 +74,7 @@ function get_template(template,data,f) {
 			} else {
 				json.contentdiv=data.contentdiv
 				insertTemplate(json)
+				if(typeof(f)=="undefined" && typeof(window["got"+template.replace(/^get/,"")])!="undefined") f="got"+template.replace(/^get/,"")
 				if(typeof(f)!="undefined")
 					window[f](json)
 			}
@@ -112,10 +113,7 @@ function afterRender(json) {
 		case "training":
 			codeTask("training")
 			break
-		case "codingmanagement":
-			codeTask("flaghandling")
-			gotcodingmanagement(json)
-		break;
+		case "management":
 		case "projectadmin":
 		case "opencodingadmin":
 			if(json.links) {
@@ -229,8 +227,9 @@ function gottasktypecontent(json) {
 function codeTask(special="") {
 	$(".docode").click(function () {
 		var codetype=$(this).data("codetype")
-		var auto=(codetype=="auto"?"auto":"")
-		get_template(auto+"coding",{task_id:$(this).closest("tr").data("task_id"),maxcodedresponse_id:$(this).closest("tr").data("maxcodedresponse_id"),special:special,codetype:codetype,first_id:$(this).closest("tr").data("first_id")},"got"+auto+"coding")
+		if(codetype=="revise") special="revise"
+		var auto=(codetype=="autocode"?"auto":"")
+		get_template(auto+"coding",{task_id:$(this).closest("tr").data("task_id"),special:special,codetype:codetype,flagstatus:$(this).data("flagstatus")},"got"+auto+"coding")
 	});
 }
 function gotautocoding(json) {
@@ -291,8 +290,8 @@ function gotcoding(json) {
 	$("#trainingresponse").click(trainingresponse)
 	$(".itemvalue").focus(function() {if($(this).val()=="") $(this).val("0")});
 	$(".nextresponse").click(function() { getresponse($(this).data("next"))})
-	$("#response_id").dblclick(function() {$(this).prop("readonly",false)}).change(function() { getresponse(0)})
-	getresponse(typeof (json.first_id)=="undefined"?0:parseInt(json.first_id))
+	$("#response_id").dblclick(function() {$(this).prop("readonly",false)}).change(function() { getresponse($(this).val())})
+	getresponse()
 }
 function trainingresponse() {
 	$("#trainingresponse").toggleClass("text-primary text-muted")
@@ -318,13 +317,16 @@ function trainingresponsedone() {
 function toggleFlag() {
 	$("#flag").toggleClass("text-danger text-muted")
 	var status=($("#flag").hasClass("text-danger")?"flagged":"resolved")
+	var flaghandling=($("#flaghandling").val()=="true")
+	if(!flaghandling)
+		$("#flagcommentsdiv").collapse(($("#flag").hasClass("text-danger")?"show":"hide"))
 	if(status=="flagged") {
 		$("#flag").attr("title",_("Mark flag resolved."))
 		getcommenthistory()
+		$("#flagcomment").prop("disabled",false)
 	} else {
 		$("#flag").attr("title",_("Flag response."))
 	}
-	var flaghandling=($("#flaghandling").val()=="true")
 	send("flag","flagdone",{actiontype:"flag",status:status,response_id:$("#response_id").val(),flaghandling:flaghandling},"frontend")
 }
 function sendcomment() {
@@ -337,7 +339,7 @@ function commentdone() {
 }
 function getcommenthistory() {
 	var flaghandling=($("#flaghandling").val()=="true")
-	get_template("flagcommentshistory",{contentdiv:"flagcommentshistory",flaghandling:flaghandling},"gotflagcommentshistory")
+	get_template("flagcommentshistory",{contentdiv:"flagcommentshistory",response_id:$("#response_id").val(),flaghandling:flaghandling},"gotflagcommentshistory")
 }
 function gotflagcommentshistory(json) {
 	$("#flaggedby").html(json.flaggedby)
@@ -350,6 +352,10 @@ function getresponse(next) {
 	var nocodes=false
 	var flagged=$("#flag").hasClass("text-danger")
 	if(typeof next=="string") {
+		if(next=="code0") {
+			$('.itemvalue').val(0)
+			next=">"
+		}
 		var empty=$('.itemvalue').filter(function(x) {return $(this).val().trim()==""})
 		if(empty.length > 0) {
 			if (flagged) empty.each(function() {$(this).val(-1);})
@@ -371,8 +377,10 @@ function getresponse(next) {
 	}
 	if(go) {
 		var flaghandling=($("#flaghandling").val()=="true")
+		var flagstatus=($("#flagstatus").val())
 		var training=($("#training").val()=="true")
-		send("getresponse","gotresponse",{next:next,task_id:$("#playarea").data("task_id"),response_id:$("#response_id").val(),subtask_ids:$("#playarea").data("subtask_ids"),codes:codes,flagged:flagged,training:training,flaghandling:flaghandling})
+		var revise=($("#revise").val()=="true")
+		send("getresponse","gotresponse",{next:next,task_id:$("#playarea").data("task_id"),response_id:$("#response_id").val(),subtask_ids:$("#playarea").data("subtask_ids"),codes:codes,flagged:flagged,training:training,revise:revise,flaghandling:flaghandling,flagstatus:flagstatus})
 	}
 }
 function gotresponse(json) {
@@ -398,18 +406,24 @@ function gotresponse(json) {
 		} else $('.itemvalue').removeClass("bg-success bg-warning")
 		$(".itemvalue").first().focus()
 		$(".itemvalue").keydown(function(e)  {if(e.keyCode==13) {getresponse(">"); e.stopPropagation()}})
+		var showhide="hide"
 		if(json.flagstatus=="flagged") {
 			getcommenthistory()
 			$("#flag").removeClass("text-muted").addClass("text-danger")
 			var showhide="show"
 		} else {
+			if($("#flaghandling").val()=="true") {
+				getcommenthistory()
+				showhide="show"
+				$("#flagcomment").prop("disabled",true)
+			} 
 			$("#flag").removeClass("text-danger").addClass("text-muted")
-			var showhide="hide"
 		}
 		$("#flagcommentsdiv").collapse(showhide)
 		if(json.trainingresponse>0 && $("#trainingresponse").hasClass("text-muted") || json.trainingresponse==0 && $("#trainingresponse").hasClass("text-primary")) {
 			$("#trainingresponse").toggleClass("text-primary text-muted")
 		}
+		console.log(json.trainingresponse)
 		$("#trainingresponse").attr("title",$("#trainingresponse").hasClass("text-primary")?$("#trainingresponse").data("used")+json.trainingresponse:$("#trainingresponse").data("notused"))
 	
 	}
@@ -519,6 +533,11 @@ function projectedited() {
 	get_template("projects",{},"gotprojects");
 }
 function gottests() {
+	$("#newtest").click(function() {
+		var test_name=window.prompt(_("Name of the new test?"))
+		send("newtest","testedited",{test_name:test_name},"backend")
+	})
+	$(".uploadresponses").click(function() {get_template("upload",{test_id:$(this).siblings(".test_name").data("test_id"),test_name:$(this).siblings(".test_name").data("test_name"),},"gotupload")})
 	$(".edittest").click(function() {
 		var div=$(this).siblings(".test_name")
 		var newtestname=window.prompt(_("Enter new name of test"),div.text().trim())	
@@ -546,7 +565,7 @@ function maketasksactive() {
 	$(".itemsort").unbind("click").click(function() {
 		var active=$( ".itemsdiv" ).sortable( "option", "disabled" )
 		$(".itemsdiv").sortable(active?"enable":"disable")
-		$(this).toggleClass("text-success",active)
+		$(".itemsort").toggleClass("text-success",active)
 	})
 	$(".itemsdiv").sortable({
 		placeholder: "ui-state-highlight",
@@ -570,6 +589,13 @@ function maketasksactive() {
 			var task_id=$(this).closest("tr").data("task_id")
 			send("deletetask","testedited",{task_id:task_id},"backend")
 		}
+	})
+	$(".movetask").click(function() {
+			$(this).before($("#tests"))
+			$("#tests").unbind("change").change(function() {
+				var task_id=$(this).closest("tr").data("task_id")
+				send("movetask","testedited",{task_id:task_id,test_id:$(this).children(":selected").val()},"backend")
+			})
 	})
 	$(".deletetest").click(function() {
 		if(window.confirm(_("Are you REALLY sure you want to delete this test? YOU WILL LOOSE ALL DATA AND CODING RELATED TO THIS TEST!"))) {
@@ -731,51 +757,49 @@ function colsread(results) {
 	$("#datafields").collapse("show")
 }
 function doUpload(results) {
-	var test_name=$("#test_name").val().trim()
-	if(test_name=="") alert("Provide a name for the test") 
-	else { 
-		var cols=$("#usedcols a.column").map(function(x) {return $(this).data("colno")}).get()
-		var filtered=results.data.map(function(vals) {
-			var a=[]
-			for(var c of cols) {
-				a.push(vals[c])
-			}
-			return a
+	var test_id=$("#test_id").val()
+	var cols=$("#usedcols a.column").map(function(x) {return $(this).data("colno")}).get()
+	var filtered=results.data.map(function(vals) {
+		var a=[]
+		for(var c of cols) {
+			a.push(vals[c])
+		}
+		return a
+	})
+	var before=$("#beforefilter").val()
+	if(before.length>0) {
+		var beforedate=Date.parse(before)
+		filtered=filtered.filter(function(v,i) {
+			if(i==0) return true;
+			var thisdate=Date.parse(v[1])
+			return thisdate<=beforedate
 		})
-		var before=$("#beforefilter").val()
-		if(before.length>0) {
-			var beforedate=Date.parse(before)
-			filtered=filtered.filter(function(v,i) {
-				if(i==0) return true;
-				var thisdate=Date.parse(v[1])
-				return thisdate<=beforedate
-			})
-		}
-		var after=$("#afterfilter").val()
-		if(after.length>0) {
-			var afterdate=Date.parse(after)
-			filtered=filtered.filter(function(v,i) {
-				if(i==0) return true;
-				var thisdate=Date.parse(v[1])
-				return thisdate>=afterdate
-			})
-		}
-		var testtaker=$("#testtakerfilter").val()
-		if(testtaker.length>0) {
-			const regex = new RegExp(testtaker);
-			filtered=filtered.filter(function(v,i) {
-				if(i==0) return true;
-				return regex.test(v)
-			})
-		}
-		console.log(filtered[0])
-		if(window.confirm(_("You are about to import {0} columns of data from {1} test-takers. Do you want to proceed?",(filtered[0].length-2),filtered.length)))
-			send("doUpload","uploaddone",{test_name:test_name,responses:filtered},"backend")
 	}
+	var after=$("#afterfilter").val()
+	if(after.length>0) {
+		var afterdate=Date.parse(after)
+		filtered=filtered.filter(function(v,i) {
+			if(i==0) return true;
+			var thisdate=Date.parse(v[1])
+			return thisdate>=afterdate
+		})
+	}
+	var testtaker=$("#testtakerfilter").val()
+	if(testtaker.length>0) {
+		const regex = new RegExp(testtaker);
+		filtered=filtered.filter(function(v,i) {
+			if(i==0) return true;
+			return regex.test(v)
+		})
+	}
+	console.log(filtered[0])
+	if(window.confirm(_("You are about to import {0} columns of data from {1} test-takers. Do you want to proceed?",(filtered[0].length-2),filtered.length)))
+		send("doUpload","uploaddone",{test_id:test_id,responses:JSON.stringify(filtered)},"backend")
+
 }
 function uploaddone(json) {
-	if(window.confirm(_("{0} new tests, {1} new tasks, and {2} new responses were registered. Are you done uploading?",json.newtests,json.newtasks,json.newresponses)))
-		get_template("projectadmin")
+	if(window.confirm(_("{0} new tasks, and {1} new responses were registered. Are you done uploading?",json.newtasks,json.newresponses)))
+		get_template("tests")
 }
 function movetodatafields() {
 	var moveto=($(this).closest("#usedcols").length>0?"cols":($("#username").is(":empty")?"username":($("#testtime").is(":empty")?"testtime":"tasks")))
@@ -903,6 +927,7 @@ function editusersaved() {
 	get_template("users",{},"gotusers")
 }
 function gotcodingmanagement() {
+	codeTask("flaghandling")
 	$("#addcodermodal").on("shown.bs.modal",function(e) {
 		$("#addcoders").data("unittype",$(e.relatedTarget).closest("tr").data("unittype"))
 		$("#addcoders").data("unit_id",$(e.relatedTarget).closest("tr").data("unit_id"))
@@ -912,6 +937,8 @@ function gotcodingmanagement() {
 	$(".deletecoder").click(deletecoder)
 	$("#addcoders").click(addcoders)
 	$("#newcoder").keydown(getcoder)
+}
+function gotcodermanagement() {
 }
 function getcoder() {
 	var codername=$(this).val()

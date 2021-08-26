@@ -3,7 +3,7 @@ session_start();
 checkperm();
 include_once($shareddir."database.php");
 
-$q="select comments,username,email from flags f left join users u on coder_id=user_id where coder_id=".$_SESSION[$_POST["flaghandling"]=="true"?"coder_id":"user_id"]." and response_id=".$_SESSION["response_id"];
+$q="select comments,username,email from flags f left join users u on coder_id=user_id where coder_id=".$_SESSION[$_POST["flaghandling"]=="true"?"coder_id":"user_id"]." and response_id=".$_POST["response_id"];
 $log=$q;
 $result=$mysqli->query($q);
 $r=$result->fetch_assoc();

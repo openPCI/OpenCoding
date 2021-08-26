@@ -4,23 +4,23 @@ include_once($relative."dirs.php");
 include_once($shareddir."database.php");
 checkperm("projectadmin");
 
-$responses=$_POST["responses"];
+$responses=json_decode($_POST["responses"]);
 $cols=array_shift($responses);
 
 //  $log.=print_r($cols,true);
 
 
-$q="insert into tests (test_name,project_id) VALUE ('".$_POST["test_name"]."',".$_SESSION["project_id"].") on duplicate key UPDATE test_id=LAST_INSERT_ID(test_id)";
-$mysqli->query($q);
-$test_id=$mysqli->insert_id;
-$newtests=$mysqli->affected_rows;
-$log.="\n".$q;
+// $q="insert into tests (test_name,project_id) VALUE ('".$_POST["test_name"]."',".$_SESSION["project_id"].") on duplicate key UPDATE test_id=LAST_INSERT_ID(test_id)";
+// $mysqli->query($q);
+$test_id=$_POST["test_id"];#$mysqli->insert_id;
+// $newtests=$mysqli->affected_rows;
+// $log.="\n".$q;
 $tasks=array_slice($cols,2);
 $ntasks=count($tasks);
 $newtasks=0;
 $log.=print_r($tasks,true);
 for($i=0;$i<$ntasks;$i++) {
-	$q='insert into tasks (task_name,tasktype_id,items,tasktype_variables,task_data,test_id) VALUES ("'.$tasks[$i].'",0,\'{"items":{}}\',"{}","{}",'.$test_id.') on duplicate key UPDATE task_id=LAST_INSERT_ID(task_id)';
+	$q='insert into tasks (task_name,tasktype_id,items,tasktype_variables,task_data,test_id) VALUES ("'.$tasks[$i].'",1,\'{"items":{}}\',"{}","{}",'.$test_id.') on duplicate key UPDATE task_id=LAST_INSERT_ID(task_id)';
 	// If the task_name exists in this test, these responses are added to that instead of created as new task.
 if(!$mysqli->query($q)) {
 	$warning=$mysqli->error;
@@ -40,21 +40,29 @@ if(!$warning) {
 	for($i=0;$i<=$queries;$i++) {
 		if(count($responses)>=$i*$numrowsperquery) {
 			$responsesslice=array_slice($responses,$i*$numrowsperquery,($i+1)*$numrowsperquery);
-			$q="insert IGNORE into responses (task_id,testtaker,response,response_time) VALUES ".
-				implode(",",
-					array_map(
-						function($respondent) use($task_ids,$ntasks,$mysqli) {
-							$testtaker=array_shift($respondent);
-							$response_time=array_shift($respondent);
-							return implode(",",
-								array_map(
-									function($response,$thistask_id) use($testtaker,$response_time,$mysqli) {
-										return '('.$thistask_id.',"'.$testtaker.'","'.$mysqli->real_escape_string($response).'","'.$response_time.'")';
-									},$respondent,$task_ids
-								)
-							);
-						},$responsesslice)
-					);
+			$values=array();
+			foreach ($responsesslice as $response) {
+					$testtaker=array_shift($response);
+					$response_time=array_shift($response);
+					for($j=0;$j<count($task_ids);$j++) 
+						$values[]='('.$task_ids[$j].',"'.$testtaker.'","'.$mysqli->real_escape_string($response[$j]).'","'.$response_time.'")';
+			}
+			$q="insert IGNORE into responses (task_id,testtaker,response,response_time) VALUES ".implode(",",$values);
+
+// 				implode(",",
+// 					array_map(
+// 						function($respondent) use($task_ids,$ntasks,$mysqli) {
+// 							$testtaker=array_shift($respondent);
+// 							$response_time=array_shift($respondent);
+// 							return implode(",",
+// 								array_map(
+// 									function($response,$thistask_id) use($testtaker,$response_time,$mysqli) {
+// 										return '('.$thistask_id.',"'.$testtaker.'","'.$mysqli->real_escape_string($response).'","'.$response_time.'")';
+// 									},$respondent,$task_ids
+// 								)
+// 							);
+// 						},$responsesslice)
+// 					);
 			$log.="\n".$q;
 			$mysqli->query($q);
 			$newresponses+=$mysqli->affected_rows;
