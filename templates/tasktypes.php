@@ -32,7 +32,7 @@ $result=$mysqli->query($q);
 			<th scope="row" class="editable" data-edittype="tasktype_name" contenteditable><?= $r["tasktype_name"];?></th>
 			<td class="manualautotoggle" data-manualauto="<?= $r["manualauto"];?>"><?= _($r["manualauto"]);?></td>
 			<td class="editable" data-edittype="tasktype_description" contenteditable><?= $r["tasktype_description"];?></td>
-			<td><div class="editable shortview" data-edittype="tasktype_instructions" contenteditable><?= $r["tasktype_instructions"];?></div></td>
+			<td class="htmleditable " ><div class="htmleditablediv" id="instructions_<?= $r["tasktype_id"];?>" data-edittype="tasktype_instructions"><?= $r["tasktype_instructions"];?></div></td>
 			<td class="scripting <?= ($r["playareatemplate"]!=""?"text-info":"text-muted");?>" data-edittype="playareatemplate" data-toggle="modal" data-target="#scripting" data-language="html"><i class="fas fa-edit"></i></td>
 			<td class="scripting <?= ($r["responseareatemplate"]!=""?"text-info":"text-muted");?>" data-edittype="responseareatemplate" data-toggle="modal" data-target="#scripting" data-language="html"><i class="fas fa-edit"></i></td>
 			<td class="scripting <?= ($r["codeareatemplate"]!=""?"text-info":"text-muted");?>" data-edittype="codeareatemplate" data-toggle="modal" data-target="#scripting" data-language="html"><i class="fas fa-edit"></i></td>

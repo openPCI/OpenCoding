@@ -165,6 +165,7 @@ function gottasktypes(json) {
 	},
 	theme: 'snow'
 	});
+	$(".htmleditable").unbind("click").click(edithtml)
 	$(".editable").unbind("keydown").keydown(isEnter)
 	$(".editable").unbind("blur").on("blur",tasktypeedited)
 	maketasktypesactive()
@@ -251,6 +252,11 @@ function gotautocoding(json) {
 
 	}
 	$("#updatestats").click(function() {
+		$("#statrow").empty()
+		$(".itemvalue").each(function() {
+			var itemname=$(this).data("item_name")
+			$("#statrow").append('<div class="form-group col-3"><h6>'+itemname+'</h6><p class="itemstat" data-item_name="'+itemname+'"></p></div>')
+		})
 		$(".itemstat").each(function() {
 			var item_name=$(this).data("item_name")
 			// Hack? Should the script save the responses to sessionStorage, and then we take it from there...
@@ -258,10 +264,13 @@ function gotautocoding(json) {
 			$(this).text(val)
 		})
 	})
-	send("initauto","initauto",{task_id:$("#playarea").data("task_id")},"frontend")
+	send("initauto","initauto",{task_id:$("#playarea").data("task_id"),subtask_ids:$("#playarea").data("subtask_ids")},"frontend")
 }
 function initauto(json) {
 	console.log(json)
+	$(".edititem_name").keydown(isEnter).blur(autoedit)
+	$("#additem").unbind("click").click(additemauto)
+
 	// openCoding gets the data (as JSON) saved earlier by the tasktype, and the responses.
 	// Everything is put in sessionStorage for the tasktype script to fetch. 
 	// initDone should be defined by the tasktype custom script
@@ -273,6 +282,21 @@ function initauto(json) {
 		alert("Please provide init() and save() functions in your tasktype-script.")
 	} else init()
 }
+function autoedit() {
+	send("edited","autoedited",{task_id:$("#playarea").data("task_id"),edittype:"items",edittype2:"name",oldvalue:$(this).data("item_name"),value:$(this).text(),edittable:"tasks"},"backend")
+	$(this).data("item_name",$(this).text())
+	$(this).next().data("item_name",$(this).text())
+}
+function autoedited(json) {
+}
+function additemauto() {
+	var itemname=_('item')+($(".itemvalue").length+1)
+	var add=$('<div class="form-group col-3"><label for="item'+itemname+'" data-item_name="'+itemname+'" contenteditable class="edititem_name">'+itemname+'</label><input type="number" data-item_name="'+itemname+'" id="item'+itemname+'" class="form-control itemvalue" disabled></div>')
+	add.find(".edititem_name").keydown(isEnter).on("blur",autoedit)
+	$("#coderow").append(add)
+	send("edited","wasedited",{task_id:$("#playarea").data("task_id"),edittype:"items",edittype2:"value",oldvalue:itemname,value:1},"backend")
+}
+
 function autosave() {
 	save()
 	send("autosave",$(this).data("type"),{responses:JSON.parse(sessionStorage.getItem("responses")),data:JSON.parse(sessionStorage.getItem("data")),task_id:$("#playarea").data("task_id")},"frontend")
@@ -648,8 +672,9 @@ function savehtml(e) {
 	var div=th.siblings(".htmleditablediv")
 	var content=div.find(".ql-editor").html()
 	var task_id=th.closest("tr").data("task_id")
+	var tasktype_id=th.closest("tr").data("tasktype_id")
 	var edittype=div.data("edittype")
-	send("edited","waseditedhtml",{task_id:task_id,edittype:edittype,value:content},"backend")
+	send("edited","waseditedhtml",{task_id:task_id,tasktype_id:tasktype_id,edittype:edittype,value:content,edittable:$("#edittable").data("edittable")},"backend")
 }
 function waseditedhtml(json) {
 	console.log(json)
@@ -722,7 +747,7 @@ function edited() {
 	var edittype=$(this).data("edittype")
 	var edittype2=$(this).data("edittype2")
 	var oldvalue=(edittype2=="value"?$(this).prev().data("oldvalue"):$(this).data("oldvalue"))
-	var value=$(this).html().trim().replace(/[\n\r]/,"<br>")
+	var value=$(this).text().trim().replace(/[\n\r]/,"")
 	$(this).data("oldvalue",value)
 	send("edited","wasedited",{task_id:task_id,tasktype_id:tasktype_id,edittype:edittype,edittype2:edittype2,oldvalue:oldvalue,value:value,edittable:$("#edittable").data("edittable")},"backend")
 }

@@ -53,8 +53,13 @@ $tasksettings["subtasks"]=$subtasks;
 <!-- Main Container -->
 <div class="container-fluid <?= $_POST["special"];?>">
 	<div class="row p-2 sticky-top">
-		<div class="col  justify-content-end d-flex">
-			<div class="">
+		<div class="col d-flex">
+		</div> 
+		<div class="col">
+			<div class="float-left">
+				<button class="btn btn-primary additem ml-2" id="additem"><?= _("Add item");?></button>
+			</div> 
+			<div class="float-right">
 				<button class="btn btn-success autosave" data-type="saved"><?= _("Save");?></button>
 				<button class="btn btn-primary autosave ml-2" data-type="finish"><?= _("Finish");?></button>
 			</div> 
@@ -81,31 +86,34 @@ $tasksettings["subtasks"]=$subtasks;
 			</div>
 		</div>
 		<div class="col" >
-			<div class="row">
+			<div class="row" id="coderow">
 <?php if($tasktype["codeareatemplate"]) { ?>
-				<div class="col" id="responsearea">
+				<div class="col" id="codearea">
+				
 				<?= 
 					$twig->render('codearea',$tasksettings);
 				?>
 				</div>
-					<?php 
-					}
-					else {
-						$itemobj=json_decode($task["items"],true); 
-						$items=$itemobj["items"];
-						$itemorder=$itemobj["order"]?$itemobj["order"]:array();
-						$extra=array_diff(array_keys($items),$itemorder);
-						$itemorder=array_merge($itemorder,$extra);
-
-						foreach($itemorder as $item_name) {
-						?>
-							<div class="form-group col-3">
-								<label for="item<?= $item_name;?>"><?= $item_name;?></label>
-								<input type="number" data-item_name="<?= $item_name;?>" class="form-control itemvalue" name="<?= $item_name;?>" placeholder="" min="-1" max="<?= $items[$item_name];?>" step="1" disabled>
-							</div>
-						<?php
-						}
+				<?php 
+				}
+				else {
 					?>
+					<?php 
+					$itemobj=json_decode($task["items"],true); 
+					$items=$itemobj["items"];
+					$itemorder=$itemobj["order"]?$itemobj["order"]:array();
+					$extra=array_diff(array_keys($items),$itemorder);
+					$itemorder=array_merge($itemorder,$extra);
+
+					foreach($itemorder as $item_name) {
+					?>
+						<div class="form-group col-3">
+							<label for="item<?= $item_name;?>" data-item_name="<?= $item_name;?>" contenteditable class="edititem_name"><?= $item_name;?></label>
+							<input type="number" data-item_name="<?= $item_name;?>" id="item<?= $item_name;?>" class="form-control itemvalue" disabled>
+						</div>
+					<?php
+					}
+				?>
 			</div>
 			<!-- Navigation Container -->
 			<div class="row" style="max-width:300px;">
@@ -126,16 +134,9 @@ $tasksettings["subtasks"]=$subtasks;
 					<button class="btn btn-success" id="updatestats"><?= _("Update");?></button>
 				</div>
 			</div>
-			<div class="row">
+			<div class="row" id="statrow">
+			</div>
 		<?php 
-			foreach(json_decode($task["items"]) as $item_name=>$maxvalue) {
-			?>
-				<div class="form-group col-3">
-					<h6><?= $item_name;?></h6>
-					<p class="itemstat" data-item_name="<?= $item_name;?>"></p>
-				</div>
-			<?php
-			}
 		}
 		?>
 			</div>

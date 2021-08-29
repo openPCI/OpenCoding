@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-08-09 22:55+0200\n"
+"POT-Creation-Date: 2021-08-29 23:48+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -21,12 +21,20 @@ msgstr ""
 msgid "Changed"
 msgstr ""
 
-#: backend/doDownload.php:56
+#: backend/doDownload.php:58
 msgid "opencoding"
 msgstr ""
 
-#: backend/trainingresponse.php:11 frontend/flag.php:9
-msgid "Response-id doesn't match."
+#: templates/management.php:8
+msgid "Management"
+msgstr ""
+
+#: templates/management.php:13
+msgid "Coding management"
+msgstr ""
+
+#: templates/management.php:14
+msgid "Coder management"
 msgstr ""
 
 #: templates/chooseproject.php:10
@@ -85,17 +93,18 @@ msgstr ""
 msgid "Edit"
 msgstr ""
 
-#: templates/tasktypes.php:81 templates/users.php:135 templates/tests.php:125
-#: templates/codingmanagement.php:133
+#: templates/tasktypes.php:81 templates/users.php:135 templates/tests.php:127
+#: templates/codermanagement.php:171 templates/codingmanagement.php:142
 msgid "Close"
 msgstr ""
 
-#: templates/tasktypes.php:82 templates/tests.php:126
-#: templates/codingmanagement.php:134 templates/autocoding.php:58
+#: templates/tasktypes.php:82 templates/tests.php:128
+#: templates/codermanagement.php:172 templates/codingmanagement.php:143
+#: templates/autocoding.php:63
 msgid "Save"
 msgstr ""
 
-#: templates/users.php:10 header.php:83 header.php:83
+#: templates/users.php:10 header.php:84 header.php:84
 msgid "System"
 msgstr ""
 
@@ -187,14 +196,6 @@ msgstr ""
 msgid "Download coded data"
 msgstr ""
 
-#: templates/upload.php:6
-#, php-format
-msgid ""
-"Your server limits the number of cases to be uploaded to %d. You can change "
-"that in the php-ini-file on the server. Or keep the number of cases down in "
-"each upload."
-msgstr ""
-
 #: templates/upload.php:12
 #, php-format
 msgid "Upload to: %s"
@@ -250,35 +251,43 @@ msgstr ""
 msgid "Projects"
 msgstr ""
 
-#: templates/coding.php:118
+#: templates/coding.php:120
 msgid "Flag response."
 msgstr ""
 
-#: templates/coding.php:119
+#: templates/coding.php:121
 msgid "This response is used in coder training. Difficulty: "
 msgstr ""
 
-#: templates/coding.php:119
+#: templates/coding.php:121
 msgid "Mark response as used in coder training."
 msgstr ""
 
-#: templates/coding.php:151 templates/autocoding.php:59
+#: templates/coding.php:154
+msgid "Code all 0"
+msgstr ""
+
+#: templates/coding.php:158 templates/autocoding.php:64
 msgid "Finish"
 msgstr ""
 
-#: templates/coding.php:156
+#: templates/coding.php:163
 msgid ""
 "Use TAB and SHIFT+TAB to shift forward and back between item-codes. Use "
 "ARROWS to increase and decrease codes. Hit ENTER when in the last item-code "
 "to go to next response."
 msgstr ""
 
-#: templates/coding.php:168
+#: templates/coding.php:175
 msgid "Flagged by:"
 msgstr ""
 
-#: templates/coding.php:171
+#: templates/coding.php:178
 msgid "Add comment"
+msgstr ""
+
+#: templates/tests.php:9
+msgid "Collapse all"
 msgstr ""
 
 #: templates/tests.php:9
@@ -314,48 +323,89 @@ msgid "Task variables"
 msgstr ""
 
 #: templates/tests.php:37
-msgid "Items"
+msgid "Item-prefix"
 msgstr ""
 
 #: templates/tests.php:38
+msgid "Items"
+msgstr ""
+
+#: templates/tests.php:39
 msgid "Coding rubrics"
 msgstr ""
 
-#: templates/tests.php:39 templates/codingmanagement.php:41
+#: templates/tests.php:40 templates/codingmanagement.php:44
 msgid "Count"
 msgstr ""
 
-#: templates/tests.php:40
+#: templates/tests.php:41
 msgid "Action"
 msgstr ""
 
-#: templates/tests.php:72
+#: templates/tests.php:74
 msgid "Sort"
 msgstr ""
 
-#: templates/tests.php:90
+#: templates/tests.php:92
 msgid "Delete task"
 msgstr ""
 
-#: templates/tests.php:91
+#: templates/tests.php:93
 msgid "Move task"
 msgstr ""
 
-#: templates/tests.php:113
+#: templates/tests.php:115
 msgid "Upload image"
 msgstr ""
 
-#: templates/tests.php:145
+#: templates/tests.php:147
 msgid "Move to"
+msgstr ""
+
+#: templates/codermanagement.php:40 templates/codingmanagement.php:39
+msgid "Coding Management"
+msgstr ""
+
+#: templates/codermanagement.php:51 templates/mytasks.php:23
+#: templates/codingmanagement.php:43 templates/training.php:18
+msgid "Test/task name"
+msgstr ""
+
+#: templates/codermanagement.php:53 templates/codingmanagement.php:45
+msgid "Coded"
+msgstr ""
+
+#: templates/codermanagement.php:54 templates/codingmanagement.php:46
+msgid "Double coded"
+msgstr ""
+
+#: templates/codermanagement.php:55 templates/codingmanagement.php:47
+msgid "Agreement"
+msgstr ""
+
+#: templates/codermanagement.php:87 templates/codingmanagement.php:79
+msgid "Item names are not the same"
+msgstr ""
+
+#: templates/codermanagement.php:122
+msgid "Overall"
+msgstr ""
+
+#: templates/codermanagement.php:144 templates/codermanagement.php:166
+#: templates/codingmanagement.php:115 templates/codingmanagement.php:137
+msgid "Add coders"
+msgstr ""
+
+#: templates/codermanagement.php:150 templates/codingmanagement.php:121
+msgid "Coders on project"
+msgstr ""
+
+#: templates/codermanagement.php:161 templates/codingmanagement.php:132
+msgid "Find coder"
 msgstr ""
 
 #: templates/mytasks.php:19
 msgid "My tasks"
-msgstr ""
-
-#: templates/mytasks.php:23 templates/codingmanagement.php:40
-#: templates/training.php:18
-msgid "Test/task name"
 msgstr ""
 
 #: templates/mytasks.php:25
@@ -366,11 +416,11 @@ msgstr ""
 msgid "Remaining"
 msgstr ""
 
-#: templates/mytasks.php:27 templates/codingmanagement.php:45
+#: templates/mytasks.php:27 templates/codingmanagement.php:48
 msgid "Flagged"
 msgstr ""
 
-#: templates/mytasks.php:38 header.php:66 header.php:66
+#: templates/mytasks.php:38 header.php:67 header.php:67
 msgid "Code"
 msgstr ""
 
@@ -386,7 +436,7 @@ msgstr ""
 msgid "OpenCoding Projects"
 msgstr ""
 
-#: templates/projects.php:24 header.php:78 header.php:78
+#: templates/projects.php:24 header.php:79 header.php:79
 msgid "Project"
 msgstr ""
 
@@ -402,55 +452,27 @@ msgstr ""
 msgid "Delete project"
 msgstr ""
 
-#: templates/codingmanagement.php:36
-msgid "Coding Management"
-msgstr ""
-
-#: templates/codingmanagement.php:42
-msgid "Coded"
-msgstr ""
-
-#: templates/codingmanagement.php:43
-msgid "Double coded"
-msgstr ""
-
-#: templates/codingmanagement.php:44
-msgid "Agreement"
-msgstr ""
-
-#: templates/codingmanagement.php:46
+#: templates/codingmanagement.php:49
 msgid "Resolved"
 msgstr ""
 
-#: templates/codingmanagement.php:47
+#: templates/codingmanagement.php:50
 msgid "Assigned Coders"
 msgstr ""
 
-#: templates/codingmanagement.php:73
-msgid "Item names are not the same"
-msgstr ""
-
-#: templates/codingmanagement.php:89 templates/codingmanagement.php:90
+#: templates/codingmanagement.php:98 templates/codingmanagement.php:99
 msgid "Add coder"
 msgstr ""
 
-#: templates/codingmanagement.php:106 templates/codingmanagement.php:128
-msgid "Add coders"
+#: templates/autocoding.php:60
+msgid "Add item"
 msgstr ""
 
-#: templates/codingmanagement.php:112
-msgid "Coders on project"
-msgstr ""
-
-#: templates/codingmanagement.php:123
-msgid "Find coder"
-msgstr ""
-
-#: templates/autocoding.php:125
+#: templates/autocoding.php:133
 msgid "Statistics"
 msgstr ""
 
-#: templates/autocoding.php:126
+#: templates/autocoding.php:134
 msgid "Update"
 msgstr ""
 
@@ -496,20 +518,20 @@ msgstr ""
 msgid "Unchanged"
 msgstr ""
 
-#: header.php:12 header.php:34 header.php:55 header.php:12 header.php:34
-#: header.php:55
+#: header.php:13 header.php:35 header.php:56 header.php:13 header.php:35
+#: header.php:56
 msgid "Human coding of test responses"
 msgstr ""
 
-#: header.php:51 header.php:51
+#: header.php:52 header.php:52
 msgid "Change Project"
 msgstr ""
 
-#: header.php:69 header.php:69
+#: header.php:70 header.php:70
 msgid "Train"
 msgstr ""
 
-#: header.php:73 header.php:73
+#: header.php:74 header.php:74
 msgid "Manage"
 msgstr ""
 
@@ -517,18 +539,18 @@ msgstr ""
 msgid "You don't have access here"
 msgstr ""
 
-#: frontend/getresponse.php:27
+#: frontend/getresponse.php:28
 #, php-format
 msgid ""
 "No correct codes for this response. Please contact the scoring manager. "
 "Response id: %d"
 msgstr ""
 
-#: frontend/getresponse.php:33
+#: frontend/getresponse.php:34
 msgid "You need to set the flag to send negative values."
 msgstr ""
 
-#: frontend/getresponse.php:145
+#: frontend/getresponse.php:146
 msgid "No more responses"
 msgstr ""
 

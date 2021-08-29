@@ -6,31 +6,33 @@ checkperm("projectadmin");
 
 $task_ids=json_decode($_POST["tasks"]);
 
-$q='select items,testtaker,codes from tasks t left join responses r on t.task_id=r.task_id left join coded c on r.response_id=c.response_id where t.task_id in ('.implode(",",$task_ids).') and isdoublecode=0';
+$q='select item_prefix,items,testtaker,codes from tasks t left join responses r on t.task_id=r.task_id left join coded c on r.response_id=c.response_id where t.task_id in ('.implode(",",$task_ids).') and isdoublecode=0';
 
 $result=$mysqli->query($q);
 $log.="\n".$q;
 $list=array();
 $allitems=array();
 while($r=$result->fetch_assoc()) {
-	$itemobj=json_decode($task["items"],true); 
+	$itemobj=json_decode($r["items"],true); 
 	$items=$itemobj["items"];
-	$itemorder=$itemobj["order"]?$itemobj["order"]:array();
-	$extra=array_diff(array_keys($items),$itemorder);
-	$items=array_merge($itemorder,$extra);
-
-	$allitems=array_unique(array_merge($allitems,$items));
-	$codes=json_decode($r["codes"],true);
-	$tmpcodes=array();
-	foreach($codes as $c) {
-		$tmpcodes[$c["item_name"]]=$c["code"];
+	if($items) {
+		$itemorder=$itemobj["order"]?$itemobj["order"]:array();
+		$extra=array_diff(array_keys($items),$itemorder);
+		$item_prefix=$r["item_prefix"];
+		$items=array_map(function($i) use($item_prefix) {return $item_prefix.$i;},array_merge($itemorder,$extra));
+		$allitems=array_unique(array_merge($allitems,$items));
+		$codes=json_decode($r["codes"],true);
+		$tmpcodes=array();
+		foreach($codes as $c) {
+			$tmpcodes[$item_prefix.$c["item_name"]]=$c["code"];
+		}
+		$coded=array();
+		foreach($items as $i) {
+			$coded[$i]=$tmpcodes[$i];
+		}
+		if(!$list[$r["testtaker"]]) $list[$r["testtaker"]]=array();
+		$list[$r["testtaker"]]=array_merge($list[$r["testtaker"]],$coded);
 	}
-	$coded=array();
-	foreach($items as $i) {
-		$coded[$i]=$tmpcodes[$i];
-	}
-	if(!$list[$r["testtaker"]]) $list[$r["testtaker"]]=array();
-	$list[$r["testtaker"]]=array_merge($list[$r["testtaker"]],$coded);
 }
 $csv=array();
 $csv[0]=$allitems;

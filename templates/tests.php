@@ -34,6 +34,7 @@ if($result->num_rows>0) {
 							<th scope="col"><?= _("Task image");?></th>
 							<th scope="col"><?= _("Task type");?></th>
 							<th scope="col"><?= _("Task variables");?></th>
+							<th scope="col"><?= _("Item-prefix");?></th>
 							<th scope="col"><?= _("Items");?></th>
 							<th scope="col"><?= _("Coding rubrics");?></th>
 							<th scope="col"><?= _("Count");?></th>
@@ -69,6 +70,7 @@ if($result->num_rows>0) {
 						}
 						?>
 						</td>
+						<td class="editable" data-edittype="item_prefix" contenteditable><?= $r1["item_prefix"];?></td>
 						<td><div><span class="itemsort" title="<?= _("Sort");?>"><i class="fas fa-random"></i></span></div><div class="itemsdiv"><?php
 						$itemobj=json_decode($r1["items"],true); 
 						$items=$itemobj["items"];
