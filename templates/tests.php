@@ -24,7 +24,7 @@ if($result->num_rows>0) {
 		<span class="uploadresponses float-right" title="<?= _("Upload responses");?>"><i class="fas fa-file-upload"></i></i></span>
 		</div>
 
-		<div id="test<?= $r["test_id"];?>" data-test_id="<?= $r["test_id"];?>" class="collapse show testdiv" aria-labelledby="test_name<?= $r["test_id"];?>" data-parent="#accordion">
+		<div id="test<?= $r["test_id"];?>" data-test_id="<?= $r["test_id"];?>" class="collapse <?= ((!$_POST["openTest"] or $_POST["openTest"]==$r["test_id"])?"show":"");?> testdiv" aria-labelledby="test_name<?= $r["test_id"];?>" data-parent="#accordion">
 			<div class="card-body">
 				<table class="table sticky-column">
 					<thead class="sticky-top">

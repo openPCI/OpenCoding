@@ -1,8 +1,12 @@
+var DateTime = luxon.DateTime;
 var splitchar=";"
 var filetext=""
 var maximgwidth=800
 var maximgheight=800
-
+var data
+var items
+var responses
+	
 $(function() {
 	$("#showloginform").click(function () {get_template("login",{},"loginready")})
 	var p=window.location.search.replace(/.*[?&]p=([^&]*)(&|$).*/,"$1")
@@ -135,22 +139,29 @@ function gottasktypes(json) {
 	$("#scripting").on("shown.bs.modal",function(e) {
 		var tasktype_id=$(e.relatedTarget).closest("tr").data("tasktype_id")
 		var edittype=$(e.relatedTarget).data("edittype")
-		$("#savecode").data("tasktype_id",tasktype_id)
-		$("#savecode").data("edittype",edittype)
+		$(".savecode").data("tasktype_id",tasktype_id)
+		$(".savecode").data("edittype",edittype)
 		$("#editor").attr("class","language-"+$(e.relatedTarget).data("language"))
-		$(".OpenCodingMessage").html(_("Rendering the code can take very long time. Please be patient."))
-		$(".OpenCodingMessage").show()
 		quill.setContents([
 			{ insert: '\n' }
 		]);	
 		send("tasktypecontent","gottasktypecontent",{tasktype_id:tasktype_id,edittype:edittype,getsave:"get"},"backend")
 	})
-	$("#savecode").click(function() {
+	$("#syntaxhighlight").click(function() {
+		$(".OpenCodingMessage").html(_("Rendering the code can take very long time. Please be patient."))
+		$(".OpenCodingMessage").show()
+		window.setTimeout(function() {
+			quill.formatLine(0,quill.getLength(),"code-block",true)
+			$(".OpenCodingMessage").hide()
+		},100)
+
+	})
+	$(".savecode").click(function() {
 		var tasktype_id=$(this).data("tasktype_id")
 		var edittype=$(this).data("edittype")
 		var content=quill.getText(0).replace(/\\n/,"&slashn;")//$("#editor").find("pre").text()
 // 		console.log(quill.getText(0))
-		send("tasktypecontent","savedtasktypecontent",{tasktype_id:tasktype_id,content:content,edittype:edittype,getsave:"save"},"backend")
+		send("tasktypecontent","savedtasktypecontent",{tasktype_id:tasktype_id,content:content,edittype:edittype,getsave:"save",doclose:$(this).data("doclose")},"backend")
 		var row=$("[data-tasktype_id="+tasktype_id+"]")
 		row.children("[data-edittype="+edittype+"]").addClass("text-info").removeClass("text-muted")
 	})
@@ -213,24 +224,24 @@ function togglemanualauto() {
 	var tasktype_id=$(this).closest("tr").data("tasktype_id")
 	send("edited","wasedited",{tasktype_id:tasktype_id,edittype:"manualauto",value:manualauto,edittable:"tasktypes"},"backend")
 }
-function savedtasktypecontent() {
-	$("#scripting").modal("hide")
+function savedtasktypecontent(json) {
+	if(json.doclose!="dont")
+		$("#scripting").modal("hide")
 }
 function gottasktypecontent(json) {
 	quill.setContents([
 	{ insert: json.content.replace("&slashn;","\\n")},//, attributes: {'code-block':true}}, //Did not format html ...
 	{ insert: '\n' }
 	]);	
-	quill.formatLine(0,quill.getLength(),"code-block",true)
- 	$(".OpenCodingMessage").hide()
 
 }
 function codeTask(special="") {
 	$(".docode").click(function () {
 		var codetype=$(this).data("codetype")
+		var remainingresponses=$(this).closest("tr").data("remainingresponses")
 		if(codetype=="revise") special="revise"
 		var auto=(codetype=="autocode"?"auto":"")
-		get_template(auto+"coding",{task_id:$(this).closest("tr").data("task_id"),special:special,codetype:codetype,flagstatus:$(this).data("flagstatus")},"got"+auto+"coding")
+		get_template(auto+"coding",{task_id:$(this).closest("tr").data("task_id"),special:special,codetype:codetype,remainingresponses:remainingresponses,flagstatus:$(this).data("flagstatus")},"got"+auto+"coding")
 	});
 }
 function gotautocoding(json) {
@@ -251,41 +262,47 @@ function gotautocoding(json) {
 		quill.formatLine(0,quill.getLength(),"code-block",true)
 
 	}
-	$("#updatestats").click(function() {
-		$("#statrow").empty()
-		$(".itemvalue").each(function() {
-			var itemname=$(this).data("item_name")
-			$("#statrow").append('<div class="form-group col-3"><h6>'+itemname+'</h6><p class="itemstat" data-item_name="'+itemname+'"></p></div>')
-		})
-		$(".itemstat").each(function() {
-			var item_name=$(this).data("item_name")
-			// Hack? Should the script save the responses to sessionStorage, and then we take it from there...
-			var val=responses.reduce(function(a,c){return a+(Number.isNaN(Number(c[item_name]))?0:Number(c[item_name]))},0)
-			$(this).text(val)
-		})
-	})
-	send("initauto","initauto",{task_id:$("#playarea").data("task_id"),subtask_ids:$("#playarea").data("subtask_ids")},"frontend")
-}
-function initauto(json) {
-	console.log(json)
+// 	$("#updatestats").click(updatestats)
+	$(".autosave").click(autosave)
 	$(".edititem_name").keydown(isEnter).blur(autoedit)
 	$("#additem").unbind("click").click(additemauto)
+	send("initauto","initauto",{task_id:$("#playarea").data("task_id"),subtask_ids:$("#playarea").data("subtask_ids")},"frontend")
+}
+function updatestats() {
+	$("#statrow").empty()
+	$(".itemvalue").each(function() {
+		var itemname=$(this).data("item_name")
+		$("#statrow").append('<div class="form-group col-3"><h6>'+itemname+'</h6><p class="itemstat" data-item_name="'+itemname+'"></p></div>')
+	})
+	$(".itemstat").each(function() {
+		var item_name=$(this).data("item_name")
+		var val=responses.reduce(function(a,c){var n=(Number.isNaN(Number(c[item_name]))?0:Number(c[item_name])); a[n]=(typeof a[n]=="undefined"?1:a[n]+1); return a},[])
+		$(this).html(val.map((e,i)=>"<b>"+i+"</b>: "+e).join("; "))
+	})
+}
+function initauto(json) {
+// 	console.log(json)
 
 	// openCoding gets the data (as JSON) saved earlier by the tasktype, and the responses.
 	// Everything is put in sessionStorage for the tasktype script to fetch. 
 	// initDone should be defined by the tasktype custom script
-	sessionStorage.setItem("data", JSON.stringify(json.data)); 
-	sessionStorage.setItem("items", JSON.stringify(json.items));
-	sessionStorage.setItem("responses", JSON.stringify(json.responses));
-	$(".autosave").click(autosave)
+// 	sessionStorage.setItem("data", JSON.stringify(json.data)); 
+// 	sessionStorage.setItem("items", JSON.stringify(json.items));
+// 	sessionStorage.setItem("responses", JSON.stringify(json.responses));
+	data=json.data; 
+	items=json.items;
+	responses=json.responses;
+	
 	if(typeof init!="function" || typeof save!="function" ) {
 		alert("Please provide init() and save() functions in your tasktype-script.")
 	} else init()
 }
 function autoedit() {
-	send("edited","autoedited",{task_id:$("#playarea").data("task_id"),edittype:"items",edittype2:"name",oldvalue:$(this).data("item_name"),value:$(this).text(),edittable:"tasks"},"backend")
-	$(this).data("item_name",$(this).text())
-	$(this).next().data("item_name",$(this).text())
+	var olditem_name=$(this).data("item_name")
+	var newitem_name=$(this).text()
+	$(this).data("item_name",newitem_name)
+	$(this).next().data("item_name",newitem_name)
+	send("edited","autoedited",{task_id:$("#playarea").data("task_id"),edittype:"items",edittype2:"name",oldvalue:olditem_name,value:newitem_name,edittable:"tasks"},"backend")
 }
 function autoedited(json) {
 }
@@ -298,13 +315,16 @@ function additemauto() {
 }
 
 function autosave() {
+	showWait(true)
 	save()
-	send("autosave",$(this).data("type"),{responses:JSON.parse(sessionStorage.getItem("responses")),data:JSON.parse(sessionStorage.getItem("data")),task_id:$("#playarea").data("task_id")},"frontend")
+	send("autosave",$(this).data("type"),{responses:JSON.stringify(responses),data:JSON.stringify(data),task_id:$("#playarea").data("task_id")},"frontend")
 }
 function saved() {
+	showWait(false)
 	showMessage(_("Coding saved"))
 }
 function finish() { 
+	showWait(false)
 	get_template("mytasks")
 	
 }
@@ -455,10 +475,21 @@ function gotresponse(json) {
 function gotupload() {
 	$("#datafile").change(function() {readCols(colsread,1)})
 	$("#doUpload").click(function()  {readCols(doUpload)})
-	$(".datetime").click(function() {
+	$(".datetime").flatpickr({
+		enableTime: true,
+	    time_24hr: true,
+		dateFormat: "Y-m-d H:i",
+	});
+	
+	/*click(function() {
 		$(this).unbind("click")
 		$(this).daterangepicker({autoApply: true,showWeekNumbers:true,timePicker: true,timePicker24Hour: true,timePickerIncrement: 15,locale: {format: 'YYYY/MM/DD HH:mm'},showDropdowns: true,singleDatePicker: true})
-	}); 
+	}); */
+// 	new Datepicker('.datetime', {
+// 		time: true,
+// 		weekStart: 1
+// 	});
+
 }
 function gotdownload() {
 	$(".testcheck").click(function() {
@@ -532,7 +563,8 @@ function progress(progresstype){
 function gotprojects() {
 	$("#newproject").click(function() {
 		var project_name=window.prompt(_("Name of the new project?"))
-		send("newproject","projectedited",{project_name:project_name},"backend")
+		if(project_name.length>0)
+			send("newproject","projectedited",{project_name:project_name},"backend")
 	})
 	$(".deleteproject").click(function() {
 		if(window.confirm(_("Are you REALLY sure you want to delete this project? YOU WILL LOOSE ALL DATA AND CODING RELATED TO THIS PROJECT!"))) {
@@ -544,6 +576,18 @@ function gotprojects() {
 		var project_id=$(this).closest("tr").data("project_id")
 		changeproject(project_id,"projectadmin")
 	})
+	
+	$(".editable").unbind("keydown").keydown(isEnter)
+	$(".editable").unbind("blur").on("blur",projectvalueedited)
+
+}
+function projectvalueedited() {
+	console.log("hejs")
+	var project_id=$(this).closest("tr").data("project_id")
+	var edittype=$(this).data("edittype")
+	var regexp=new RegExp("[\n\r]"+($(this).hasClass("acceptnumber")?"[^0-9]":""),"g")
+	var value=$(this).text().trim().replace(regexp,"")
+	send("edited","wasedited",{project_id:project_id,edittype:edittype,value:value,edittable:"projects"},"backend")
 }
 function changeproject(project_id,page) {
 	send("changeproject","projectchanged",{project_id: project_id,page},"shared")
@@ -659,8 +703,28 @@ function edithtml() {
 	var content=$(this).find(".htmleditablediv").html();
 	$(".htmleditable").unbind("click")
 	$(this).append('<button class="btn btn-success" onclick="savehtml(event)">'+_("Save")+'</button>')
+	var toolbarOptions = [
+		['bold', 'italic', 'underline', 'strike'],        // toggled buttons
+		['blockquote', 'code-block'],
+
+		[{ 'header': 1 }, { 'header': 2 }],               // custom button values
+		[{ 'list': 'ordered'}, { 'list': 'bullet' }],
+		[{ 'script': 'sub'}, { 'script': 'super' }],      // superscript/subscript
+		[{ 'indent': '-1'}, { 'indent': '+1' }],          // outdent/indent
+		
+		[{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+
+		[{ 'color': [] }, { 'background': [] }],          // dropdown with defaults from theme
+		[{ 'font': [] }],
+		[{ 'align': [] }],
+
+		['clean']                                         // remove formatting button
+	];
+	
+	
 	quill = new Quill('#'+id, {
 		modules: {
+			toolbar: toolbarOptions
 		},
 		theme: 'snow'
 		});
@@ -715,14 +779,15 @@ function revertgroup() {
 	var taskContent=$(this).data("taskContent")[0].outerHTML
 	var member=$(this).data("taskContent").data("task_id")
 	var test_id=$(this).closest(".testdiv").data("test_id")
-	$(this).remove()
-	send("revertgroup","groupreverted",{member:member,taskContent:taskContent,test_id:test_id},"backend")
+	send("revertgroup","groupreverted",{member:member,test_id:test_id},"backend")//taskContent:taskContent,
 }
 function groupreverted(json) {
-	var elem=$(json.taskContent).removeClass("ui-draggable-disabled").data("group_id",null)
-	$("#tasklist"+json.test_id).append(elem)
-	disenablegroup()
-	maketasksactive()
+	get_template("tests",{openTest:json.test_id},"gottests")
+
+// 	var elem=$(json.taskContent).removeClass("ui-draggable-disabled").data("group_id",null)
+// 	$("#tasklist"+json.test_id).append(elem)
+// 	disenablegroup()
+// 	maketasksactive()
 
 }
 function isEnter(e) {if((e.keyCode === 13)) $(this).blur();}
@@ -997,3 +1062,86 @@ function coderdeleted() {
 	get_template("codingmanagement",{})
 }
 
+function showWait(state) {
+	$("#pleaseWait").modal(state?"show":"hide")
+}
+
+///////////////
+// Standard Auto-coding scripts
+var currentRow=0;
+var response={}
+var codeScript
+var warnings=""
+function init() {
+	if(typeof responses!="undefined") {
+      if(typeof data.script!="undefined") var script=data.script
+      else {
+        var script=''
+        for(var i=0; i<Object.keys(responses[0].response).length;i++) {
+          script+='\rvar resp'+(i+1)+'=response["'+Object.keys(responses[0].response)[i]+'"];';
+        }
+        script+='\rreturn {'
+        if($(".itemvalue").length>0) {
+          script+=$(".itemvalue").map(function(i) {return '\r  '+$(this).data("item_name")+':response["'+Object.keys(responses[0].response)[i]+'"]=="correct"?1:0';
+                }).get().join(",")
+        } else script+='\r  item1:resp1=="correct"?1:0'
+        script+='\r}'
+      }
+  
+       quill.setContents([
+        { insert: script+'\n'}
+        ]);    
+        quill.formatLine(0,quill.getLength(),"code-block",true)
+         codeScript=setScript()
+      $(".nextautoresponse").click(function() {
+        currentRow+=($(this).data("next")==">"?1:-1)
+        if(currentRow<0) currentRow=responses.length
+        if(currentRow>responses.length) currentRow=0
+        codeScript=setScript()
+        codeCurrentRow()
+        updatestats()
+      })
+      $("#rescoreThisBtn").click(function() {
+        codeScript=setScript()
+        codeCurrentRow()
+        updatestats()
+      })
+      $("#rescoreAllBtn").click(function() {
+         codeScript=setScript()
+         warnings=""
+         showWait(true)
+         setTimeout(function() {
+           for(currentRow=responses.length-1;currentRow>=0;currentRow--) {
+             codeCurrentRow();
+           }
+           showWait(false)
+           updatestats()
+           if(warnings.length>0) showWarning(warnings,10000)
+         },100)
+      })
+     codeCurrentRow();
+	}
+}
+function setScript() {
+  try {
+    var newScript=new Function ('response','"use strict";'+quill.getText(0))
+    return newScript
+  } catch (e) { alert("Error:"+e.message);}
+}
+function codeCurrentRow() {
+  $("#response_id").val(responses[currentRow].response_id)
+  response=responses[currentRow].response
+  for(task_name in response) {	$('[data-task_name="'+task_name+'"]').html(response[task_name]) }
+  responses[currentRow] = Object.assign(responses[currentRow],codeScript(response))
+  fillItems() 
+}
+function fillItems() {
+  $(".itemvalue").each(function() {
+    $(this).val(responses[currentRow][$(this).data("item_name")])
+  })
+}
+
+function save() {
+    var script=quill.getText(0)
+	data={script:script}
+}

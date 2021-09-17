@@ -9,9 +9,14 @@ $q='select task_name,task_data,items from tasks where task_id='.$_POST["task_id"
 $result=$mysqli->query($q);
 $task=$result->fetch_assoc();
 $res["data"]=json_decode($task["task_data"]);
-$itemobj=json_decode($task["items"],true); 
 
-$res["items"]=$itemobj["items"];
+$itemobj=json_decode($task["items"],true); 
+$items=$itemobj["items"];
+$itemorder=$itemobj["order"]?$itemobj["order"]:array();
+$extra=array_diff(array_keys($items),$itemorder);
+$itemorder=array_merge($itemorder,$extra);
+$res["items"]=$itemorder;
+
 
 
 $q=($_POST["subtask_ids"]?

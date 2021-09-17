@@ -72,6 +72,7 @@ $result=$mysqli->query($q);
 				</button>
 			</div>
 			<div class="modal-body">
+			<button type="button" class="btn btn-primary" id="syntaxhighlight"><?= _("Syntax Highlight");?></button>
 
 			<div id="editor" style="overflow:scroll;max-height:700px">
 			</div>
@@ -79,7 +80,8 @@ $result=$mysqli->query($q);
 			</div>
 			<div class="modal-footer">
 				<button type="button" class="btn btn-secondary" data-dismiss="modal"><?= _("Close");?></button>
-				<button type="button" class="btn btn-primary" id="savecode" data-edittype="" data-tasktype_id=""><?= _("Save");?></button>
+				<button type="button" class="btn btn-primary savecode" data-doclose="dont" data-edittype="" data-tasktype_id=""><?= _("Save");?></button>
+				<button type="button" class="btn btn-success savecode" data-doclose="do" data-edittype="" data-tasktype_id=""><?= _("Save & Close");?></button>
 			</div>
 		</div>
 	</div>

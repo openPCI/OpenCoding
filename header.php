@@ -20,7 +20,8 @@
     <link rel="stylesheet" href="./css/jquery-ui.min.css">
     <link rel="stylesheet" href="./css/bootstrap-toggle.min.css">
     <link rel="stylesheet" href="./css/bootstrap-timepicker.min.css">
-    <link rel="stylesheet" href="./css/daterangepicker.css">
+    <link rel="stylesheet" href="./css/flatpickr.min.css"> 
+<!--      <link rel="stylesheet" href="./css/daterangepicker.css"> -->
     <!-- Add icon library -->
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
 <!-- 	 <script defer src="./js/fontawesome-all.min.js"></script> -->

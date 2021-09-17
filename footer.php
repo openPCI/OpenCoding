@@ -40,7 +40,9 @@
 				<button class="btn btn-link pb-0 text-muted ml-auto" id="showloginform" title="<?= _('Log in');?>"><i class="fas fa-sign-in-alt"></i></button>
 			</div>
 		</div>
-		<div  class="icon-link  p-0" id="chooselang"><span><button class="btn btn-link pb-0 ml-auto"><img data-toggle="collapse" href="#collapseLang" role="button" aria-expanded="false" aria-controls="collapseLang" class="flag-img" src="locale/flags/<?= $locale; ?>.png"></button></div>
+		<div  class="icon-link  p-0" id="chooselang">
+			<button class="btn btn-link pb-0 ml-auto"><img data-toggle="collapse" href="#collapseLang" role="button" aria-expanded="false" aria-controls="collapseLang" class="flag-img" src="locale/flags/<?= $locale; ?>.png"></button>
+		</div>
 
 	</div>
 	<div class="row ">
@@ -52,7 +54,8 @@
 
 </footer>
 
-
+<div class="modal" id="pleaseWait" data-backdrop="static" data-keyboard="false">
+</div>
 <!-- <script src="./js/sletmig.js" ></script> -->
 <script src="./js/jquery.min.js" ></script>
 <script src="./js/popper.min.js"></script>
@@ -64,8 +67,12 @@
 <script src="./js/tether.min.js"></script>
 <script src="./js/bootstrap.min.js"></script>
 <script src="./js/bootstrap-timepicker.min.js"></script>
-<script src="./js/moment.min.js"></script>
-<script src="./js/daterangepicker.js"></script>
+<script src="./js/luxon.min.js"></script>
+
+<script src="./js/flatpickr.min.js"></script>
+<!-- <script src="./js/moment.min.js"></script> -->
+<!-- <script src="./js/daterangepicker.js"></script> -->
+
 <script src="./js/md5.min.js"></script>
 
 <script src="js/opencoding.js?<?=$v;?>"></script>

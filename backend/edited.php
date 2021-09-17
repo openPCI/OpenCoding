@@ -56,6 +56,9 @@ switch($_POST["edittable"]) {
 	case "tests":
 		$q='update tests set `'.$edittype.'`='.$value.' where test_id='.$_POST["test_id"];
 	break;
+	case "projects":
+		$q='update projects set `'.$edittype.'`='.$value.' where project_id='.$_POST["project_id"];
+	break;
 	default: 
 		$q='update tasks set `'.$edittype.'`='.$value.' where task_id='.$_POST["task_id"];
 }

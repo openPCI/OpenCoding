@@ -10,10 +10,15 @@ $q="select tt.* from tasks t left join tasktypes tt on t.tasktype_id=tt.tasktype
 $result=$mysqli->query($q);
 $tasktype=$result->fetch_assoc();
 
+$standardplayarea='<div class="alert alert-secondary" ><em>{{task_name}}:</em></span> <span data-task_name="{{task_name}}"></span></div>
+{% for subtask_name in subtasks %}    <div class="alert alert-secondary"><span><em>{{subtask_name}}:</em></span> <span data-task_name="{{subtask_name}}"></span></div>{% endfor %}
+<div><button id="rescoreThisBtn" class="btn btn-success">'._("Code this response").'</button><button id="rescoreAllBtn" class="btn btn-success float-right">'._("Code all responses").'</button></div>
+<div class="quill" id="codingscript" style="width:100%; max-height:400px;" placeholder="'._("Write a coding script here").'"></div>';
+$standardresponsearea='<img src="{{task_image}}">';
 
 $loader = new \Twig\Loader\ArrayLoader([
-    'playarea' => str_replace("&slashn;","\\n",$tasktype["playareatemplate"]),
-    'responsearea' => str_replace("&slashn;","\\n",$tasktype["responseareatemplate"]),
+    'playarea' => str_replace("&slashn;","\\n",($tasktype["playareatemplate"]?$tasktype["playareatemplate"]:$standardplayarea)),
+    'responsearea' => str_replace("&slashn;","\\n",($tasktype["responseareatemplate"]?$tasktype["responseareatemplate"]:$standardresponsearea)),
     'codearea' => str_replace("&slashn;","\\n",$tasktype["codeareatemplate"]),
     'insert_script' => str_replace("&slashn;","\\n",$tasktype["insert_script"]), # Script should include init and save functions. Init can use responses and data from sessionStorage. Save should return an object with data and responses-object with items and their code included {itemname:"an item",code:"value"} for all responses on the items defined in project admin, and provided to script in sessionStorage: items.
     'styles' => str_replace("&slashn;","\\n",$tasktype["styles"]),
@@ -131,7 +136,7 @@ $tasksettings["subtasks"]=$subtasks;
 			<div class="row">
 				<div class="col">
 					<h3><?= _("Statistics");?></h3>
-					<button class="btn btn-success" id="updatestats"><?= _("Update");?></button>
+<!-- 					<button class="btn btn-success" id="updatestats"><?= _("Update");?></button> -->
 				</div>
 			</div>
 			<div class="row" id="statrow">

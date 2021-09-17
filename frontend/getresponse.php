@@ -38,6 +38,10 @@ if($task_id) {
 				else $q="insert into coded (response_id,coder_id,codes,isdoublecode) value (".$_POST["response_id"].",".$_SESSION["user_id"].",CAST('".$codes."' as JSON),".($_SESSION["isdoublecode"]?1:0).") on duplicate key update codes=values(codes), code_id=LAST_INSERT_ID(code_id)";
 				$mysqli->query($q);
 				if(!$flaghandling) $_SESSION["code_id"]=$mysqli->insert_id;
+				if(!$flaghandling and !$_SESSION["isdoublecode"]) {
+					$_SESSION["remainingresponses"]--;
+					if(!$_SESSION["remainingresponses"]) $finish=true;
+				}
 				$log.=$q;
 			}
 		}
@@ -57,39 +61,39 @@ if($task_id) {
 		$success=false;
 		$tries=0;
 		while(!$success and $tries<2) {
-			$dodouble=(!$revise and $_SESSION["doublecodingpct"]>0 and $tries==0 and !$training and !$flaghandling and rand(1,round(100/$_SESSION["doublecodingpct"]))==1);
+			$dodouble=(!$avoiddoublecoding and !$revise and $_SESSION["doublecodingpct"]>0 and !$training and !$flaghandling and (rand(1,round(100/$_SESSION["doublecodingpct"]))==1 or $forcedoublecoding));
+			$log.="tries: ".$tries.", dodouble ".($dodouble?"true":"false").", forcedoublecoding ".($forcedoublecoding?"true":"false").", avoiddoublecoding ".($avoiddoublecoding?"true":"false").", doublecodingpct ".($_SESSION["doublecodingpct"]);
 			$tries++;
-			if(!$dodouble) $tries++;
-			else {
+			if($dodouble){
 				$res["dodouble"]=true;
 			}
 			$justcoding=(!$training and !$flaghandling and !$revise);
 			$direct=($_POST["next"]>0);
 			$_SESSION["isdoublecode"]=($dodouble?1:0);
 			$q='select task_name,r.task_id,response,testtaker,response_time,r.response_id'.
-			($training?'':($dodouble?'':',codes').',flagstatus').
-			($flaghandling?',f.coder_id,flag_id':'').
+			($training?'':($dodouble?'':',codes')).
+			($flaghandling?',f.coder_id,flag_id,flagstatus':'').
 			(($codingadmin or $training)?',difficulty':'').' 
 				from responses r 
-				'.(($codingadmin or $training or $justcoding)?'left join trainingresponses tr on tr.response_id=r.response_id':'').
+				'.(($codingadmin or $training or $dodouble)?'left join trainingresponses tr on tr.response_id=r.response_id':'').
 				($training?'
 					left join tasks t on r.task_id=t.task_id 
 					where '.(!$direct?' difficulty':' 1')
 				:'
 					left join tasks t on r.task_id=t.task_id 
-					left join flags f on f.response_id=r.response_id 
-					'.($codingadmin?'left join coded c on f.response_id=c.response_id ':'left join coded c on r.response_id=c.response_id ').
+					'.(($flagstatus or $codingadmin)?'left join flags f on f.response_id=r.response_id ':'')
+					.(($codingadmin and $flagstatus)?'left join coded c on f.response_id=c.response_id ':'left join coded c on r.response_id=c.response_id ').
 					($flaghandling?'
 						where flagstatus="'.$_POST["flagstatus"].'"'.(!$direct?' and f.flag_id':'')
 					:'
 						where '.
 						($dodouble?
-							'(c.coder_id!='.$_SESSION["user_id"].' and c.coder_id IS NOT NULL) '
+							'(c.coder_id!='.$_SESSION["user_id"].' and c.coder_id IS NOT NULL and tr.response_id is NULL) '
 						:
 							((!$directtonew and ($revise or $direct))?
 								'c.coder_id='.$_SESSION["user_id"].(!$direct?' and code_id ':'')
 							:
-								'c.coder_id IS NULL and tr.response_id is NULL ')
+								'c.coder_id IS NULL ')
 						)
 					)
 				)
@@ -119,6 +123,10 @@ if($task_id) {
 		$log.=$q;
 			$result=$mysqli->query($q);
 			$success=($result->num_rows>0);
+			if(!$success) {
+				if ($dodouble) $forcedoublecoding=true;
+				else $avoiddoublecoding=true;
+			}
 		}
 		if($success) {
 			$r=$result->fetch_assoc();

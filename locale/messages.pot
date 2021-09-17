@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-08-29 23:48+0200\n"
+"POT-Creation-Date: 2021-09-02 16:04+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -104,6 +104,10 @@ msgstr ""
 msgid "Save"
 msgstr ""
 
+#: templates/tasktypes.php:83
+msgid "Save & Close"
+msgstr ""
+
 #: templates/users.php:10 header.php:84 header.php:84
 msgid "System"
 msgstr ""
@@ -131,7 +135,7 @@ msgstr ""
 msgid "Permissions"
 msgstr ""
 
-#: templates/users.php:34 templates/mytasks.php:24 templates/projects.php:27
+#: templates/users.php:34 templates/mytasks.php:31 templates/projects.php:27
 msgid "Actions"
 msgstr ""
 
@@ -366,7 +370,7 @@ msgstr ""
 msgid "Coding Management"
 msgstr ""
 
-#: templates/codermanagement.php:51 templates/mytasks.php:23
+#: templates/codermanagement.php:51 templates/mytasks.php:30
 #: templates/codingmanagement.php:43 templates/training.php:18
 msgid "Test/task name"
 msgstr ""
@@ -404,27 +408,27 @@ msgstr ""
 msgid "Find coder"
 msgstr ""
 
-#: templates/mytasks.php:19
+#: templates/mytasks.php:26
 msgid "My tasks"
 msgstr ""
 
-#: templates/mytasks.php:25
+#: templates/mytasks.php:32
 msgid "Coded by you"
 msgstr ""
 
-#: templates/mytasks.php:26
+#: templates/mytasks.php:33
 msgid "Remaining"
 msgstr ""
 
-#: templates/mytasks.php:27 templates/codingmanagement.php:48
+#: templates/mytasks.php:34 templates/codingmanagement.php:48
 msgid "Flagged"
 msgstr ""
 
-#: templates/mytasks.php:38 header.php:67 header.php:67
+#: templates/mytasks.php:45 header.php:67 header.php:67
 msgid "Code"
 msgstr ""
 
-#: templates/mytasks.php:38
+#: templates/mytasks.php:45
 msgid "Revise"
 msgstr ""
 
@@ -550,7 +554,7 @@ msgstr ""
 msgid "You need to set the flag to send negative values."
 msgstr ""
 
-#: frontend/getresponse.php:146
+#: frontend/getresponse.php:147
 msgid "No more responses"
 msgstr ""
 

@@ -23,6 +23,7 @@
 					<tr>
 					<th scope="col"></i><?= _('Project');?></th>
 					<th scope="col"></i><?= _('Double-coding percent');?></th>
+					<th scope="col"></i><?= _('Max responses per task per coder (%)');?></th>
 					<th scope="col"></i><?= _('Permissions');?></th>
 					<th scope="col"></i><?= _('Actions');?></th>
 					</tr>
@@ -31,8 +32,9 @@
 				<?php
 					while($r=$result->fetch_assoc()) { ?>
 						<tr data-project_id=<?= $r["project_id"];?>>
-							<td data-type="project_name"><?= $r["project_name"];?></td>
-							<td data-type="doublecodingpct"><?= $r["doublecodingpct"];?></td>
+							<td class="editable" data-edittype="project_name" contenteditable><?= $r["project_name"];?></td>
+							<td class="editable acceptnumber" data-edittype="doublecodingpct" contenteditable><?= $r["doublecodingpct"];?></td>
+							<td class="editable acceptnumber" data-edittype="maxresponsespct" contenteditable><?= $r["maxresponsespct"];?></td>
 							<td><?= $r["permissions"];?></td>
 							<td>
   								<button type="button" class="btn btn-success changeproject"><?= _('Change to this project');?></button>
