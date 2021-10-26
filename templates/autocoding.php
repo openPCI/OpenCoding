@@ -26,10 +26,10 @@ $loader = new \Twig\Loader\ArrayLoader([
 ]);
 $twig = new \Twig\Environment($loader);
 
-$q="select * from tasks t where task_id=".$_POST["task_id"]." or group_id=".$_POST["task_id"]." order by group_id";
+$q="select if(t.clone_task_id!=0,tc.task_image,t.task_image) as task_image,if(t.clone_task_id!=0,tc.task_name,t.task_name) as task_name,if(t.clone_task_id!=0,tc.tasktype_variables,t.tasktype_variables) as tasktype_variables,if(t.clone_task_id!=0,tc.coding_rubrics,t.coding_rubrics) as coding_rubrics,if(t.clone_task_id!=0,tc.items,t.items) as items from tasks t left join tasks tc on t.clone_task_id=tc.task_id where t.task_id=".$_POST["task_id"]." or t.group_id=".$_POST["task_id"]." order by t.group_id";
 $result=$mysqli->query($q);
 $task=$result->fetch_assoc();
-$tasksettings=json_decode($task["tasksettings"]);
+$tasksettings==array();//json_decode($task["tasksettings"]);
 $tasksettings["task_image"]=$task["task_image"];
 $tasksettings["task_name"]=$task["task_name"];
 $variables=($tasktype["variables"]?json_decode($tasktype["variables"],true):array());

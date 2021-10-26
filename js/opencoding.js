@@ -603,7 +603,8 @@ function projectedited() {
 function gottests() {
 	$("#newtest").click(function() {
 		var test_name=window.prompt(_("Name of the new test?"))
-		send("newtest","testedited",{test_name:test_name},"backend")
+		if(typeof test_name!="undefined" && test_name.trim().length>0)
+			send("newtest","testedited",{test_name:test_name.trim()},"backend")
 	})
 	$(".uploadresponses").click(function() {get_template("upload",{test_id:$(this).siblings(".test_name").data("test_id"),test_name:$(this).siblings(".test_name").data("test_name"),},"gotupload")})
 	$(".edittest").click(function() {
@@ -665,9 +666,20 @@ function maketasksactive() {
 				send("movetask","testedited",{task_id:task_id,test_id:$(this).children(":selected").val()},"backend")
 			})
 	})
+	$(".clonetask").click(function() {
+			$(this).before($("#tasks"))
+			$("#tasks").unbind("change").change(function() {
+				var task_id=$(this).closest("tr").data("task_id")
+				send("clonetask","testedited",{task_id:task_id,clone_task_id:$(this).children(":selected").val()},"backend")
+			})
+	})
+	$(".resetclone").click(function() {
+			var task_id=$(this).closest("tr").data("task_id")
+			send("resetclone","testedited",{task_id:task_id},"backend")
+	})
 	$(".deletetest").click(function() {
 		if(window.confirm(_("Are you REALLY sure you want to delete this test? YOU WILL LOOSE ALL DATA AND CODING RELATED TO THIS TEST!"))) {
-			var test_id=$(this).closest("tr").data("test_id")
+			var test_id=$(this).siblings(".test_name").data("test_id")
 			send("deletetest","testedited",{test_id:test_id},"backend")
 		}
 	})
@@ -1023,6 +1035,7 @@ function gotcodingmanagement() {
 		$("#addcoders").data("unit_id",$(e.relatedTarget).closest("tr").data("unit_id"))
 		$("#newcoder").focus()
 	})
+	$(".codeempty").click(codeempty)
 	$(".addcoder").click(addcoder)
 	$(".deletecoder").click(deletecoder)
 	$("#addcoders").click(addcoders)
@@ -1040,6 +1053,13 @@ function gotcoder(json) {
 		$("#newcoderdiv").html(newcoder)
 		newcoder.click(addcoder)
 	} else $("#codername").val("")
+}
+function codeempty() {
+	if(window.confirm(_("Do you want to zero-code all empty responses?")))
+		send("codeempty","codeemptydone",{task_id:$(this).closest("tr").data("task_id")},"backend")
+}
+function codeemptydone(json) {
+	showMessage(_("{0} rows affected",json.affected))
 }
 function addcoder() {
 	$("#newcoder").val("")

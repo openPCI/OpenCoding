@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-08-29 23:48+0200\n"
-"PO-Revision-Date: 2021-08-29 23:49+0200\n"
+"POT-Creation-Date: 2021-09-17 09:14+0200\n"
+"PO-Revision-Date: 2021-09-17 09:15+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: da_DK\n"
@@ -94,18 +94,26 @@ msgstr "Variable"
 msgid "Edit"
 msgstr "Rediger"
 
-#: templates/tasktypes.php:81 templates/users.php:135 templates/tests.php:127
+#: templates/tasktypes.php:75
+msgid "Syntax Highlight"
+msgstr "Syntaksfremhævning"
+
+#: templates/tasktypes.php:82 templates/users.php:135 templates/tests.php:127
 #: templates/codermanagement.php:171 templates/codingmanagement.php:142
 msgid "Close"
 msgstr "Luk"
 
-#: templates/tasktypes.php:82 templates/tests.php:128
+#: templates/tasktypes.php:83 templates/tests.php:128
 #: templates/codermanagement.php:172 templates/codingmanagement.php:143
-#: templates/autocoding.php:63
+#: templates/autocoding.php:68
 msgid "Save"
 msgstr "Gem"
 
-#: templates/users.php:10 header.php:84
+#: templates/tasktypes.php:84
+msgid "Save & Close"
+msgstr "Gem og Luk"
+
+#: templates/users.php:10 header.php:85
 msgid "System"
 msgstr "System"
 
@@ -128,11 +136,11 @@ msgstr "Brugernavn"
 msgid "E-mail"
 msgstr "E-mail"
 
-#: templates/users.php:33 templates/users.php:86 templates/projects.php:26
+#: templates/users.php:33 templates/users.php:86 templates/projects.php:27
 msgid "Permissions"
 msgstr "Tilladelser"
 
-#: templates/users.php:34 templates/mytasks.php:24 templates/projects.php:27
+#: templates/users.php:34 templates/mytasks.php:34 templates/projects.php:28
 msgid "Actions"
 msgstr "Handlinger"
 
@@ -254,27 +262,27 @@ msgstr "OpenCoding-administration"
 msgid "Projects"
 msgstr "Projekter"
 
-#: templates/coding.php:120
+#: templates/coding.php:122
 msgid "Flag response."
 msgstr "Marker besvarelse til eftersyn."
 
-#: templates/coding.php:121
+#: templates/coding.php:123
 msgid "This response is used in coder training. Difficulty: "
 msgstr "Denne besvarelse bruges ved kodertræning. Sværhedsgrad: "
 
-#: templates/coding.php:121
+#: templates/coding.php:123
 msgid "Mark response as used in coder training."
 msgstr "Marker besvarelsen til anvendelse i kodertræning."
 
-#: templates/coding.php:154
+#: templates/coding.php:156
 msgid "Code all 0"
 msgstr "Kod alle 0"
 
-#: templates/coding.php:158 templates/autocoding.php:64
+#: templates/coding.php:160 templates/autocoding.php:69
 msgid "Finish"
 msgstr "Afslut"
 
-#: templates/coding.php:163
+#: templates/coding.php:165
 msgid ""
 "Use TAB and SHIFT+TAB to shift forward and back between item-codes. Use "
 "ARROWS to increase and decrease codes. Hit ENTER when in the last item-code "
@@ -284,11 +292,11 @@ msgstr ""
 "PILETASTER til at forøge og formindske koder. Tast ENTER når den sidste item-"
 "kode er angivet for at gå videre til næste besvarelse."
 
-#: templates/coding.php:175
+#: templates/coding.php:177
 msgid "Flagged by:"
 msgstr "Markeret til eftersyn af:"
 
-#: templates/coding.php:178
+#: templates/coding.php:180
 msgid "Add comment"
 msgstr "Tilføj bemærkning"
 
@@ -372,7 +380,7 @@ msgstr "Flyt til"
 msgid "Coding Management"
 msgstr "Kodningsadministration"
 
-#: templates/codermanagement.php:51 templates/mytasks.php:23
+#: templates/codermanagement.php:51 templates/mytasks.php:33
 #: templates/codingmanagement.php:43 templates/training.php:18
 msgid "Test/task name"
 msgstr "Test-/opgavenavn"
@@ -410,27 +418,27 @@ msgstr "Kodere på projektet"
 msgid "Find coder"
 msgstr "Find koder"
 
-#: templates/mytasks.php:19
+#: templates/mytasks.php:29
 msgid "My tasks"
 msgstr "Mine opgaver"
 
-#: templates/mytasks.php:25
+#: templates/mytasks.php:35
 msgid "Coded by you"
 msgstr "Kodet af dig"
 
-#: templates/mytasks.php:26
+#: templates/mytasks.php:36
 msgid "Remaining"
 msgstr "Resterende"
 
-#: templates/mytasks.php:27 templates/codingmanagement.php:48
+#: templates/mytasks.php:37 templates/codingmanagement.php:48
 msgid "Flagged"
 msgstr "Markeret til eftersyn"
 
-#: templates/mytasks.php:38 header.php:67
+#: templates/mytasks.php:58 header.php:68
 msgid "Code"
 msgstr "Kod"
 
-#: templates/mytasks.php:38
+#: templates/mytasks.php:58
 msgid "Revise"
 msgstr "Revider"
 
@@ -442,7 +450,7 @@ msgstr "Nyt projekt"
 msgid "OpenCoding Projects"
 msgstr "OpenCoding-projekter"
 
-#: templates/projects.php:24 header.php:79
+#: templates/projects.php:24 header.php:80
 msgid "Project"
 msgstr "Projekt"
 
@@ -450,11 +458,15 @@ msgstr "Projekt"
 msgid "Double-coding percent"
 msgstr "Dobbelkodningsprocent"
 
-#: templates/projects.php:38
+#: templates/projects.php:26
+msgid "Max responses per task per coder (%)"
+msgstr "Maks. besvarelser per opgave per koder (%)"
+
+#: templates/projects.php:40
 msgid "Change to this project"
 msgstr "Skift til dette projekt"
 
-#: templates/projects.php:39
+#: templates/projects.php:41
 msgid "Delete project"
 msgstr "Slet projekt"
 
@@ -470,15 +482,27 @@ msgstr "Tildelte kodere"
 msgid "Add coder"
 msgstr "Tilføj koder"
 
-#: templates/autocoding.php:60
+#: templates/autocoding.php:15
+msgid "Code this response"
+msgstr "Kod denne besvarelse"
+
+#: templates/autocoding.php:15
+msgid "Code all responses"
+msgstr "Kod alle besvarelser"
+
+#: templates/autocoding.php:16
+msgid "Write a coding script here"
+msgstr "Skriv et kodescript her"
+
+#: templates/autocoding.php:65
 msgid "Add item"
 msgstr "Tilføj item"
 
-#: templates/autocoding.php:133
+#: templates/autocoding.php:138
 msgid "Statistics"
 msgstr "Statistik"
 
-#: templates/autocoding.php:134
+#: templates/autocoding.php:139
 msgid "Update"
 msgstr "Opdater"
 
@@ -527,19 +551,19 @@ msgstr ""
 msgid "Unchanged"
 msgstr "Uændret"
 
-#: header.php:13 header.php:35 header.php:56
+#: header.php:13 header.php:36 header.php:57
 msgid "Human coding of test responses"
 msgstr "Menneskelig kodning af testbesvarelser"
 
-#: header.php:52
+#: header.php:53
 msgid "Change Project"
 msgstr "Skift projekt"
 
-#: header.php:70
+#: header.php:71
 msgid "Train"
 msgstr "Træn"
 
-#: header.php:74
+#: header.php:75
 msgid "Manage"
 msgstr "Administration"
 
@@ -560,7 +584,7 @@ msgstr ""
 msgid "You need to set the flag to send negative values."
 msgstr "Du skal markere til eftersyn for at sende negative værdier."
 
-#: frontend/getresponse.php:146
+#: frontend/getresponse.php:154
 msgid "No more responses"
 msgstr "Ikke flere besvarelser"
 
@@ -584,7 +608,7 @@ msgstr "Brugernavn eller kodeord var forkert"
 msgid "No username"
 msgstr "Ikke noget brugernavn"
 
-#: footer.php:25 footer.php:48
+#: footer.php:25 footer.php:50
 msgid "Cookies"
 msgstr "Cookies"
 
@@ -600,7 +624,7 @@ msgstr "Log ud"
 msgid "Log in"
 msgstr "Log ind"
 
-#: footer.php:49
+#: footer.php:51
 msgid "Contact"
 msgstr "Kontakt"
 

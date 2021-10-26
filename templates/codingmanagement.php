@@ -47,6 +47,7 @@ foreach($qarr as $unittype=>$q) {
 							<th scope="col" colspan="2" class="text-center"><?= _("Agreement");?></th>
 							<th scope="col" class="text-right"><?= _("Flagged");?></th>
 							<th scope="col" class="text-right"><?= _("Resolved");?></th>
+							<th scope="col" class="text-right"><?= _("Actions");?></th>
 							<th scope="col" colspan="2"><?= _("Assigned Coders");?></th>
 						</tr>
 					</thead>
@@ -95,6 +96,7 @@ foreach($qarr as $unittype=>$q) {
 							?></td>
 							<td class="text-right"><?= (($r["coltype"]==2 and $flagged[0]>0)?'<a href="#" class="docode" data-codetype="flaghandling" data-flagstatus="flagged">'. $flagged[0].'</a>':"");?></td>
 							<td class="text-right"><?= (($r["coltype"]==2 and $flagged[1]>0)?'<a href="#" class="docode" data-codetype="flaghandling" data-flagstatus="resolved" >'. $flagged[1].'</a>':"");?></td>
+							<td class=""><?= (($r["coltype"]==2)?'<button class="btn btn-secondary codeempty" >'. _("Zero-code empty responses").'</button>':"");?></td>
 							<td ><?= ($r["coltype"]==2?$coders["task"][$r["unit_id"]].'<button class="btn btn-primary float-right" data-toggle="modal" data-target="#addcodermodal" >'. _("Add coder").'</button>':"");?></td>
 							<?php if($r["coltype"]==1) { ?> <td class="table-info " style="text-align: center;vertical-align: middle;" rowspan="<?= ($r["unitcount"]+1);?>"><button class="btn btn-primary float-right" data-toggle="modal" data-target="#addcodermodal" ><?= _("Add coder");?></button><?= $coders["test"][$r["unit_id"]];?></td><?php }?>
 						</tr>

@@ -3,7 +3,7 @@
 $relative="../";
 include_once($relative."dirs.php");
 include_once($shareddir."database.php");
-checkperm("projectadmin");
+checkperm("codingadmin");
  $log.=print_r($_POST,true);
 $unittype=$_POST["unittype"];
 $unit_id=$_POST["unit_id"];

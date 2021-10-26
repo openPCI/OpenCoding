@@ -6,7 +6,7 @@ checkperm("projectadmin");
 
 $task_ids=json_decode($_POST["tasks"]);
 
-$q='select item_prefix,items,testtaker,codes from tasks t left join responses r on t.task_id=r.task_id left join coded c on r.response_id=c.response_id where t.task_id in ('.implode(",",$task_ids).') and isdoublecode=0';
+$q='select if(t.clone_task_id!=0,tc.item_prefix,t.item_prefix) as item_prefix,if(t.clone_task_id!=0,tc.items,t.items) as items,testtaker,codes from tasks t left join left join tasks tc on t.clone_task_id=tc.task_id left join responses r on t.task_id=r.task_id left join coded c on r.response_id=c.response_id where t.task_id in ('.implode(",",$task_ids).') and isdoublecode=0';
 
 $result=$mysqli->query($q);
 $log.="\n".$q;

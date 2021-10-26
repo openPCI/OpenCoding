@@ -124,8 +124,8 @@ if($task_id) {
 			$result=$mysqli->query($q);
 			$success=($result->num_rows>0);
 			if(!$success) {
-				if ($dodouble) $forcedoublecoding=true;
-				else $avoiddoublecoding=true;
+				if ($dodouble) $avoiddoublecoding=true;
+				else $forcedoublecoding=true;
 			}
 		}
 		if($success) {
