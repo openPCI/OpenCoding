@@ -4,17 +4,23 @@ Human coding of test taker responses to PCI and QTI items. Importing responses, 
 Integrates PCI's in the coding application.
 
 ## Howto
-1. Create a database OpenCoding. Import the tables from opencoding.sql (using phpmyadmin).
+0. Get a webserver with PHP and MySql up and running. 
+	* For example you can install a LAMP, WAMP or MAMP-pacakage, see [Wikipedia's List of Apache–MySQL–PHP packages](https://en.wikipedia.org/wiki/List_of_Apache%E2%80%93MySQL%E2%80%93PHP_packages).
+	* Use [PhpMyAdmin](https://www.phpmyadmin.net/) for database administration
 
-2. Create af file called .htdatabase in a "secrets" folder. Fill in information about your database and user: localhost,opencoding,password,opencoding
+1. Upload all files in this repository to the root folder of your webserver (e.g. c:\wamp\www, /var/www/html)
+	
+2. Create a database called opencoding, give a user access to this database. Import the tables from the file opencoding.sql (using phpmyadmin). And import tasktypes into the tasktypes-table from the file tasktypes.sql
+
+3. Create af file called .htdatabase in a "secrets" folder. Fill in information about your host, user, password and database: localhost,opencoding,password,opencoding
 
 Log in using admin user, no password. Change the password.
 
-3. Go to OpenCoding Admin
+4. Go to OpenCoding Admin
 
 Create a project.
 
-4. Go to Project Admin.
+5. Go to Project Admin.
 
 Import data from csv-files. 
 
@@ -24,7 +30,7 @@ Go to Administer Tests: Upload images, write descriptions and rubrics, define it
 
 Go to users and give yourself Codingadmin permissions
 
-5. Go to Coding Admin
+6. Go to Coding Admin
 
 Invite coders (including yourself). Code some responses and select items for training use. 
 
