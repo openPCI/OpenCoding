@@ -182,7 +182,12 @@ CREATE TABLE `users` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
+--
+-- Data dump for tabellen `users`
+--
 
+INSERT INTO `users` (`user_id`, `username`, `email`, `password`) VALUES
+(1, 'admin', 'admin@edu', '')
 --
 -- Struktur-dump for tabellen `user_permissions`
 --
