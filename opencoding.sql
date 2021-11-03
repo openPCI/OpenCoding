@@ -187,7 +187,7 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`user_id`, `username`, `email`, `password`) VALUES
-(1, 'admin', 'admin@edu', '')
+(1, 'admin', 'admin@edu', '');
 --
 -- Struktur-dump for tabellen `user_permissions`
 --
