@@ -256,7 +256,9 @@ ALTER TABLE `tasks`
 -- Indeks for tabel `tasktypes`
 --
 ALTER TABLE `tasktypes`
-  ADD PRIMARY KEY (`tasktype_id`);
+  ADD PRIMARY KEY (`tasktype_id`),
+  ADD UNIQUE KEY `tasktype_name` (`tasktype_name`);
+
 
 --
 -- Indeks for tabel `tests`
