@@ -26,7 +26,8 @@ $loader = new \Twig\Loader\ArrayLoader([
 ]);
 $twig = new \Twig\Environment($loader);
 
-$q="select if(t.clone_task_id!=0,tc.task_image,t.task_image) as task_image,if(t.clone_task_id!=0,tc.task_name,t.task_name) as task_name,if(t.clone_task_id!=0,tc.tasktype_variables,t.tasktype_variables) as tasktype_variables,if(t.clone_task_id!=0,tc.coding_rubrics,t.coding_rubrics) as coding_rubrics,if(t.clone_task_id!=0,tc.items,t.items) as items from tasks t left join tasks tc on t.clone_task_id=tc.task_id where t.task_id=".$_POST["task_id"]." or t.group_id=".$_POST["task_id"]." order by t.group_id";
+$q="select t.task_id,if(t.clone_task_id!=0,tc.task_image,t.task_image) as task_image,if(t.clone_task_id!=0,tc.task_name,t.task_name) as task_name,if(t.clone_task_id!=0,tc.item_prefix,t.item_prefix) as item_prefix,if(t.clone_task_id!=0,tc.tasktype_variables,t.tasktype_variables) as tasktype_variables,if(t.clone_task_id!=0,tc.coding_rubrics,t.coding_rubrics) as coding_rubrics,if(t.clone_task_id!=0,tc.items,t.items) as items from tasks t left join tasks tc on t.clone_task_id=tc.task_id where t.task_id=".$_POST["task_id"]." or t.group_id=".$_POST["task_id"]." order by t.group_id";
+
 $result=$mysqli->query($q);
 $task=$result->fetch_assoc();
 $tasksettings==array();//json_decode($task["tasksettings"]);
@@ -42,7 +43,7 @@ if($result->num_rows>1) {
 	}
 }
 $tasksettings["subtasks"]=$subtasks;
-
+// print_r($subtasks);
 ?>
 <script src="js/coding.js"></script>
 <script>
@@ -74,6 +75,11 @@ $tasksettings["subtasks"]=$subtasks;
 	<div class="row">
 <!-- 		<div class="content codingarea"> -->
 		<div class="col">
+			<div class="row">
+				<div class="col" >
+				<h6><?= ($task["item_prefix"]?$task["item_prefix"].": ":"").$task["task_name"];?></h6>
+				</div>
+			</div>
 			<div class="row">
 				<div class="col" id="playarea" data-task_id="<?= $_POST["task_id"];?>" data-subtask_ids="<?= implode(",",array_keys($subtasks));?>">
 				<?= 

@@ -31,7 +31,7 @@ if($_POST["inputUser"]) {
 		$log.=print_r($projects,true);
 		$projects=array_diff(array_unique($projects),array(0));
 		$log.=print_r($projects,true);
-		if(!$projects) $warning=_("You are not authorized to work on any projects. Please ask your manager to assign a task to you.");
+		if(!$perms) $warning=_("You are not authorized to work on any projects. Please ask your manager to assign a task to you.");
 		else {
 			$_SESSION["perms"]=$perms;
 			$welcome=_("Welcome back!");
@@ -47,4 +47,4 @@ if($_POST["inputUser"]) {
 	}
  	else $warning=_("Username or password was wrong");
 } else $warning=_("No username");
-echo json_encode(array("log"=>$log,"warning"=>$warning,"user_id"=>$_SESSION["user_id"],"welcome"=>$welcome,"p"=>$_POST["p"],"template"=>$template,"chooseproject"=>$chooseproject));
+echo json_encode(array("log"=>$log,"warning"=>$warning,"user_id"=>$_SESSION["user_id"],"welcome"=>$welcome,"p"=>$_POST["p"],"chooseproject"=>$chooseproject));

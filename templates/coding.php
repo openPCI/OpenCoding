@@ -23,7 +23,7 @@ if($_POST["codetype"]=="code") {
 	$_SESSION["doublecodingpct"]=$reviseddoublecodedpct;
 }
 // echo "revised: " .$reviseddoublecodedpct;
-
+$revise=($_POST["special"]=="revise" or $_POST["special"]=="reviseall");
 $q="select tt.* from tasks t left join tasktypes tt on t.tasktype_id=tt.tasktype_id where task_id=".$_POST["task_id"];
 $result=$mysqli->query($q);
 $tasktype=$result->fetch_assoc();
@@ -36,7 +36,7 @@ $loader = new \Twig\Loader\ArrayLoader([
 ]);
 $twig = new \Twig\Environment($loader);
 
-$q="select t.task_id, if(t.clone_task_id!=0,tc.task_image,t.task_image) as task_image,if(t.clone_task_id!=0,tc.task_name,t.task_name) as task_name,if(t.clone_task_id!=0,tc.tasktype_variables,t.tasktype_variables) as tasktype_variables,if(t.clone_task_id!=0,tc.coding_rubrics,t.coding_rubrics) as coding_rubrics,if(t.clone_task_id!=0,tc.items,t.items) as items from tasks t left join tasks tc on t.clone_task_id=tc.task_id where t.task_id=".$_POST["task_id"]." or t.group_id=".$_POST["task_id"]." order by t.group_id ASC, t.task_id ASC";
+$q="select t.task_id, if(t.clone_task_id!=0,tc.task_image,t.task_image) as task_image,if(t.clone_task_id!=0,tc.task_name,t.task_name) as task_name,if(t.clone_task_id!=0,tc.item_prefix,t.item_prefix) as item_prefix,if(t.clone_task_id!=0,tc.tasktype_variables,t.tasktype_variables) as tasktype_variables,if(t.clone_task_id!=0,tc.coding_rubrics,t.coding_rubrics) as coding_rubrics,if(t.clone_task_id!=0,tc.items,t.items) as items from tasks t left join tasks tc on t.clone_task_id=tc.task_id where t.task_id=".$_POST["task_id"]." or t.group_id=".$_POST["task_id"]." order by t.group_id ASC, t.task_id ASC";
 // echo $q;
 $result=$mysqli->query($q);
 $task=$result->fetch_assoc();
@@ -63,6 +63,7 @@ if($_POST["flagstatus"]) { ?><input type="hidden" id="flagstatus" value="<?= $_P
 // if($_POST["first_id"]) $res["first_id"]=$_POST["first_id"];
 ?>
 <script>
+var firstdone=false;
 window.addEventListener('message', function(event){
   var type = event.data.type;
   if(messageListeners[type])
@@ -103,6 +104,11 @@ function insertResponse(json) {
 <!-- 		<div class="content codingarea"> -->
 		<div class="col">
 			<div class="row">
+				<div class="col" >
+				<h6><?= ($task["item_prefix"]?$task["item_prefix"].": ":"").$task["task_name"];?></h6>
+				</div>
+			</div>
+			<div class="row">
 				<div class="col" id="playarea" data-task_id="<?= $_POST["task_id"];?>" data-subtask_ids="<?= implode(",",array_keys($subtasks));?>">
 				<?= 
 					$twig->render('playarea',$tasksettings);
@@ -119,10 +125,19 @@ function insertResponse(json) {
 			</div>
 		</div>
 		<div class="col" id="codeTable">
+			<?php if($revise) { ?>
+			<div class="row">
+				<div class="col">
+					<button role="button" class="btn btn-info" data-toggle="collapse" data-target=".searchvalue"><?= _("Filter responses");?></button>
+				</div>
+				<input type="text" class="form-control searchvalue collapse" placeholder="<?= _("Search for text in item response");?>" data-item_name="itemtextsearch">
+			</div>
+			<?php } ?>
 			<div class="row">
 				<div class="col">
 					<span class="float-right text-muted" id="flag" title="<?= _("Flag response.");?>"><i class="fas fa-flag"></i></span>
 					<?php if($codingadmin) {?><span class="float-right text-muted mr-2" data-toggle="tooltip" data-placement="top" id="trainingresponse" data-used="<?= _("This response is used in coder training. Difficulty: ");?>" data-notused="<?= _("Mark response as used in coder training.");?>" title=""><i class="fas fa-check-double"></i></span><?php } ?>
+					<div class="row">
 
 					<?php 
 						$itemobj=json_decode($task["items"],true); 
@@ -133,13 +148,15 @@ function insertResponse(json) {
 
 						foreach($itemorder as $item_name) {
 						?>
-							<div class="form-group">
+							<div class="form-group col">
 								<label for="item<?= $item_name;?>"><?= $item_name;?></label>
 								<input type="number" data-item_name="<?= $item_name;?>" class="form-control itemvalue" name="<?= $item_name;?>" placeholder="" min="-1" max="<?= $items[$item_name];?>" step="1" required>
+								<?= ($revise?'<input type="number" data-item_name="'.$item_name.'" class="form-control collapse searchvalue">':''); ?>
 							</div>
 						<?php
 						}
 					?>
+					</div>
 				</div>
 			</div>
 			<!-- Navigation Container -->

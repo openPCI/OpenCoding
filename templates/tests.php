@@ -43,7 +43,7 @@ if($result->num_rows>0) {
 					</thead>
 					<tbody id="tasklist<?= $r["test_id"];?>">
 				<?php
-					$q="select t.*,tc.task_name as clone_task_name,tct.test_name as clone_test_name,count(r.response_id) as rcount,tasktype_name,i.variables from tasks t left join tasks tc on t.clone_task_id=tc.task_id left join tests tct on tc.test_id=tct.test_id left join tasktypes i on i.tasktype_id=t.tasktype_id left join responses r on r.task_id=t.task_id where t.test_id=".$r["test_id"]." GROUP BY 1 order by t.`group_id`";
+					$q="select t.*,tc.task_name as clone_task_name,tct.test_name as clone_test_name,count(r.response_id) as rcount,tasktype_name,i.variables from tasks t left join tasks tc on t.clone_task_id=tc.task_id left join tests tct on tc.test_id=tct.test_id left join tasktypes i on i.tasktype_id=t.tasktype_id left join responses r on r.task_id=t.task_id where t.test_id=".$r["test_id"]." GROUP BY 1 order by t.`group_id`, t.item_prefix, t.task_name";
 // 					echo $q;
 		////////////////
 		// 		Due to this bug: https://bugs.mysql.com/bug.php?id=103225

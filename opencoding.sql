@@ -187,7 +187,7 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`user_id`, `username`, `email`, `password`) VALUES
-(1, 'admin', 'admin@edu', '');
+(1, 'admin', 'admin@opencoding.test', '$2y$10$bXRGSh8UGKTX18jqD4D9auXewKiQPgpxFkei8dL0NOxwc6gKjZvbG');
 --
 -- Struktur-dump for tabellen `user_permissions`
 --
@@ -286,6 +286,9 @@ ALTER TABLE `users`
 ALTER TABLE `user_permissions`
   ADD UNIQUE KEY `unique` (`user_id`,`unittype`,`unit_id`);
 
+  INSERT INTO `user_permissions` (`user_id`, `unittype`, `unit_id`) VALUES
+(1, 'opencodingadmin', 0);
+  
 --
 -- Brug ikke AUTO_INCREMENT for slettede tabeller
 --

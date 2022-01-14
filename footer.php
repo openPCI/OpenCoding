@@ -62,11 +62,15 @@
 <script src="./js/papaparse.min.js"></script>
 
 <script src="./js/jquery-ui.min.js"></script>
-<script src="js/jquery.ui.touch-punch.min.js"></script>
+<script src="./js/jquery.ui.touch-punch.min.js"></script>
+
+<script src="./js/DragDropTouch.js"></script>
+<script src="./js/html5sortable.min.js"></script>
+
 <script src="./js/translate.js"></script>
 <script src="./js/tether.min.js"></script>
 <script src="./js/bootstrap.min.js"></script>
-<script src="./js/bootstrap-timepicker.min.js"></script>
+<!-- <script src="./js/bootstrap-timepicker.min.js"></script> -->
 <script src="./js/luxon.min.js"></script>
 
 <script src="./js/flatpickr.min.js"></script>

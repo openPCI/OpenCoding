@@ -69,9 +69,6 @@ min-height:600px;*/
 width:120px;
 display:inline-block;
 }
-.itemvalue {
-max-width:80px;
-}
 .uploadedimg>img {
 	max-width:75px;
 	max-height:75px;
@@ -121,4 +118,17 @@ table.sticky-column tbody td:first-child {
 	background-color:gray;
 	margin:100px;
 	padding:100px;
+}
+.itemvalue {
+	max-width:80px;
+	min-width:60px;
+}
+
+.searchvalue {
+	background-color:rgb(152,251,152,0.2);
+	border-color:rgb(152,251,152);
+	color:rgb(0,100,0);
+}
+.searchvalue[type=number] {
+		max-width:80px;
 }

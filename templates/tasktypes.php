@@ -7,11 +7,17 @@ $q="select * from tasktypes where 1";
 				
 $result=$mysqli->query($q);
 ?>
+<form id="importtasktypesform">
+	<label class="btn btn-secondary float-right ml-1" id="importtasktypes">
+		<?=_("Import task types");?><input type="file" name="importtasktypes" hidden>
+	</label>
+</form>
 <button class="btn btn-primary float-right" id="newtasktype"><?= _("New task type");?></button>
 <h1><?= _("Task types");?></h1>
 <table class="table sticky-column" id="edittable" data-edittable="tasktypes">
 	<thead class="sticky-top">
-		<tr class="table-light">
+		<tr class="table-light" data-tasktype_id="0">
+		<td><span class="exporttasktype" title="<?= _("Export all tasktypes");?>"><i class="fas fa-upload"></i></span></th>
 		<th scope="col"><?= _("Name");?></th>
 		<th scope="col"><?= _("Manual/auto coding");?></th>
 		<th scope="col"><?= _("Description");?></th>
@@ -29,7 +35,8 @@ $result=$mysqli->query($q);
 	while($r=$result->fetch_assoc()) {
 	?>
 		<tr class="table-light" data-tasktype_id="<?= $r["tasktype_id"];?>" >
-			<th scope="row" class="editable" data-edittype="tasktype_name" contenteditable><?= $r["tasktype_name"];?></th>
+			<td ><span class="exporttasktype" title="<?= _("Export this tasktype");?>"><i class="fas fa-upload"></i></span></td>
+			<th scope="row" class="editable tasktype_name" data-edittype="tasktype_name" contenteditable><?= $r["tasktype_name"];?></th>
 			<td class="manualautotoggle" data-manualauto="<?= $r["manualauto"];?>"><?= _($r["manualauto"]);?></td>
 			<td class="editable" data-edittype="tasktype_description" contenteditable><?= $r["tasktype_description"];?></td>
 			<td class="htmleditable " ><div class="htmleditablediv" id="instructions_<?= $r["tasktype_id"];?>" data-edittype="tasktype_instructions"><?= $r["tasktype_instructions"];?></div></td>
@@ -43,7 +50,7 @@ $result=$mysqli->query($q);
 			echo implode("\n",
 				array_map(
 					function($v,$k) {
-						return '<div><span class="editable first" data-oldvalue="'.$k.'" data-edittype="variables"  data-edittype2="name" contenteditable>'.$k.'</span>: <span class="editable" data-edittype="variables"  data-edittype2="value" contenteditable>'.$v.'</span><span class="deletevariable float-right"><i class="fa fa-trash"></i></span></div>';
+						return '<div><span class="editable first" data-oldvalue="'.$k.'" data-edittype="variables"  data-edittype2="name" contenteditable>'.$k.'</span>: <span class="editable" data-edittype="variables"  data-edittype2="value" contenteditable>'.htmlspecialchars($v,ENT_QUOTES).'</span><span class="deletevariable float-right"><i class="fa fa-trash"></i></span></div>';
 					},
 					$variables,
 					array_keys($variables)

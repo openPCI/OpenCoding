@@ -10,17 +10,20 @@ Integrates PCI's in the coding application.
 
 1. Upload all files in this repository to the root folder of your webserver (e.g. c:\wamp\www, /var/www/html)
 	
-2. Create a database called opencoding, give a user access to this database. Import the tables from the file opencoding.sql (using phpmyadmin). And import tasktypes into the tasktypes-table from the file tasktypes.sql
+2. Create a database called opencoding, give a user access to this database. Import the tables from the file opencoding.sql (using phpmyadmin). 
 
 3. Create af file called .htdatabase in a "secrets" folder. Fill in information about your host, user, password and database: localhost,opencoding,password,opencoding
 
-Log in using admin user, no password. Change the password.
+Log in using user admin, password admin. Change the password.
 
 4. Go to OpenCoding Admin
 
-Create a project.
+Click on Task types, and click on import tasktypes. Select the file tasktypes.csv from the main folder of OpenCoding. 
 
-5. Go to Project Admin.
+
+5. From OpenCoding Admin create a project.
+
+Go to Project Admin.
 
 Import data from csv-files. 
 

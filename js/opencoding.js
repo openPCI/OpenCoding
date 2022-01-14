@@ -179,6 +179,27 @@ function gottasktypes(json) {
 	$(".htmleditable").unbind("click").click(edithtml)
 	$(".editable").unbind("keydown").keydown(isEnter)
 	$(".editable").unbind("blur").on("blur",tasktypeedited)
+	$("#newtasktype").click("click",function() {
+		send("newtasktype","newtasktypecreated",{},"backend")
+	})
+	$("#importtasktypes").change(function() {
+		if(window.confirm(_("If names in the imported tasktypes overlap existing tasktypes, the existing tasktype is overwritten. Continue?"))) {
+			$.ajax({
+				url: './backend/importTasktype.php', 
+				type: 'POST',
+				data: new FormData($('#importtasktypesform')[0]), 
+				processData: false,
+				contentType: false                    
+				}).done(function(res){
+					if(res=="success") newtasktypecreated();
+					else if(res=="notcompatible") window.alert(_("The format of the tasktype was not compatible with your version of OpenCoding."))
+						else console.log(res)
+				}).fail(function(){
+					console.log("An error occurred, the file couldn't be sent!");
+				});
+		}
+	})
+
 	maketasktypesactive()
 }
 function tasktypeedited() {
@@ -210,10 +231,7 @@ function maketasktypesactive() {
 	$(".manualautotoggle").unbind("click").click(togglemanualauto)
 	$(".addvariable").unbind("click").click(addvariable)
 	$(".deletevariable").unbind("click").click(deletevariable)
-	$("#newtasktype").click("click",function() {
-		send("newtasktype","newtasktypecreated",{},"backend")
-	}
-	)
+	$(".exporttasktype").unbind("click").click(doExportTasktype)
 }
 function newtasktypecreated() {
 	get_template("tasktypes",{},"gottasktypes")
@@ -240,6 +258,7 @@ function codeTask(special="") {
 		var codetype=$(this).data("codetype")
 		var remainingresponses=$(this).closest("tr").data("remainingresponses")
 		if(codetype=="revise") special="revise"
+		if(codetype=="reviseall") special="reviseall"
 		var auto=(codetype=="autocode"?"auto":"")
 		get_template(auto+"coding",{task_id:$(this).closest("tr").data("task_id"),special:special,codetype:codetype,remainingresponses:remainingresponses,flagstatus:$(this).data("flagstatus")},"got"+auto+"coding")
 	});
@@ -392,6 +411,8 @@ function flagdone() {}
 function getresponse(next) {
 	console.log(typeof next)
 	var codes=[]
+	var filtercodes=[]
+	var filtertext=""
 	var go=true
 	var nocodes=false
 	var flagged=$("#flag").hasClass("text-danger")
@@ -416,15 +437,21 @@ function getresponse(next) {
 				showWarning(_("The value of {0} is out of range",$(this).data("item_name")))
 			}
 		})
-		if(go && !nocodes)
+		if(go && !nocodes) {
 			codes=$(".itemvalue").map(function() {return {item_name:$(this).data("item_name"),code:parseInt($(this).val())}}).get()
+			if($(".searchvalue:eq(0)").hasClass("show")) {
+				filtercodes=$(".searchvalue").map(function() {if($(this).val()!="" && $(this).data("item_name")!="itemtextsearch") return {item_name:$(this).data("item_name"),code:parseInt($(this).val())}}).get()
+				filtertext=$(".searchvalue[data-item_name=itemtextsearch]").val()
+			}
+		}
 	}
 	if(go) {
 		var flaghandling=($("#flaghandling").val()=="true")
 		var flagstatus=($("#flagstatus").val())
 		var training=($("#training").val()=="true")
 		var revise=($("#revise").val()=="true")
-		send("getresponse","gotresponse",{next:next,task_id:$("#playarea").data("task_id"),response_id:$("#response_id").val(),subtask_ids:$("#playarea").data("subtask_ids"),codes:codes,flagged:flagged,training:training,revise:revise,flaghandling:flaghandling,flagstatus:flagstatus})
+		var reviseall=($("#reviseall").val()=="true")
+		send("getresponse","gotresponse",{next:next,task_id:$("#playarea").data("task_id"),response_id:$("#response_id").val(),subtask_ids:$("#playarea").data("subtask_ids"),codes:codes,filtercodes:filtercodes,filtertext:filtertext,flagged:flagged,training:training,revise:revise,reviseall:reviseall,flaghandling:flaghandling,flagstatus:flagstatus})
 	}
 }
 function gotresponse(json) {
@@ -1164,4 +1191,33 @@ function fillItems() {
 function save() {
     var script=quill.getText(0)
 	data={script:script}
+}
+function doExportTasktype(e) {
+	var formData=new FormData();
+	var tasktype_name =$(e.currentTarget).closest("td").siblings(".tasktype_name").text();
+	var tasktype_id=$(e.currentTarget).closest("tr").data("tasktype_id")
+	formData.append("tasktype_id", tasktype_id);
+	
+  let xhr = new XMLHttpRequest();
+  xhr.responseType = 'arraybuffer';
+  xhr.open('POST', 'backend/exportTasktype.php');
+  xhr.send(formData); 
+
+  xhr.onload = function(e) {
+      if (this.status == 200) {
+          var blob = new Blob([this.response], {type: 'text/csv'});
+          let a = document.createElement("a");
+          a.style = "display: none";
+          document.body.appendChild(a);
+          let url = window.URL.createObjectURL(blob);
+          a.href = url;
+          a.download = (tasktype_name==""?"tasktypes":tasktype_name)+'.csv';
+          a.click();
+          window.URL.revokeObjectURL(url);
+// 		  $("#progressmodal").modal("hide")
+// 		  clearTimeout(progresstimeout)
+      }else{
+          //deal with your error state here
+      }
+  };
 }

@@ -35,7 +35,7 @@ switch($edittype) {
 			$value='JSON_SET(`'.$edittype.'`,'.$path.$oldvalue.'","'.$value.'")';
 	break;
 	case "tasktype_variables":
-		$value='JSON_SET(`tasktype_variables`,"$.'.$variable.'","'.$value.'")';
+		$value='JSON_SET(`tasktype_variables`,"$.'.$variable.'","'.htmlspecialchars_decode($value).'")';
 	break;
 	case "tasktype_id":
 		$q="select variables from tasktypes where tasktype_id=".$value;

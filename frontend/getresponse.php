@@ -7,6 +7,7 @@ include_once($shareddir."database.php");
 // $log.=print_r($_SESSION,true);
 $res=array();
 $codingadmin=$_SESSION["perms"]["codingadmin"][$_SESSION["project_id"]];
+$reviseall=($_POST["reviseall"]=="true");
 $task_id=$_POST["task_id"];
 $finish=($_POST["next"]=="finish");
 if($task_id) {
@@ -34,10 +35,10 @@ if($task_id) {
 			if($hasminus) $warning=_("You need to set the flag to send negative values.");
 			else {
 				$codes=json_encode($_POST["codes"]);
-				if($flaghandling) $q="update coded set codes=CAST('".$codes."' as JSON) where response_id=".$_POST["response_id"]." and coder_id=".$_SESSION["coder_id"];
+				if($flaghandling or $reviseall) $q="update coded set codes=CAST('".$codes."' as JSON) where response_id=".$_POST["response_id"]." and coder_id=".$_SESSION["coder_id"];
 				else $q="insert into coded (response_id,coder_id,codes,isdoublecode) value (".$_POST["response_id"].",".$_SESSION["user_id"].",CAST('".$codes."' as JSON),".($_SESSION["isdoublecode"]?1:0).") on duplicate key update codes=values(codes), code_id=LAST_INSERT_ID(code_id)";
 				$mysqli->query($q);
-				if(!$flaghandling) $_SESSION["code_id"]=$mysqli->insert_id;
+				if(!$flaghandling and !$reviseall) $_SESSION["code_id"]=$mysqli->insert_id;
 				if(!$flaghandling and !$_SESSION["isdoublecode"]) {
 					$_SESSION["remainingresponses"]--;
 					if(!$_SESSION["remainingresponses"]) $finish=true;
@@ -46,13 +47,13 @@ if($task_id) {
 			}
 		}
 	}
-	$revise=($_POST["revise"]=="true" or $_POST["next"]=="<" or ($_SESSION["stoprevision"] and $_SESSION["stoprevision"]>$_SESSION["code_id"]));
+	$revise=($_POST["revise"]=="true" or $reviseall or $_POST["next"]=="<" or ($_SESSION["stoprevision"] and $_SESSION["stoprevision"]>$_SESSION["code_id"]));
 	if(!$revise and $_SESSION["stoprevision"]>0 and $_POST["next"]!="<" and $_SESSION["response_id"][$task_id]!=$_POST["response_id"]) { 
 			$_POST["next"]=$_SESSION["response_id"][$task_id];
 			$_SESSION["response_id"][$task_id]=0;
 			$directtonew=true;
 	}
-	$_SESSION["stoprevision"]=(($revise and $_POST["revise"]!="true")?max($_SESSION["stoprevision"],$_SESSION["code_id"]):0);
+	$_SESSION["stoprevision"]=(($revise and $_POST["revise"]!="true" and !$reviseall)?max($_SESSION["stoprevision"],$_SESSION["code_id"]):0);
 
 // 	if(!$training and $_POST["next"]!="<" and $_SESSION["stoprevision"]>0 and $_SESSION["stoprevision"]==$_SESSION["code_id"]) {
 // 		$revise=$_SESSION["stoprevision"]=0;
@@ -72,7 +73,7 @@ if($task_id) {
 			$_SESSION["isdoublecode"]=($dodouble?1:0);
 			$q='select task_name,r.task_id,response,testtaker,response_time,r.response_id'.
 			($training?'':($dodouble?'':',codes')).
-			($flaghandling?',f.coder_id,flag_id,flagstatus':'').
+			($flaghandling?',f.coder_id,flag_id,flagstatus':($reviseall?',code_id,c.coder_id':'')).
 			(($codingadmin or $training)?',difficulty':'').' 
 				from responses r 
 				'.(($codingadmin or $training or $dodouble)?'left join trainingresponses tr on tr.response_id=r.response_id':'').
@@ -91,7 +92,7 @@ if($task_id) {
 							'(c.coder_id!='.$_SESSION["user_id"].' and c.coder_id IS NOT NULL and tr.response_id is NULL) '
 						:
 							((!$directtonew and ($revise or $direct))?
-								'c.coder_id='.$_SESSION["user_id"].(!$direct?' and code_id ':'')
+								(($codingadmin and $reviseall)?'c.coder_id IS NOT NULL':'c.coder_id='.$_SESSION["user_id"]).(!$direct?' and code_id ':'')
 							:
 								'c.coder_id IS NULL ')
 						)
@@ -104,7 +105,7 @@ if($task_id) {
 						$_POST["next"].(($training or ($revise and !$_POST["codes"]))?"=":"").$_SESSION[$flaghandling?"flag_id":($training?"difficulty":"code_id")]
 					)
 				:
-					($flaghandling?'>0':'')
+					(($flaghandling or $revise)?'>0':'')
 // 					($_POST["response_id"]?
 // 						"=".$_POST["response_id"]
 // 					:
@@ -115,7 +116,9 @@ if($task_id) {
 					' and r.response_id!='.$_POST["response_id"].(!$revise?' and (difficulty>'.$_SESSION["difficulty"].' or r.response_id>'.$_POST["response_id"].')':'')
 				:
 					''
-				).'
+				).
+				($_POST["filtercodes"]?' and JSON_CONTAINS(`codes`,CAST(\''.json_encode($_POST["filtercodes"]).'\' as JSON))':'').
+				($_POST["filtertext"]?' and response LIKE "%'.$_POST["filtertext"].'%"':'').'
 				and 
 				r.task_id='.$task_id.' 
 				order by '.($training?'difficulty':($flaghandling?'flag_id':($revise?'code_id':'RAND()'))).($_POST["next"]=="<"?' DESC':' ASC').'
@@ -131,9 +134,12 @@ if($task_id) {
 		if($success) {
 			$r=$result->fetch_assoc();
 			if(!$revise) $_SESSION["response_id"][$task_id]=$r["response_id"];
-			if($flaghandling) {
+			if($flaghandling or $reviseall) {
 				$_SESSION["coder_id"]=$r["coder_id"];
-				$_SESSION["flag_id"]=$r["flag_id"];
+				if($flaghandling) 
+					$_SESSION["flag_id"]=$r["flag_id"];
+				if($reviseall) 
+					$_SESSION["code_id"]=$r["code_id"];
 			}
 			if($training) {
 				$_SESSION["difficulty"]=$r["difficulty"];

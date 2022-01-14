@@ -6,10 +6,13 @@ checkperm("projectadmin");
 
 $task_ids=json_decode($_POST["tasks"]);
 
-$q='select if(t.clone_task_id!=0,tc.item_prefix,t.item_prefix) as item_prefix,if(t.clone_task_id!=0,tc.items,t.items) as items,testtaker,codes from tasks t left join left join tasks tc on t.clone_task_id=tc.task_id left join responses r on t.task_id=r.task_id left join coded c on r.response_id=c.response_id where t.task_id in ('.implode(",",$task_ids).') and isdoublecode=0';
+$q='select if(t.clone_task_id!=0,tc.item_prefix,t.item_prefix) as item_prefix,if(t.clone_task_id!=0,tc.items,t.items) as items,testtaker,codes from tasks t left join tasks tc on t.clone_task_id=tc.task_id left join responses r on t.task_id=r.task_id left join coded c on r.response_id=c.response_id where t.task_id in ('.implode(",",$task_ids).') and isdoublecode=0';
 
 $result=$mysqli->query($q);
-$log.="\n".$q;
+if(!$result) {
+	echo "ERROR: \n".$q;
+	exit;
+}
 $list=array();
 $allitems=array();
 while($r=$result->fetch_assoc()) {
@@ -44,9 +47,12 @@ foreach($list as $testtaker=>$coded) {
 		$csv[$i][]=(isset($coded[$item])?$coded[$item]:"NA");
 	}
 }
-$tmpout=$secretdir."tmpout".rand().".csv";
-
-$fp = fopen($tmpout, 'w');
+// $tmpout=$secretdir."tmpout".rand().".csv";
+// 
+// $fp = fopen($tmpout, 'w');
+header('Content-Type: text/csv');
+header('Content-disposition: attachment; filename='._("opencoding".rand().".csv"));
+$fp = fopen('php://output', 'w');
 
 foreach ($csv as $fields) {
     fputcsv($fp, $fields,";");
@@ -54,10 +60,8 @@ foreach ($csv as $fields) {
 
 fclose($fp);
 
-header('Content-Type: text/csv');
-header('Content-disposition: attachment; filename='._("opencoding".rand().".csv"));
 // header('Content-Length: ' . filesize($tmpout));
 
-readfile($tmpout);
-unlink($tmpout);
+// readfile($tmpout);
+// unlink($tmpout);
 

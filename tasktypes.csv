@@ -1,0 +1,1088 @@
+manualauto;tasktype_name;tasktype_description;playareatemplate;responseareatemplate;codeareatemplate;tasktype_instructions;insert_script;variables;styles
+manual;Shorttext;"Short text answers";"{% for subtask_name in subtasks %}
+  <div class=""alert alert-secondary"">
+     <span><em>{{subtask_name}}:</em></span>
+     <span data-task_name=""{{subtask_name}}""></span>
+  </div>
+{% endfor %}
+<div class=""alert alert-primary"" data-task_name=""{{task_name}}""></div>
+
+
+";"<img src=""{{task_image}}"">
+";0;;"for(r of json.responses) {	$('[data-task_name=""'+r.task_name+'""]').html(r.response) }";{};
+manual;Brainstorm;Brainstorm;"<div id=""brainstorm""></div>";"<img src=""{{task_image}}"">
+
+
+";0;;"	$(""#brainstorm"").html("""");
+	json.responses[0].response.split(/[|\n]/g).forEach(function(str) {
+		var row = str.split(';');
+		if(row.length !== 3) return;
+		var div = $('<div class=""'+(row[1] != ""{{testtakername}}""?""text-muted"":"""")+'""><strong class=""brainstorm-name"">'+row[1]+'</strong><span>'+row[2]+'</span></div>');
+		$(""#brainstorm"").append(div);   
+	})";"{""testtakername"": ""You""}";"#brainstorm {     height:600px;    overflow:scroll;}"
+manual;Voxelcraft;"Building 3D figures with square blocks";"<iframe width=""800"" height=""600"" src=""{{gameurl}}""></iframe>
+<div>
+  <button class=""btn btn-secondary"" id=""reloadscene"" title=""Reload scene""><i class=""fas fa-redo-alt""></i></button>
+</div>";;0;;"var scene=(json.responses[0].response?JSON.parse(json.responses[0].response).data:[]);
+if(!firstdone) {    
+    onceMessage('ready', function()
+    {        
+        sendMessage('setScene',scene);        
+        firstdone=true;    
+    })
+} else
+    sendMessage('setScene',scene);
+$(""#reloadscene"").click(function() {
+    sendMessage('setScene',scene)
+ })";"{""gameurl"": ""../openPCIs/voxelcraft/game/""}";
+manual;3Droom;"Interior design of 3D rooms";"<iframe width=""800"" height=""600"" src=""{{gameurl}}""></iframe>
+<div>
+  <button class=""btn btn-secondary"" id=""reloadscene"" title=""Reload scene""><i class=""fas fa-redo-alt""></i></button>
+</div>";;0;;"var d=(json.responses[0].response?JSON.parse(json.responses[0].response):[]);
+if(!firstdone) {    
+    onceMessage('ready', function(){
+        sendMessage('loadExercise',d);
+        firstdone=true;    })
+    } else sendMessage('loadExercise',d);
+$(""#reloadscene"").click(function() {
+    sendMessage('loadExercise',d)
+    }
+)";"{""gameurl"": ""../openPCIs/theroom/game/""}";
+auto;"Clean Responses";"Clean responses";"<h2 class=""header"">Categories
+        <button class=""btn btn-sm btn-secondary float-right mt-1"" id=""export"">Export categories</button>
+        <input type=""file"" id=""importfile"" multiple accept=""text/json"" style=""display:none"">
+        <button class=""btn btn-sm btn-secondary float-right mr-1 mt-1"" id=""import"">Import categories</button>
+
+</h2>
+ 	<div>
+ 		<button data-sorttype=""num"" data-sortdirection=""-1"" class=""sortcat btn btn-bw"">Sort by frequency</button>
+ 		<button data-sorttype=""alpha"" data-sortdirection=""1"" class=""sortcat btn btn-bw"">Sort alphabetically</button>
+ 	</div>
+ <div id=""categorylist"" class=""scroller"">
+ 	<dl id=""categories"" class=""categorieswords""></dl>
+ </div>";"
+";"<div class=""header"" >
+ <h2>Words</h2>
+</div>
+<div id=""wordlist"">
+ 	<div >
+ 		<button data-sorttype=""num"" data-sortdirection=""1"" class=""sort btn btn-bw"">Sort by frequency</button>
+ 		<button data-sorttype=""alpha"" data-sortdirection=""1"" class=""sort btn btn-bw"">Sort alphabetically</button>
+ 	</div>
+ 	<div class=""scroller"">
+ 		<dl id=""words"" class=""categorieswords""></dl>
+ 	</div>
+</div>";"<h3>Coding</h3> 					<dl> 						<dt>Double click</dt> 						<dd>Double clicking on a word creates a new category named after that word.</dd> 						<dt>Edit spelling</dt> 						<dd>The categories can be edited by clicking on them.</dd> 						<dt>Drag and drop</dt> 						<dd>Drag words to the category they belong to.</dd> 						<dd>Or drag words to New category to create a new category (same as double clicking).</dd> 						<dt>Sort words</dt> 						<dd>Click on the sort buttons to sort the words numerically or alphabetically.</dd> 						<dt>Save</dt> 						<dd>The current state of coding is saved when you click finish, so you can save and return later.</dd> 					</dl>";"var words
+var leavingCat=false
+function init() {
+	$("".sort"").click(buttonsortwords)
+	$("".sortcat"").click(sortcats)
+	$(""#export"").click(exportdata)
+    $(""#import"").click(function() {$(""#importfile"").click()})
+    $(""#importfile"").change(importdata)
+	if(responses!=null) {
+        prepareCategories(data)
+	}
+}
+function prepareCategories(data) {
+      var resparr=[]
+      for(var i=0;i<responses.length;i++) {
+        for(const p in responses[i].response) {
+          resparr.push(responses[i].response[p])
+        }
+      }
+      //Only include words that has responses (when importing words)
+		if(typeof data.words==""undefined"") data.words={}
+		words=Object.keys(data.words)
+              .filter(key => resparr.includes(key))
+                .reduce((obj, key) => {
+                  obj[key] = data.words[key];
+                  return obj;
+                }, {});
+		buildList()
+		sortwords(""num"",-1)
+}
+function exportdata() {
+	var data={words:words}
+    var hiddenElement = document.createElement('a');
+    hiddenElement.href = 'data:text/json;charset=utf-8,' + JSON.stringify(data);
+    hiddenElement.target = '_blank';
+    hiddenElement.download = 'categories.json';
+    hiddenElement.click();
+}
+function importdata() {
+    var importfile=this.files[0];
+    const reader = new FileReader();
+    reader.onload = (function() { prepareCategories(JSON.parse(reader.result))});
+    reader.readAsText(importfile);
+    
+}
+function save() {
+	data={words:words}
+	//console.log(items)
+    
+	responses=responses.map(function(r) {
+      var response=r.response
+      var len=Math.min(items.length,Object.keys(response).length)
+      for(var i=0;i<len;i++) { 
+      	var item=items[i] //We use items in the order they are created/ordered
+        var task=Object.keys(response)[i] //This might create a mess - object order is not guaranteed...
+  		r[item]=((response[task]!="""" && typeof(words[response[task].trim()])!=""undefined"" && words[response[task].trim()].category!="""")?words[response[task].trim()].category:"""")
+//console.log(i+"": ""+item+"" og ""+task+"" er ""+response[task]+"" blev ""+words[response[task]].category)
+      }
+//console.log(r)
+      return r
+	})
+console.log(responses)
+}
+function updatewords() {
+	$("".word"").each(function() { 
+		var word=$(this).find("".name"").text()
+		var cat=$(this).prevAll("".category"")
+		var category=""""
+		if(cat.length>0) category=cat.first().find("".name"").text()
+		words[word].category=category
+	})
+}
+function sortcats() {
+	var sorttype=$(this).data(""sorttype"")
+	var sortdirection=$(this).data(""sortdirection"")
+	$(this).data(""sortdirection"",sortdirection==1?-1:1)
+	var newcat=$("".newcategory,#lastph"").remove()
+	var elemobj=$(""#categories .category"").map(function() {return $(this).add($(this).nextUntil(""dt""))})
+	var neworder=elemobj.sort(function(a,b) {
+		switch(sorttype) {
+			case ""alpha"": 
+			console.log(sortdirection*$($(a)[0]).children("".name"").text().localeCompare($($(b)[0]).children("".name"").text()))
+				return sortdirection*$($(a)[0]).children("".name"").text().localeCompare($($(b)[0]).children("".name"").text())
+				break
+			case ""num"":
+				var an=Number($($(a)[0]).children("".num"").text())
+				var bn=Number($($(b)[0]).children("".num"").text())
+				console.log(sortdirection*(an>bn?1:an<bn?-1:0))
+				return sortdirection*(an>bn?1:an<bn?-1:0)
+		}
+	})
+	$(""#categories"").html("""")
+	for(var obj of neworder) {
+		for(var obj1 of obj) $(""#categories"").append(obj1)
+	}
+	$(""#categories"").append(newcat)
+ 	$(""#categories .word"").on(""dblclick"",addword)
+
+}
+function buttonsortwords() {
+	var sorttype=$(this).data(""sorttype"")
+	var sortdirection=$(this).data(""sortdirection"")
+	$(this).data(""sortdirection"",sortdirection==1?-1:1)
+	sortwords(sorttype,sortdirection)
+}
+function sortwords(sorttype,sortdirection) {
+	var neworder=$(""#words .word"").sort(function(a,b) {
+		switch(sorttype) {
+			case ""alpha"": 
+				return sortdirection*$(a).find("".name"").text().localeCompare($(b).find("".name"").text())
+				break
+			case ""num"":
+				var an=Number($(a).find("".num"").text())
+				var bn=Number($(b).find("".num"").text())
+				return sortdirection*(an>bn?1:an<bn?-1:0)
+		}
+	})
+	$(""#words"").html(neworder)
+	$(""#words .word"").on(""dblclick"",addword)
+
+}
+function buildList() {
+	// List all unique answers 
+	if(typeof words==""undefined"") {
+		words={}
+	} else {
+		for(const [w,v] of Object.entries(words)) {
+			words[w].instances=0
+		}
+	}
+	for(var r=0;r<responses.length;r++) {
+        for(const p in responses[r].response) {
+    		if(typeof(responses[r].response[p])!=""undefined"" && responses[r].response[p].trim()!="""") {
+    			var word=responses[r].response[p].trim()
+    			if(typeof(words[word])==""undefined"") words[word]={instances:1,category:""""}
+    			words[word].instances+=1
+    		}
+        }
+  	}
+//	sessionStorage.setItem(""words"", JSON.stringify(words)); 
+	showWords()
+}
+function showWords() {
+	// Reset categories
+	$(""#categories"").html('<dt class=""category newcategory"">New Category</dt><dd id=""lastph"">+</dd>')
+	var list=""""
+	for(var w in words) {
+		var word='<dd class=""word""><span class=""name"">'+w+'</span> (<span class=""num"">'+words[w].instances+'</span>)'+'</dd>'
+		var wordelem=$(word)
+		var cat=words[w].category.normalize()
+		if(cat!="""") {
+			var dt=$(""dt"").filter(function(){ return $(this).find("".name"").text().normalize() === cat})
+			if(dt.length==0) {
+				var dt=$("".newcategory"").clone()
+				dt.removeClass(""newcategory"")
+				dt.html(wordelem.html())
+				dt.find("".name"").text(cat)
+				contenteditablename(dt.find("".name""))
+				dt.prependTo(""#categories"")
+			}
+			dt.after(wordelem)
+			updatesum(wordelem)
+		} else list+=word
+	}
+	$(""#words"").html(list)
+sortable(""#words"",{
+		acceptFrom:""#categories"",
+		placeholder: ""<li>&nbsp;</li>"",
+		placeholderClass: ""border border-orange""
+	})
+sortable(""#categories"",{
+		acceptFrom:""#categories,#words"",
+		placeholderClass: ""border border-orange"",
+		placeholder: ""<li>&nbsp;</li>"",
+		items: ""dd"",
+		start: started
+	})
+	$("".word"").on(""dblclick"",addword)
+	
+ sortable('.categorieswords')[0].addEventListener('sortstop', dropped)
+ sortable('#categories')[0].addEventListener('sortstart', started)
+
+
+
+}
+function contenteditablename(elem) {
+	elem.attr(""contenteditable"",true)
+	elem.keydown(function(e) {
+		if(e.keyCode==13) $(this).blur()
+	})
+	elem.on(""blur"",updatewords)
+}
+function addword() {
+	var word=$(this)
+	var dt=$("".newcategory"").clone()
+	dt.removeClass(""newcategory"")
+	dt.html(word.html())
+	
+contenteditablename(dt.find("".name""))
+	dt.appendTo(""#categories"")
+	dt.after(word)
+	updatesum(dt)
+	$("".newcategory"").appendTo(""#categories"")
+	$(""#lastph"").appendTo(""#categories"")
+	updatewords()
+}
+function started(e) {
+console.log(e.detail)
+	var item=$(e.detail.item)
+	leavingCat=item.prev("".category"")
+	console.log(leavingCat)
+}
+function dropped(e) {
+	var word=$(e.detail.item)
+	if(word.prev().length==0 || word.prev().text()==""New Category"" || word.prev().attr(""id"")==""lastph"") {
+		var newcat=$("".newcategory"").clone()
+		newcat.removeClass(""newcategory"")
+		word.before(newcat)
+		newcat.html(word.html())
+		contenteditablename(newcat.find("".name""))
+		$("".newcategory"").appendTo(""#categories"")
+		$(""#lastph"").appendTo(""#categories"")
+	} else { // update number of members
+		updatesum(word)
+	}
+	if(leavingCat && !leavingCat.next().hasClass(""word"")) {
+		leavingCat.remove()
+	} else updatesum(word)
+	leavingCat=false
+	updatewords()
+}
+function updatesum(word) {
+	var cat=word.prevAll("".category"").index() // First previous category
+	var last=word.nextAll("".category"").index() // Last previous category
+	var members=0
+	for(var i=cat+1;i<last;i++) members+=Number($($(""#categories"").children().get(i)).find("".num"").text())
+	$($(""#categories"").children().get(cat)).find("".num"").text(members)
+
+}";{};".placeholder {
+	width:100px;
+	height:20px;
+	background-color:#f8f9fa;
+	border-style:solid;
+	border-width:1px;
+	border-color:#CCC;
+}
+dd {
+	padding-left:15px;
+}
+.scroller {
+	max-height:700px;
+	overflow:scroll;
+	resize:vertical;
+}
+.header {
+	height:40px;
+	padding: 0px 15px 4px 15px;
+	margin: 20px 0px 20px 0px ;
+	background-color:#f8f9fa;
+	border-style:solid;
+	border-width:1px;
+	border-color:#CCC;
+}
+
+.border-orange  { border-color: #ff851b }
+.bg-orange  { background-color: #ff851b }
+.bg-black, .bg-dark-gray   { background-color: #111 }
+.border-black  { border-color: #111 }
+.border {
+  border-style: solid;
+  border-width: 1px;
+  border-color: rgba(0,0,0,.125);
+}"
+auto;"3DRoom Auto";"Use a script to auto-code 3D room responses.";"<iframe width=""100%"" height=""600"" src=""{{gameurl}}""></iframe>
+";"<div><button id=""rescoreThisBtn"" class=""btn btn-success"">Code this response</button><button id=""rescoreAllBtn"" class=""btn btn-success float-right"">Code all responses</button></div>
+<div class=""quill"" id=""codingscript"" style=""width:100%; max-height:400px;"" placeholder=""Write a coding script here""></div>
+
+";;;"var currentRow=0;
+function init() {
+	if(typeof responses!=""undefined"") {
+        quill.setContents([
+        { insert: (typeof data.script!=""undefined""?data.script:'function score(){\r  return {}\r}')+'&slashn;'},//, attributes: {'code-block':true}}, //Did not format html ...
+        ]);    
+        quill.formatLine(0,quill.getLength(),""code-block"",true)
+        
+        onceMessage('ready', function(){
+            loadCurrentRow()
+          });
+      $("".nextautoresponse"").click(function() {
+        currentRow+=($(this).data(""next"")=="">""?1:-1)
+        if(currentRow<0) currentRow=responses.length
+        if(currentRow>responses.length) currentRow=0
+        loadCurrentRow()
+      })
+      $(""#rescoreThisBtn"").click(function() {
+        loadCurrentRow()
+      })
+      $(""#rescoreAllBtn"").click(function() {
+            currentRow=-1;
+            next();
+      })
+	}
+}
+
+function next(){
+      currentRow++;
+//   console.log(""rowno ""+rowno)
+      if(currentRow >= responses.length) {
+        currentRow = 0;
+        loadCurrentRow();
+        showMessage(""Autocoding completed"")
+      } else {
+          recalculateRoom(currentRow,next);
+      }
+}
+
+function loadCurrentRow() {
+  sendMessage('setScoringFunction',quill.getText(0));
+  $(""#response_id"").val(responses[currentRow].response_id)
+  recalculateRoom(currentRow,fillItems);
+}
+function fillItems() {
+  $("".itemvalue"").each(function() {
+    var val=responses[currentRow][$(this).data(""item_name"")]
+    $(this).val(val?val:0)
+  })
+}
+function recalculateRoom(rowNo, callback){
+//     
+    var response=responses[rowNo].response
+    if(!response || response.length==0) {
+        $(""#waiticon"").hide()
+        callback();
+    } else {
+        onceMessage('rescore', function(event){
+            responses[rowNo] = Object.assign(responses[rowNo],JSON.parse(event.data.value).score);
+            $(""#waiticon"").hide()
+            setTimeout(callback, 10);
+        });
+        try {
+            var resp=response[Object.keys(response)[0]]
+            var thisdata = JSON.parse(resp.length>0?resp:""{\"data\":[]}"");
+            $(""#waiticon"").show()
+            sendMessage('rescore', thisdata);
+        } catch(e){
+            console.log('JSON PARSE ERROR', e);
+            // Remove the listener created in onceMessage
+            $(""#waiticon"").hide()
+            messageListeners['rescore'].pop()
+            callback();
+        }
+    }
+}
+
+
+function save() {
+    var script=quill.getText(0)
+	data={script:script}
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+";"{""gameurl"": ""../openPCIs/theroom/game/"", ""definition"": ""definition.json""}";
+auto;"Voxelcraft Auto";"Use script to auto-code Voxelcraft responses.";"<iframe width=""100%"" height=""600"" src=""{{gameurl}}""></iframe>
+
+";"<div><button id=""rescoreThisBtn"" class=""btn btn-success"">Code this response</button><button id=""rescoreAllBtn"" class=""btn btn-success float-right"">Code all responses</button></div>
+<div class=""quill"" id=""codingscript"" style=""width:100%; max-height:400px;"" placeholder=""Write a coding script here""></div>
+
+
+
+
+
+
+";;;"var currentRow=0;
+function init() {
+	if(typeof responses!=""undefined"") {
+        quill.setContents([
+        { insert: (typeof data.script!=""undefined""?data.script:'function score(){\r  return {}\r}')+'&slashn;'},//, attributes: {'code-block':true}}, //Did not format html ...
+        ]);    
+        quill.formatLine(0,quill.getLength(),""code-block"",true)
+        
+        onceMessage('ready', function(){
+            loadCurrentRow()
+          });
+      $("".nextautoresponse"").click(function() {
+        currentRow+=($(this).data(""next"")=="">""?1:-1)
+        if(currentRow<0) currentRow=responses.length
+        if(currentRow>responses.length) currentRow=0
+        loadCurrentRow()
+      })
+      $(""#rescoreThisBtn"").click(function() {
+        loadCurrentRow()
+      })
+      $(""#rescoreAllBtn"").click(function() {
+            currentRow=-1;
+            next();
+      })
+	}
+}
+
+function next(){
+      currentRow++;
+//   console.log(""rowno ""+rowno)
+      if(currentRow >= responses.length) {
+        currentRow = 0;
+        loadCurrentRow();
+        showMessage(""Autocoding completed"")
+      } else {
+          recalculateVoxelcraft(currentRow,next);
+      }
+}
+
+function loadCurrentRow() {
+  sendMessage('setScoringFunction',quill.getText(0));
+  $(""#response_id"").val(responses[currentRow].response_id)
+  recalculateVoxelcraft(currentRow,fillItems);
+}
+function fillItems() {
+  $("".itemvalue"").each(function() {
+    $(this).val(responses[currentRow][$(this).data(""item_name"")])
+  })
+}
+function recalculateVoxelcraft(rowNo, callback){
+//     
+    var response=responses[rowNo].response
+    if(!response || response.length==0) {
+      response='{""data"":[]}'
+    }
+        onceMessage('rescore', function(event){
+            //console.log('rescore', event.data.value);
+            responses[rowNo] = Object.assign(responses[rowNo],event.data.value.score);
+            //console.log(responses[rowNo])
+            //console.log(""hiding"")
+            $(""#waiticon"").hide()
+            setTimeout(callback, 10);
+        });
+        try {
+            var resp=response[Object.keys(response)[0]]
+            var thisdata = JSON.parse(resp.length>0?resp:""{\"data\":[]}"");
+//            console.log(thisdata)
+            $(""#waiticon"").show()
+            sendMessage('rescore', thisdata);
+        } catch(e){
+            console.log('JSON PARSE ERROR', e);
+            // Remove the listener created in onceMessage
+            //console.log(""hiding"")
+            $(""#waiticon"").hide()
+            messageListeners['rescore'].pop()
+            callback();
+        }
+}
+
+
+function save() {
+    var script=quill.getText(0)
+	data={script:script}
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+";"{""gameurl"": ""../openPCIs/voxelcraft/game/""}";
+auto;"MC Auto";"Code correct response in TAO MC interaction";;;;"<h2>Response-variables</h2><p>Responses are in the response-object. Access responses from a task using</p><pre class=""ql-syntax"" spellcheck=""false"">var resp=response[taskname] 
+</pre><h3>Multiple Choice-functions</h3><pre class=""ql-syntax"" spellcheck=""false"">makeMC(resp) 
+</pre><p>Creates an object from TAO's Multiple Choice-interaction. You don't have to run the responses through this function. scoreMC does it for you.</p><pre class=""ql-syntax"" spellcheck=""false"">scoreMC(resp,correct=[])
+</pre><p>Scores a Multiple Choice from TAO. Give the correct choices as an array. </p><pre class=""ql-syntax"" spellcheck=""false"">scoreSC(resp,correct=[])
+</pre><p>Scores a Single Choice from TAO. Give the correct choices as an array.</p>";"///////////////////////
+// MC-functions
+function makeMC(resp) {
+  // MC is in a format that is simlar to JSON, but we need to convert it a little...
+  resp=(resp==""""?""[]"":resp.replace(/'/g,""\""").replace(/;/g,"",""))
+  try {
+    return JSON.parse(resp)
+  } catch(e) {
+    var error=_(""Error in JSON. response_id: <b>{0}</b> resp: <pre style=\"overflow:scroll;max-height:30px\">{1}</pre>. Message: {2}<br>"",$(""#response_id"").val(),resp,e.message)
+    warnings+=error
+    return {}
+  }
+
+}
+function scoreMC(resp,correct=[]) {
+  if(typeof resp !== 'object') resp=makeMC(resp)
+  return (resp.filter(value => correct.indexOf(value)>-1).length)
+}
+function scoreSC(resp,correct=[]) {
+  return (correct.indexOf(resp)>-1?1:0)
+}";{};
+auto;"Match Auto";;;;;"<h2>Response-variables</h2><p>Responses are in the response-object. Access responses from a task using</p><pre class=""ql-syntax"" spellcheck=""false"">var resp=response[taskname] 
+</pre><h3>Match-functions</h3><pre class=""ql-syntax"" spellcheck=""false"">makeMatch(resp, variablesInColumns=false) 
+</pre><p>Creates an object from TAO's Match-interaction. You don't have to run the responses through this function. scoreMatch does it for you.</p><pre class=""ql-syntax"" spellcheck=""false"">scoreMatch(resp,identifier,correct=[],variablesInColumns = false)
+</pre><p>Scores a Match from TAO. Give the identifier which should be matched with the correct choices. Choices is given as an array. If you want to transpose the object, use variablesInColumns.</p>";"///////////////////////
+// Match-functions
+function makeMatch(resp, variablesInColumns=false) {
+ // Match is in a format that is simlar to JSON, but we need to convert it a little...
+ resp=(resp==""""?""{}"":resp.replace(/; /g,"","").replace(/ /g,"":"").replace(""["",""{"").replace(""]"",""}"").replace(/([0-9a-z_]+)/gi,'""$1""'))
+if(variablesInColumns) {
+  resp=resp.replace(/("".*?""):("".*?"")/g,""$2:$1"")
+}
+ try {
+return JSON.parse(resp)
+} catch(e) {
+var error=_(""Error in JSON. response_id: <b>{0}</b> resp: <pre style=\"overflow:scroll;max-height:30px\">{1}</pre>. Message: {2}<br>"",$(""#response_id"").val(),resp,e.message)
+warnings+=error
+return {}
+}
+}
+function scoreMatch(resp,identifier,correct=[],variablesInColumns = false) {
+if(typeof resp !== 'object') resp=makeMatch(resp,variablesInColumns)
+ return (correct.indexOf(resp[identifier])>-1?1:0)
+}
+
+";{};
+auto;"Gap Match Auto";;;;;"<h2>Response-variables</h2><p>Responses are in the response-object. Access responses from a task using</p><pre class=""ql-syntax"" spellcheck=""false"">var resp=response[taskname] 
+</pre><h2>Gap Match Functions</h2><pre class=""ql-syntax"" spellcheck=""false"">makeTextGapMatch(resp)
+</pre><p>Creates a GapMatch-object. You don't have to call makeTextGapMatch - textInGap does it for you.</p><pre class=""ql-syntax"" spellcheck=""false"">textInGap(resp,text,gaps,noWhereElse=true)
+</pre><p>Test if a text is put in one of the slots given as a string or an array of strings. NowWhereElse=true only awards points if the text is not in another slot as well.</p>";"///////////////////////
+// GapMatch-functions
+function makeTextGapMatch(resp) {
+ // GapMatch is in a format that is simlar to JSON, but we need to convert it a little...
+ resp=(resp==""""?""{}"":resp.replace(/[0-9]+\./g,""""))//.replace(/'/g,""\""").replace(/;/g,"",""))
+ try {
+return JSON.parse(resp)
+} catch(e) {
+var error=_(""Error in JSON. response_id: <b>{0}</b> resp: <pre style=\"overflow:scroll;max-height:30px\">{1}</pre>. Message: {2}<br>"",$(""#response_id"").val(),resp,e.message)
+warnings+=error
+return {}
+}
+}
+
+function textInGap(resp,text,gaps,noWhereElse=true) {
+ if(typeof resp !== 'object') resp=makeTextGapMatch(resp)
+if(typeof gaps!='object') gaps=[gaps]
+ var isIn=false	
+ for(gap of gaps) {
+   if(typeof resp[gap]!=""undefined"" && resp[gap].indexOf(text)>-1) {
+      isIn=true
+      break
+   }
+ }
+ if(isIn && noWhereElse) {
+   var gaps=Object.keys(resp).filter(x => !gaps.includes(x));
+   for(gap of gaps) {
+      if(typeof resp[gap]!=""undefined"" && resp[gap].indexOf(text)>-1) {
+         isIn=false
+         break
+      }
+   }
+ }
+ return isIn?1:0;
+}
+
+function posInGap(resp,text,gap) {
+ if(typeof resp !== 'object') resp=makeTextGapMatch(resp)
+ posIn=typeof resp[gap]!=""undefined""?resp[gap].indexOf(text):0
+ return(posIn<0?0:posIn)
+}";{};
+auto;"Gantt Auto";;"<link rel=""stylesheet"" href=""{{gameurl}}ganttjs/ganttjs.css"">
+<script src=""{{gameurl}}ganttjs/gantt.js""></script>
+   <div class=""gantt"">
+   </div>";"<div><button id=""rescoreThisBtn"" class=""btn btn-success"">Code this response</button><button id=""rescoreAllBtn"" class=""btn btn-success float-right"">Code all responses</button></div>
+<div class=""quill"" id=""codingscript"" style=""width:100%; max-height:400px;"" placeholder=""Write a coding script here""></div>";;"<h2>Response-variables</h2><p>Responses are in the response-object. Access responses from a task using</p><pre class=""ql-syntax"" spellcheck=""false"">var resp=response[taskname] 
+</pre><h2>Gantt Functions</h2><pre class=""ql-syntax"" spellcheck=""false"">makeGantt(resp,names=[],timespan=30,timeFormat=""d/M H:mm"")
+</pre><p>Makes a Gantt-object to be manipulated with these functions:</p><pre class=""ql-syntax"" spellcheck=""false"">isBefore(gantt,a=[],b=[],whichA=""all"",whichB=""all"",orEqual=false,strict=true,strictAfter=true)
+
+isFirst(gantt,a="""",which=""all"",orEqual=false,strict=true) 
+
+isAfter(gantt,a=[],b=[],whichA=""all"",whichB=""all"",orEqual=false,strict=true)
+
+isLast(gantt,a=[],which=""all"",orEqual=false,strict=true) 
+
+isOverlap(gantt,a="""",b=[],whichA=""any"",whichB=""any"") 
+
+noOverlap(gantt,a=[],b=[]) 
+
+numSlots(gantt,a="""") 
+
+getTime(gantt,a=[],which=""start"",humanReadable=false) 
+
+getMinTime(gantt,a,which,strict=true)
+
+getMaxTime(gantt,a,which,strict=true) 
+
+getDuration(gantt,a) 
+</pre>";"///////////////////////
+// Ganttchart options
+var ganttchart
+     var options = {
+       period: {{period}},
+       weekDays: {{weekDays}},
+       months:{{months}},
+       dayStart: {{dayStart}},
+dayEnd: {{dayEnd}},
+       disableWeekends: {{disableWeekends}},
+       startDate: ""{{startDate}}"",
+       useHours: {{useHours}},
+	useHalfHours:{{useHalfHours}},
+//hourIncrement:{{hourIncrement}},
+showTimeRange:{{showTimeRange}},
+weekNumHack:{{weekNumHack}},
+       tasks: ""{{tasks}}"".split("";"").map(t=>t.split("":""))
+     }
+
+
+function codeCurrentRow() {
+ $(""#response_id"").val(responses[currentRow].response_id)
+response=getresp()
+$("".timeslot.selected"").removeClass(""selected"").css(""background-color"","""")
+ responses[currentRow] = Object.assign(responses[currentRow],codeScript(response))
+// Draw gantt chart
+$("".gantt"").html("""")
+ganttchart=new GanttJS(document.querySelector('.gantt'), options)
+var resp=response[Object.keys(response)[0]]
+if(resp.length>0) {
+	ganttchart.setResult(JSON.parse(resp.replace(/'/g,'""')).response)
+}
+	 fillItems()
+}
+function getresp() {
+	var resp=responses[currentRow].response
+	//var resp=response[Object.keys(response)[0]]
+	return resp
+}
+
+
+///////////////////////
+// Gantt-coding
+function makeGantt(gantt,names=[],timespan=30,timeFormat=""d/M H:mm"") { // https://moment.github.io/luxon////parsing?id=table-of-tokens
+ //Create object
+ var ganttobj={gantt:{},names:names,timespan:timespan,timeFormat:timeFormat}
+if(gantt.length==0) return   ganttobj
+ // Extract intervals from JSON
+ ganttarr=JSON.parse(gantt.replace(/'/g,'""')).response
+ //Explode to list of lists
+ ganttarr=ganttarr.split("";"")
+ //Give rows names and split rows
+ for(var i=0;i<ganttarr.length;i++) {
+    ganttobj.gantt[names[i]]=ganttarr[i].split("", "").map(function(x) {return x.split("" - "").map(function (t) {return DateTime.fromFormat(t,timeFormat)}).flat()}).flat()
+ }
+return ganttobj
+}
+function isBefore(gantt,a=[],b=[],whichA=""all"",whichB=""all"",orEqual=false,strict=true,strictAfter=true) {
+   //strictAfter is only used internally to control strict from isAfter
+   if(whichA==""last"") whichA=""all"" //Just to help the designer
+   if(whichB==""first"") whichB=""all"" //do.
+   if(typeof b!=""object"") b=[b]
+   if(typeof a!=""object"") a=[a]      
+   var res=1
+   for(var i of a) {
+         if(typeof gantt.gantt[i]==""undefined"") {
+			if(strictAfter) return 0; else aval=-1
+		} else {
+            var aval=(whichA==""all""?gantt.gantt[i][gantt.gantt[i].length-1]:(whichA==""first""?gantt.gantt[i][0]:gantt.gantt[i][whichA])) // All, first or Given number
+		}
+      for(var j of b) {
+		 if(typeof gantt.gantt[j]==""undefined"") {
+            if(strict) return 0; else bval=Infinity
+		} else {
+            var bval=(whichB==""all""?gantt.gantt[j][gantt.gantt[j].length-1]:(whichB==""last""?gantt.gantt[j][0]:gantt.gantt[j][whichB])) // All, last or Given number
+		}
+            var thisres=orEqual?aval <= bval:aval < bval
+            res=typeof thisres==""undefined""?0:res & thisres
+      }
+   }
+   return(res)
+}
+
+function isFirst(gantt,a="""",which=""all"",orEqual=false,strict=true) {
+ var res=1
+ for(var i of gantt.names) {
+   if(a!=i && !isBefore(gantt,a,i,which,""all"",orEqual,strict)) {
+      res=0
+      break
+   }
+ }
+ return(res)
+}
+
+function isAfter(gantt,a=[],b=[],whichA=""all"",whichB=""all"",orEqual=false,strict=true) {
+   return isBefore(gantt,b,a,whichB,whichA,orEqual,true,strict)
+}
+
+function isLast(gantt,a=[],which=""all"",orEqual=false,strict=true) {
+   var res=1
+   for(i of gantt.names) {
+       if(a!=i) res=(res & isAfter(gantt,a,i,which,""all"",orEqual,strict))
+   }
+   return(res)
+}
+
+
+// @param whichA/whichB for isOverlap: any: one or more a/b elements overlap, all: all a/b elements need to overlap, first/first: First a/b needs to overlap, last/last: Last a/b needs to overlap, or use number (or sequence)
+// @rdname isBefore
+// @export
+function isOverlap(gantt,a="""",b=[],whichA=""any"",whichB=""any"") {
+   if(typeof gantt.gantt[a] == ""undefined"") return 0
+   if(typeof b!=""object"") b=[b]
+   var res=whichA==""all""
+   var aval
+   switch(whichA) {
+      case ""all"": 
+      case ""any"":
+         aval=gantt.gantt[a] // Test all elements
+         break
+      case ""first"":
+         aval=gantt.gantt[a][1] // First
+         break
+      case ""last"":
+         aval=gantt.gantt[a][gantt.gantt[a].length-1] // Last 
+         break
+      default:
+         aval=gantt.gantt[a][whichA] // Given number (or sequence)
+   }
+   if(typeof aval!=""undefined"") {
+      for(i of b) {
+         var ival
+         switch(whichB) {
+            case ""all"": 
+            case ""any"":
+               ival=gantt.gantt[i] // Test all elements
+               break
+            case ""first"":
+               ival=gantt.gantt[i][1] // First
+               break
+            case ""last"":
+               ival=gantt.gantt[i][gantt.gantt[i].length-1] // Last 
+               break
+            default:
+               ival=gantt.gantt[i][whichB] // Given number (or sequence)
+         }
+		if(typeof ival==""undefined"") return 0
+         var AinI=//aval.filter(x=>ival.includes(x))
+						aval.filter(x=>ival.filter(y=>{return y==x}))
+         res=(whichA==""any"" || whichB==""any"")?
+               res | AinI.length>0:
+               whichA==""all""?
+                  res & AinI.length==ival.length:
+                  res | AinI.length==ival.length 
+      }
+   }
+   return(res?1:0)
+}
+
+//noOverlap only if there is actually elements that could have overlapped.
+//b: character or vector of characters
+// @rdname isBefore
+// @export
+function noOverlap(gantt,a=[],b=[]) {
+   if(typeof gantt.gantt[a] == ""undefined"") return 0
+   if(typeof b!=""object"") b=[b]
+   var res=1
+   for(i of b) {
+		if(typeof gantt.gantt[i]==""undefined"") return 0
+      res=res & (gantt.gantt[a].length>0 & gantt.gantt[i].length>0?
+        	       gantt.gantt[a].filter(x=>gantt.gantt[i].filter(y=>{return y==x})).length>0:
+        	       0)
+   }
+   return (res)   
+}
+
+// numSlots
+//
+// @param gantt a gantt object (created by makeGantt)
+// @param a an element
+//
+// @return Returns number of time slots - also counting non-connected slots
+// @export
+//
+// @examples 
+// response=""{'response':'1/8 10:30 - 1/8 12:30;1/8 13:00 - 1/8 14:00;1/8 11:30 - 1/8 12:30'}""
+// gantt=makeGantt(response,names=c(""waitress"",""actor"",""pianist""),timespan=30,timeFormat=""%d/%m %H:%M"")
+// numSlots(gantt,""actor"")
+function numSlots(gantt,a="""") {
+//console.log(a+"" er ""+typeof gantt.gantt[a])
+ return (typeof gantt.gantt[a]==""undefined""?0:gantt.gantt[a].length)
+}
+
+// Get start or end time of an element
+//
+// @param gantt A gantt object (created by makeGantt)
+// @param a an element
+// @param which start, end
+// @param humanReadable If true, time is given in human readable format
+//
+// @return
+// @export
+//
+// @examples
+// response=""{'response':'1/8 10:30;1/8 13:00 - 1/8 14:00;1/8 11:30 - 1/8 12:30'}""
+// gantt=makeGantt(response,names=c(""waitress"",""actor"",""pianist""),timespan=30,timeFormat=""%d/%m %H:%M"")
+// getTime(gantt,""waitress"",which=""end"",humanReadable=true)
+// getTime(gantt,""actor"",which=""end"",humanReadable=true)
+function getTime(gantt,a=[],which=""start"",humanReadable=false) {
+   if(typeof a!=""object"") a=[a]
+   if(typeof gantt.gantt[a]==""undefined"") return(NaN)
+   var time=(which==""start""?gantt.gantt[a][0].valueOf():gantt.gantt[a][gantt.gantt[a].length-1].valueOf()+gantt.timespan*60)
+   return (humanReadable?time.toFormat(gantt.timeFormat):time)
+}
+
+// Get the minimum/maximum start/end time among elements
+//
+// @param gantt A gantt object (created by makeGantt)
+// @param a a vector of elements to compare
+// @param which Which time to compare (""start"" or ""end"")
+// @param strict If true and an element among the compared is not present, NA is returned. 
+//
+// @return Returns minimum/maximum time in seconds of the earliest/latest element starting/ending
+// @export
+//
+// @examples
+// response=matrix(c(""{'response':'1/8 17:00;;1/8 17:00 - 1/8 18:00;1/8 18:00, 1/8 20:00 - 1/8 21:00;1/8 20:30;1/8 20:00 - 1/8 20:30;1/8 19:30 - 1/8 20:30'}""))
+// gantt=makeGantt(response,names=c(""waitress"",""actor"",""pianist"",""bartender"",""cleaning"",""ticketer"",""musician""),timespan=30,timeFormat=""%d/%m %H:%M"")
+// getMinTime(gantt,c(""pianist"",""bartender""),which=""start"")
+// getMaxTime(gantt,c(""actor"",""bartender""),which=""end"",strict=false)
+// getMaxTime(gantt,""actor"",which=""end"")
+// as.difftime(getMaxTime(gantt,c(""pianist"",""bartender""),which=""end"")-getMinTime(gantt,c(""pianist"",""bartender""),which=""start""),units = ""secs"")
+// 
+function getMinTime(gantt,a,which,strict=true) {
+   if(typeof a!=""object"") a=[a]
+   return a.map(i=>getTime(gantt,i,which)).reduce((x,y)=>Math.min(x,y),Infinity)
+}
+// a is a vector of names
+// @rdname getMinTime
+// @export
+function getMaxTime(gantt,a,which,strict=true) {
+   if(typeof a!=""object"") a=[a]
+   return a.map(i=>getTime(gantt,i,which)).reduce((x,y)=>Math.max(x,y),0)
+}
+
+// Get duration
+//
+// @param gantt A gantt object (created by makeGantt)
+// @param a An element
+//
+// @return Returns duration in seconds
+// @export
+//
+// @examples
+// response=matrix(c(""{'response':'1/8 17:00;1/8 17:00 - 1/8 17:30;1/8 17:00 - 1/8 18:00;1/8 17:00, 1/8 18:00, 1/8 19:00, 1/8 20:00;1/8 20:30;1/8 20:00 - 1/8 20:30;1/8 19:30 - 1/8 20:30'}""))
+// gantt=makeGantt(response2,names=c(""waitress"",""actor"",""pianist"",""bartender"",""cleaning"",""ticketer"",""musician""),timespan=30,timeFormat=""%d/%m %H:%M"")
+// getDuration(gantt,""actor"")
+// getDuration(gantt,""waitress"")
+// getDuration(gantt,""bartender"")
+// getDuration(gantt,""cleaning"")
+
+function getDuration(gantt,a) {
+ return numSlots(gantt,a)*gantt.timespan*60
+}";"{""tasks"": ""Task 1:red;Task 2:green;Task 3:blue"", ""dayEnd"": ""15"", ""months"": ""true"", ""period"": ""7"", ""gameurl"": ""../openPCIs/ganttchart/runtime/"", ""dayStart"": ""9"", ""useHours"": ""true"", ""weekDays"": ""true"", ""startDate"": ""2018-08-01"", ""weekNumHack"": ""false"", ""useHalfHours"": ""false"", ""showTimeRange"": ""false"", ""disableWeekends"": ""true""}";
+manual;"Draw Route";;"<link rel=""stylesheet"" href=""{{gameurl}}css/base.css"">
+<script src=""{{gameurl}}svgmap.js""></script>
+<div id=""resultdiv""></div>
+<div id=""svgmap"" class=""svgmap"">
+</div>";"<img src=""{{task_image}}"">";;;"$('#svgmap').html("""")
+var d=(json.responses[0].response?JSON.parse(json.responses[0].response):[]);
+var svgmap;
+     $(function(){
+
+         svgmap = new SvgMap({
+           element: document.getElementById('svgmap'),
+           dotResolution: {{dotResolution}},
+           pathLayer: '{{pathLayer}}',
+           svg: $('<div/>').html(""{{svgimage}}"").text(),
+           poi: {{POI}},
+           editorCallback: (window.editor_mode || true) ? function(point){
+           } : false,
+           pathCallback: function(result){
+             console.log(result);
+           }
+         });
+		svgmap.setResult(d)
+		$(""#resultdiv"").html(""POI: ""+d.poi.join("", "")+""<br>Score: ""+Object.keys(d.score).map(function(k,i) { return k+"": ""+d.score[k];}).join("", ""))
+     });";"{""POI"": ""{}"", ""gameurl"": ""../openPCIs/svgmap/runtime/"", ""svgimage"": ""<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?><svg>  <g id=\"layer1\">    </g></svg>"", ""pathLayer"": ""layer1"", ""dotResolution"": ""5""}";
+auto;"Draw Route Auto";;"<link rel=""stylesheet"" href=""{{gameurl}}css/base.css"">
+<script src=""{{gameurl}}svgmap.js""></script>
+<div id=""resultdiv""></div>
+<div id=""svgmap"" class=""svgmap"">
+</div>";"<div><button id=""rescoreThisBtn"" class=""btn btn-success"">Code this response</button><button id=""rescoreAllBtn"" class=""btn btn-success float-right"">Code all responses</button></div>
+<div class=""quill"" id=""codingscript"" style=""width:100%; max-height:400px;"" placeholder=""Write a coding script here""></div>";;;"function codeCurrentRow() {
+ $(""#response_id"").val(responses[currentRow].response_id)
+
+  $('#svgmap').html("""")
+var response=getresp()
+  var svgmap;
+  svgmap = new SvgMap({
+     element: document.getElementById('svgmap'),
+     dotResolution: {{dotResolution}},
+     pathLayer: '{{pathLayer}}',
+     svg: $('<div/>').html(""{{svgimage}}"").text(),
+     poi: {{POI}},
+     editorCallback: (window.editor_mode || true) ? function(point){
+     } : false,
+     pathCallback: function(result){
+        console.log(result);
+     }
+  });
+  svgmap.setResult(response)
+  $(""#resultdiv"").html(""POI: ""+response.poi.join("", "")+""<br>Score: ""+Object.keys(response.score).map(function(k,i) { return k+"": ""+response.score[k];}).join("", ""))
+ for(task_name in response) {   $('[data-task_name=""'+task_name+'""]').html(response[task_name]) }
+ responses[currentRow] = Object.assign(responses[currentRow],codeScript(response))
+ fillItems() 
+}
+
+function getresp() {
+var response=responses[currentRow].response
+var resp=response[Object.keys(response)[0]]
+
+if(typeof resp==""undefined"" || resp.length==0) {
+resp='{""path"":[],""poi"":[],""score"":{}}'
+}
+//console.log(resp)
+try {
+var d = JSON.parse(resp);
+} catch {
+ showWarning(""There is an error in the data in response ""+currentRow+"": ""+resp)
+var d={""path"":[],""poi"":[],""score"":{}}
+}
+return d
+}";"{""POI"": ""{}"", ""gameurl"": ""../openPCIs/svgmap/runtime/"", ""svgimage"": ""<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?><svg>  <g id=\"layer1\">    </g></svg>"", ""pathLayer"": ""layer1"", ""dotResolution"": ""5""}";
+auto;"Order Auto";;;;;"<h2>Response-variables</h2><p>Responses are in the response-object. Access responses from a task using</p><pre class=""ql-syntax"" spellcheck=""false"">var resp=response[taskname] 
+</pre><h3>Order-functions</h3><pre class=""ql-syntax"" spellcheck=""false"">makeOrder(resp) 
+</pre><p>Creates an object from TAO's Order-interaction. You don't have to run the responses through this function. isBefore, isAfter and isOrderSet do it for you.</p><pre class=""ql-syntax"" spellcheck=""false"">isBefore(resp,a,b=[])
+isAfter(resp,a,b=[])
+</pre><p>Return the count of a before or after elements given in b.</p><pre class=""ql-syntax"" spellcheck=""false"">isOrderSet(resp,a)
+</pre><p>Return 1 if a is inserted, 0 otherwise.</p>";"///////////////////////
+// Order-functions
+function makeOrder(resp) {
+ // Order is in a format that is simlar to JSON, but we need to convert it a little...
+ resp=(resp==""""?""[]"":resp.replace(/; /g,"","").replace(/'/g,""\""").replace(""<"",""["").replace("">"",""]""))
+ try {
+return JSON.parse(resp)
+} catch(e) {
+var error=_(""Error in JSON. response_id: <b>{0}</b> resp: <pre style=\"overflow:scroll;max-height:30px\">{1}</pre>. Message: {2}<br>"",$(""#response_id"").val(),resp,e.message)
+warnings+=error
+return {}
+}
+}
+function isOrderBefore(resp,a,b) {
+	if(typeof resp !== 'object') resp=makeOrder(resp)
+	if(typeof b!=""object"") b=[b]
+	var res=b.filter(x=>resp.indexOf(a)<resp.indexOf(x)).length
+	return res
+}
+function isOrderAfter(resp,a,b) {
+	if(typeof resp !== 'object') resp=makeOrder(resp)
+	if(typeof b!=""object"") b=[b]
+	var res=b.filter(x=>resp.indexOf(a)>resp.indexOf(x)).length
+	return res
+}
+function isOrderSet(resp,a) {
+	if(typeof resp !== 'object') resp=makeOrder(resp)
+	var res=resp.indexOf(a)>-1?1:0
+	return res
+}";{};
