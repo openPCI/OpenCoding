@@ -2,13 +2,10 @@ manualauto;tasktype_name;tasktype_description;playareatemplate;responseareatempl
 manual;Shorttext;"Short text answers";"{% for subtask_name in subtasks %}
   <div class=""alert alert-secondary"">
      <span><em>{{subtask_name}}:</em></span>
-     <span data-task_name=""{{subtask_name}}""></span>
+     <pre data-task_name=""{{subtask_name}}""></pre>
   </div>
 {% endfor %}
-<div class=""alert alert-primary"" data-task_name=""{{task_name}}""></div>
-
-
-";"<img src=""{{task_image}}"">
+<div class=""alert alert-primary""><pre data-task_name=""{{task_name}}""></pre></div>";"<img src=""{{task_image}}"">
 ";0;;"for(r of json.responses) {	$('[data-task_name=""'+r.task_name+'""]').html(r.response) }";{};
 manual;Brainstorm;Brainstorm;"<div id=""brainstorm""></div>";"<img src=""{{task_image}}"">
 
@@ -88,10 +85,10 @@ function prepareCategories(data) {
       var resparr=[]
       for(var i=0;i<responses.length;i++) {
         for(const p in responses[i].response) {
-          resparr.push(responses[i].response[p])
+          resparr.push(responses[i].response[p].trim())
         }
       }
-      //Only include words that has responses (when importing words)
+      //Only include words that have responses (when importing words)
 		if(typeof data.words==""undefined"") data.words={}
 		words=Object.keys(data.words)
               .filter(key => resparr.includes(key))
@@ -133,7 +130,7 @@ function save() {
 //console.log(r)
       return r
 	})
-console.log(responses)
+//console.log(responses)
 }
 function updatewords() {
 	$("".word"").each(function() { 
@@ -153,13 +150,13 @@ function sortcats() {
 	var neworder=elemobj.sort(function(a,b) {
 		switch(sorttype) {
 			case ""alpha"": 
-			console.log(sortdirection*$($(a)[0]).children("".name"").text().localeCompare($($(b)[0]).children("".name"").text()))
+//			console.log(sortdirection*$($(a)[0]).children("".name"").text().localeCompare($($(b)[0]).children("".name"").text()))
 				return sortdirection*$($(a)[0]).children("".name"").text().localeCompare($($(b)[0]).children("".name"").text())
 				break
 			case ""num"":
 				var an=Number($($(a)[0]).children("".num"").text())
 				var bn=Number($($(b)[0]).children("".num"").text())
-				console.log(sortdirection*(an>bn?1:an<bn?-1:0))
+//				console.log(sortdirection*(an>bn?1:an<bn?-1:0))
 				return sortdirection*(an>bn?1:an<bn?-1:0)
 		}
 	})
@@ -217,35 +214,38 @@ function buildList() {
 function showWords() {
 	// Reset categories
 	$(""#categories"").html('<dt class=""category newcategory"">New Category</dt><dd id=""lastph"">+</dd>')
-	var list=""""
+	var list='<span class=""word"">&nbsp;</span>' //To make sortable active on an empty wordlist	
 	for(var w in words) {
-		var word='<dd class=""word""><span class=""name"">'+w+'</span> (<span class=""num"">'+words[w].instances+'</span>)'+'</dd>'
-		var wordelem=$(word)
-		var cat=words[w].category.normalize()
-		if(cat!="""") {
-			var dt=$(""dt"").filter(function(){ return $(this).find("".name"").text().normalize() === cat})
-			if(dt.length==0) {
-				var dt=$("".newcategory"").clone()
-				dt.removeClass(""newcategory"")
-				dt.html(wordelem.html())
-				dt.find("".name"").text(cat)
-				contenteditablename(dt.find("".name""))
-				dt.prependTo(""#categories"")
-			}
-			dt.after(wordelem)
-			updatesum(wordelem)
-		} else list+=word
+		if(w.trim().length>0) {
+			var word='<dd class=""word""><span class=""name"">'+w.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/""/g, '&quot;')+'</span> (<span class=""num"">'+words[w].instances+'</span>)'+'</dd>'
+			var wordelem=$(word)
+			var cat=words[w].category.normalize()
+			if(cat!="""") {
+				var dt=$(""dt"").filter(function(){ return $(this).find("".name"").text().normalize() === cat})
+				if(dt.length==0) {
+					var dt=$("".newcategory"").clone()
+					dt.removeClass(""newcategory"")
+					dt.html(wordelem.html())
+					dt.find("".name"").text(cat)
+					contenteditablename(dt.find("".name""))
+					dt.prependTo(""#categories"")
+				}
+				dt.after(wordelem)
+				updatesum(wordelem)
+			} else list+=word
+		}
 	}
 	$(""#words"").html(list)
 sortable(""#words"",{
 		acceptFrom:""#categories"",
-		placeholder: ""<li>&nbsp;</li>"",
-		placeholderClass: ""border border-orange""
+		placeholder: ""<dd>&nbsp;</dd>"",
+		placeholderClass: ""border border-orange"",
+		items: ""dd""
 	})
 sortable(""#categories"",{
 		acceptFrom:""#categories,#words"",
+		placeholder: ""<dd>&nbsp;</dd>"",
 		placeholderClass: ""border border-orange"",
-		placeholder: ""<li>&nbsp;</li>"",
 		items: ""dd"",
 		start: started
 	})
@@ -279,10 +279,10 @@ contenteditablename(dt.find("".name""))
 	updatewords()
 }
 function started(e) {
-console.log(e.detail)
+//console.log(e.detail)
 	var item=$(e.detail.item)
 	leavingCat=item.prev("".category"")
-	console.log(leavingCat)
+	//console.log(leavingCat)
 }
 function dropped(e) {
 	var word=$(e.detail.item)
@@ -345,18 +345,20 @@ dd {
   border-width: 1px;
   border-color: rgba(0,0,0,.125);
 }"
-auto;"3DRoom Auto";"Use a script to auto-code 3D room responses.";"<iframe width=""100%"" height=""600"" src=""{{gameurl}}""></iframe>
-";"<div><button id=""rescoreThisBtn"" class=""btn btn-success"">Code this response</button><button id=""rescoreAllBtn"" class=""btn btn-success float-right"">Code all responses</button></div>
+auto;"3DRoom Auto";"Use a script to auto-code 3D room responses.";"<div id=""resultdiv""></div>
+<iframe width=""100%"" height=""600"" src=""{{gameurl}}""></iframe>";"<div><button id=""rescoreThisBtn"" class=""btn btn-success"">Code this response</button><button id=""rescoreAllBtn"" class=""btn btn-success float-right"">Code all responses</button></div>
 <div class=""quill"" id=""codingscript"" style=""width:100%; max-height:400px;"" placeholder=""Write a coding script here""></div>
 
 ";;;"var currentRow=0;
 function init() {
 	if(typeof responses!=""undefined"") {
-        quill.setContents([
-        { insert: (typeof data.script!=""undefined""?data.script:'function score(){\r  return {}\r}')+'&slashn;'},//, attributes: {'code-block':true}}, //Did not format html ...
-        ]);    
-        quill.formatLine(0,quill.getLength(),""code-block"",true)
-        
+		if(!runCustomCoding) quill.disable()
+		else {
+        	quill.setContents([
+	        { insert: (typeof data.script!=""undefined""?data.script:'function score(){\r  return {}\r}')+'&slashn;'},//, attributes: {'code-block':true}}, //Did not format html ...
+    	    ]);    
+    	    quill.formatLine(0,quill.getLength(),""code-block"",true)
+		}        
         onceMessage('ready', function(){
             loadCurrentRow()
           });
@@ -406,7 +408,7 @@ function recalculateRoom(rowNo, callback){
         $(""#waiticon"").hide()
         callback();
     } else {
-        onceMessage('rescore', function(event){
+		onceMessage('rescore', function(event){
             responses[rowNo] = Object.assign(responses[rowNo],JSON.parse(event.data.value).score);
             $(""#waiticon"").hide()
             setTimeout(callback, 10);
@@ -414,6 +416,7 @@ function recalculateRoom(rowNo, callback){
         try {
             var resp=response[Object.keys(response)[0]]
             var thisdata = JSON.parse(resp.length>0?resp:""{\"data\":[]}"");
+$(""#resultdiv"").html(""Pre-scored: ""+Object.keys(thisdata.score).map(function(k,i) { return k+"": ""+thisdata.score[k];}).join("", ""))      
             $(""#waiticon"").show()
             sendMessage('rescore', thisdata);
         } catch(e){
@@ -430,48 +433,9 @@ function recalculateRoom(rowNo, callback){
 function save() {
     var script=quill.getText(0)
 	data={script:script}
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-";"{""gameurl"": ""../openPCIs/theroom/game/"", ""definition"": ""definition.json""}";
-auto;"Voxelcraft Auto";"Use script to auto-code Voxelcraft responses.";"<iframe width=""100%"" height=""600"" src=""{{gameurl}}""></iframe>
-
-";"<div><button id=""rescoreThisBtn"" class=""btn btn-success"">Code this response</button><button id=""rescoreAllBtn"" class=""btn btn-success float-right"">Code all responses</button></div>
+}";"{""gameurl"": ""../openPCIs/theroom/game/"", ""definition"": ""definition.json""}";
+auto;"Voxelcraft Auto";"Use script to auto-code Voxelcraft responses.";"<div id=""resultdiv""></div>
+<iframe width=""100%"" height=""600"" src=""{{gameurl}}""></iframe>";"<div><button id=""rescoreThisBtn"" class=""btn btn-success"">Code this response</button><button id=""rescoreAllBtn"" class=""btn btn-success float-right"">Code all responses</button></div>
 <div class=""quill"" id=""codingscript"" style=""width:100%; max-height:400px;"" placeholder=""Write a coding script here""></div>
 
 
@@ -482,11 +446,10 @@ auto;"Voxelcraft Auto";"Use script to auto-code Voxelcraft responses.";"<iframe 
 ";;;"var currentRow=0;
 function init() {
 	if(typeof responses!=""undefined"") {
-        quill.setContents([
-        { insert: (typeof data.script!=""undefined""?data.script:'function score(){\r  return {}\r}')+'&slashn;'},//, attributes: {'code-block':true}}, //Did not format html ...
-        ]);    
-        quill.formatLine(0,quill.getLength(),""code-block"",true)
-        
+	        quill.setContents([
+    	    { insert: (typeof data.script!=""undefined""?data.script:'function score(){\r  return {}\r}')+'&slashn;'},//, attributes: {'code-block':true}}, //Did not format html ...
+    	    ]);    
+    	    quill.formatLine(0,quill.getLength(),""code-block"",true)
         onceMessage('ready', function(){
             loadCurrentRow()
           });
@@ -519,20 +482,21 @@ function next(){
 }
 
 function loadCurrentRow() {
-  sendMessage('setScoringFunction',quill.getText(0));
+	  sendMessage('setScoringFunction',quill.getText(0));
   $(""#response_id"").val(responses[currentRow].response_id)
   recalculateVoxelcraft(currentRow,fillItems);
 }
-function fillItems() {
-  $("".itemvalue"").each(function() {
-    $(this).val(responses[currentRow][$(this).data(""item_name"")])
-  })
-}
+//function fillItems() {
+//  $("".itemvalue"").each(function() {
+//    $(this).val(responses[currentRow][$(this).data(""item_name"")])
+//  })
+//}
 function recalculateVoxelcraft(rowNo, callback){
 //     
     var response=responses[rowNo].response
-    if(!response || response.length==0) {
-      response='{""data"":[]}'
+//console.log(response)
+    if(typeof response==""undefined"" || response.length==0) {
+      response='{""dummy"":{""data"":[]}}'
     }
         onceMessage('rescore', function(event){
             //console.log('rescore', event.data.value);
@@ -545,9 +509,10 @@ function recalculateVoxelcraft(rowNo, callback){
         try {
             var resp=response[Object.keys(response)[0]]
             var thisdata = JSON.parse(resp.length>0?resp:""{\"data\":[]}"");
-//            console.log(thisdata)
+            //console.log(thisdata)
+			$(""#resultdiv"").html(typeof thisdata.score==""undefined""?"""":""Pre-scored: ""+Object.keys(thisdata.score).map(function(k,i) { return k+"": ""+thisdata.score[k];}).join("", ""))     
             $(""#waiticon"").show()
-            sendMessage('rescore', thisdata);
+   	        sendMessage('rescore', thisdata);
         } catch(e){
             console.log('JSON PARSE ERROR', e);
             // Remove the listener created in onceMessage
@@ -562,40 +527,7 @@ function recalculateVoxelcraft(rowNo, callback){
 function save() {
     var script=quill.getText(0)
 	data={script:script}
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-";"{""gameurl"": ""../openPCIs/voxelcraft/game/""}";
+}";"{""gameurl"": ""../openPCIs/voxelcraft/game/""}";
 auto;"MC Auto";"Code correct response in TAO MC interaction";;;;"<h2>Response-variables</h2><p>Responses are in the response-object. Access responses from a task using</p><pre class=""ql-syntax"" spellcheck=""false"">var resp=response[taskname] 
 </pre><h3>Multiple Choice-functions</h3><pre class=""ql-syntax"" spellcheck=""false"">makeMC(resp) 
 </pre><p>Creates an object from TAO's Multiple Choice-interaction. You don't have to run the responses through this function. scoreMC does it for you.</p><pre class=""ql-syntax"" spellcheck=""false"">scoreMC(resp,correct=[])
@@ -1085,4 +1017,20 @@ function isOrderSet(resp,a) {
 	if(typeof resp !== 'object') resp=makeOrder(resp)
 	var res=resp.indexOf(a)>-1?1:0
 	return res
+}";{};
+auto;"Generic Autocoding";;;;;"<p>To extract prescored variables, use </p><pre class=""ql-syntax"" spellcheck=""false"">extractPrescored(resp)
+</pre><p><br></p>";;{};
+manual;Drawing;;"<img id=""drawing"" src="""">
+{% for subtask_name in subtasks %}
+<div class=""alert alert-secondary"">
+<span><em>{{subtask_name}}:</em></span>
+<pre data-task_name=""{{subtask_name}}""></pre>
+</div>
+{% endfor %}";;;;"var imgsrc=json.responses.pop().response
+$(""#drawing"").attr(""src"",imgsrc)
+// Texts?
+console.log(json.responses)
+for(r of json.responses) {	
+console.log(r.response)
+	$('[data-task_name=""'+r.task_name+'""]').html(r.response) 
 }";{};
