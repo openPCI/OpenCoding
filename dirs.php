@@ -31,13 +31,16 @@ if(!$_SESSION["locale"]) {
 	$_SESSION["locale"]=$langs[$preferred];
 }
 $locale=$_SESSION["locale"];
-putenv("LANGUAGE=".$locale.".UTF-8");
-setlocale(LC_ALL,$locale.".UTF-8",$locale);
-$domain="messages";
-$pathToDomain = __DIR__ . "/locale";
-$realpath=bindtextdomain($domain, $pathToDomain);
-bind_textdomain_codeset($domain,"UTF-8");
-
+if(function_exists("bindtextdomain")) {
+	putenv("LANGUAGE=".$locale.".UTF-8");
+	setlocale(LC_ALL,$locale.".UTF-8",$locale);
+	$domain="messages";
+	$pathToDomain = __DIR__ . "/locale";
+	$realpath=bindtextdomain($domain, $pathToDomain);
+	bind_textdomain_codeset($domain,"UTF-8");
+} else { # If gettext doesn't work...
+	function _($s) {return $s;};
+}
 $results = textdomain($domain);
 $lang=explode("_",$locale)[0];
 $dateformat=array("en"=>"Y/m/d","da"=>"d-m-Y")[$lang];

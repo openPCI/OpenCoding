@@ -530,10 +530,13 @@ function gotdownload() {
 		cb.prop("checked",all)
 		cb.prop("indeterminate",some)
 	})
+	$("#alltasks").click(function() {
+		$(".taskcheck,.testcheck").prop("checked",$(this).prop("checked"))
+	})
 	$("#doDownload").click(doDownload)
 }
 function doDownload() {
-var tasks=$(".taskcheck").map(function() { return $(this).data("task_id") }).get()
+var tasks=$(".taskcheck:checked").map(function() { return $(this).data("task_id") }).get()
 
 // 	initprogress("scoresheet")
 	var formData=new FormData();
@@ -1121,7 +1124,7 @@ var codeScript
 var warnings=""
 function init() {
 	if(typeof responses!="undefined") {
-      if(typeof data.script!="undefined") var script=data.script
+      if(typeof data.script!="undefined" && data.script.trim()!="") var script=data.script
       else {
         var script=''
         for(var i=0; i<Object.keys(responses[0].response).length;i++) {
@@ -1146,12 +1149,12 @@ function init() {
         if(currentRow>responses.length) currentRow=0
         codeScript=setScript()
         codeCurrentRow()
-        updatestats()
+        
       })
       $("#rescoreThisBtn").click(function() {
         codeScript=setScript()
         codeCurrentRow()
-        updatestats()
+        
       })
       $("#rescoreAllBtn").click(function() {
          codeScript=setScript()
@@ -1162,7 +1165,7 @@ function init() {
              codeCurrentRow();
            }
            showWait(false)
-           updatestats()
+           
            if(warnings.length>0) showWarning(warnings,10000)
          },100)
       })
@@ -1186,8 +1189,15 @@ function fillItems() {
   $(".itemvalue").each(function() {
     $(this).val(responses[currentRow][$(this).data("item_name")])
   })
+  updatestats()
 }
-
+function extractPrescored(resp) {
+	if(typeof resp!="object") 
+	try {resp=JSON.parse(resp)}
+	catch {return {}}
+	return resp.score
+	
+}
 function save() {
     var script=quill.getText(0)
 	data={script:script}

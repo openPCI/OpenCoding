@@ -20,13 +20,22 @@ while($start<count($resp)) {
 	},array_slice($resp,$start,$start+$slicelen)));
 	$q='INSERT INTO coded (response_id,codes,coder_id) VALUES '.$values.' ON DUPLICATE KEY UPDATE codes=VALUES(codes)';
 	$mysqli->query($q);
-	$log.="\n".$q;
+// 	$log.="\n".$q;
 	$start+=$slicelen;
 }
-$q="UPDATE tasks set task_data=CAST('".$mysqli->real_escape_string($_POST["data"])."' as JSON) where task_id=".$_POST["task_id"];
-$log.="\n".$q;
+$q="select JSON_STORAGE_SIZE(CAST('".$mysqli->real_escape_string($_POST["data"])."' as JSON))>@@GLOBAL.max_allowed_packet as toobig";
+// $log.="\n".$q;
 $result=$mysqli->query($q);
-
+if($result->fetch_assoc()["toobig"]==1) $warning.=_("Trying to save a JSON document which too big. Set the MYSQL global variable 'max_allowed_packet' to a higher value.");
+else {
+	//This is a giant hack to solve problem of JSON not updating in large JSON document with small changes...
+// 	$q="UPDATE tasks set task_data=CAST('{}' as JSON) where task_id=".$_POST["task_id"];
+// 	$log.="\n".$q;
+// 	$result=$mysqli->query($q);
+	$q="UPDATE tasks set task_data=CAST('".$mysqli->real_escape_string($_POST["data"])."' as JSON) where task_id=".$_POST["task_id"];
+// 	$log.="\n".$q;
+	$result=$mysqli->query($q);
+}
 $res["log"]=$log;
 $res["warning"]=$warning;
 echo json_encode($res);

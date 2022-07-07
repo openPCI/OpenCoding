@@ -31,7 +31,7 @@ $res["responses"]=array();
 if($result) {
 	while($r=$result->fetch_assoc()) {
 		$response=array("response_id"=>$r["response_id"],"response"=>array($task["task_name"]=> $r["response"]));
-		if($_POST["subtask_ids"]) $response["response"]=array_merge($response["response"],json_decode($r["subtasks"],true));
+		if($_POST["subtask_ids"] and is_array(json_decode($r["subtasks"],true))) $response["response"]=array_merge($response["response"],json_decode($r["subtasks"],true));
 		$res["responses"][]=$response;
 	}
 }

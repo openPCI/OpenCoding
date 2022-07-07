@@ -6,10 +6,16 @@ include_once($shareddir."database.php");
 $q="select * from tests where project_id=".$_SESSION["project_id"];
 $result=$mysqli->query($q);
 	?>
-<?php 
+<div class="container">
+
+	<?php 
 if($result->num_rows==0) echo _("You don't have any tests in this project. Upload data to create tests.");
 else {
 	?>
+	<div>
+		<input type="checkbox" class="form-check-input testcheck" id="alltasks">
+		<label class="form-check-label" for="alltasks"><?= _("Select all tasks");?></label>
+	</div>
 	<ul>
 	<?php
 	while($r=$result->fetch_assoc()) {
@@ -19,7 +25,7 @@ else {
 			<label class="form-check-label" for="task_<?= $r["test_id"];?>"><?= $r["test_name"];?></label>
 			<ul>
 			<?php
-				$q="select * from tasks where test_id=".$r["test_id"]." GROUP BY 1 order by `group_id`";
+				$q="select * from tasks where test_id=".$r["test_id"]." and `group_id`=0";
 				
 				
 				$result1=$mysqli->query($q);
@@ -44,3 +50,4 @@ else {
 ?>
 
 <button type="button" class="btn btn-success" id="doDownload"><?= _("Download");?></button>
+</div>
