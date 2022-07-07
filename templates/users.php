@@ -65,9 +65,9 @@ else $all=$result->fetch_all(MYSQLI_ASSOC);
 		</div>
 	</div>
 	<?php
-	$q='(SELECT u.user_id,u.username,u.email,group_concat(t.test_name separator ", ") as permissions, 2 as permtype from users u left join assign_test p on u.user_id=p.coder_id left join tests t on p.test_id=t.test_id where t.project_id='.$_SESSION["project_id"].' group by 1 order by username )
+	$q='(SELECT u.user_id,u.username,u.email,group_concat(t.test_name separator ", ") as permissions, 2 as permtype from users u left join assign_test p on u.user_id=p.coder_id left join tests t on p.test_id=t.test_id '.($_SESSION["project_id"]?'where t.project_id='.$_SESSION["project_id"]:'').' group by 1 order by username )
 	UNION
-	(SELECT u.user_id,u.username,u.email,group_concat(concat("<b>",t.test_name,"</b>: ",tt.task_name) separator ", ") as permissions, 3 as permtype from users u left join assign_task p on u.user_id=p.coder_id left join tasks tt on tt.task_id=p.task_id left join tests t on tt.test_id=t.test_id where t.project_id='.$_SESSION["project_id"].' group by 1 order by username )
+	(SELECT u.user_id,u.username,u.email,group_concat(concat("<b>",t.test_name,"</b>: ",tt.task_name) separator ", ") as permissions, 3 as permtype from users u left join assign_task p on u.user_id=p.coder_id left join tasks tt on tt.task_id=p.task_id left join tests t on tt.test_id=t.test_id '.($_SESSION["project_id"]?'where t.project_id='.$_SESSION["project_id"]:'').' group by 1 order by username )
 	order by username';
 	
 // 	echo $q;
