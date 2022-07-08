@@ -6,7 +6,12 @@ var maximgheight=800
 var data
 var items
 var responses
-	
+var matrixformat
+var itemnamecolno
+var responsecolno
+var itemnamecol
+var responsecol
+
 $(function() {
 	$("#showloginform").click(function () {get_template("login",{},"loginready")})
 	var p=window.location.search.replace(/.*[?&]p=([^&]*)(&|$).*/,"$1")
@@ -500,8 +505,15 @@ function gotresponse(json) {
 	}
 }
 function gotupload() {
-	$("#datafile").change(function() {readCols(colsread,1)})
+	matrixformat="wide"
+	$("#datafile").change(function() {readCols(colsread,matrixformat=="wide"?1:0)})
 	$("#doUpload").click(function()  {readCols(doUpload)})
+	$('[name="matrixformat"]').change(function() {matrixformat=$(this).val(); $("#longsettings").collapse(matrixformat=="long"?"show":"hide");if(matrixformat=="wide") readCols(colsread,1)})
+	$(".longoptions").change(function() {
+		itemnamecol=$("#itemnamecol").children("option:selected").text()
+		responsecol=$("#responsecol").children("option:selected").text()
+		if(itemnamecol!="" && responsecol!="") readCols(colsread,matrixformat=="wide"?1:0)
+	})
 	$(".datetime").flatpickr({
 		enableTime: true,
 	    time_24hr: true,
@@ -861,6 +873,10 @@ function edited() {
 function wasedited(json) {
 	if(typeof json.variables!="undefined") $("tr[data-task_id="+json.task_id+"] .variables").html(json.variables)
 }
+
+// possible to change encoding to iso-8859-1
+// Possible to set delimiter to ;
+// Select format of data: Wide format, long format
 function readCols(func,preview=0) {
 	var file = $("#datafile").prop("files")[0]
 	
@@ -882,8 +898,39 @@ function colsread(results) {
 	var resp=/RESPONSE/i
 	for(var i in data[0]) {
 		var colname=data[0][i]
-		if(colname!="")
+		if(colname!="" && (matrixformat=="wide" || !resp.test(colname)))
 			$("#cols").append('<a href="#" class="badge badge-'+(resp.test(colname)?'primary':'secondary')+' mr-2 column" data-colno="'+i+'">'+data[0][i]+'</a>')
+	}
+	if(matrixformat=="wide") {
+		var options="<option></option>"
+		itemnamecol=""
+		responsecol=""
+		for(var i in data[0]) {
+			var colname=data[0][i]
+			if(colname!="") options+="<option>"+colname+"</option>"
+		}
+		$(".longoptions").html(options)
+		
+	}
+	if(matrixformat=="long") { //Format is long
+		
+		itemnamecolno=-1
+		for(var i in data[0]) {
+			var colname=data[0][i]
+			if(colname==itemnamecol)
+				itemnamecolno=i
+			if(colname==responsecol)
+				responsecol=i
+		}
+		var tasknames={}
+		for(var i=1;i<data.length;i++) {
+			tasknames[data[i][itemnamecolno]]=1
+		}
+		
+		tasknames=Object.keys(tasknames)
+		for(i in tasknames) {
+			$("#cols").append('<a href="#" class="badge badge-primary mr-2 column" data-colno="'+tasknames[i]+'">'+tasknames[i]+'</a>')
+		}
 	}
 	$(".column").click(movetodatafields)
 	$("#datafields").collapse("show")
@@ -891,13 +938,35 @@ function colsread(results) {
 function doUpload(results) {
 	var test_id=$("#test_id").val()
 	var cols=$("#usedcols a.column").map(function(x) {return $(this).data("colno")}).get()
-	var filtered=results.data.map(function(vals) {
-		var a=[]
-		for(var c of cols) {
-			a.push(vals[c])
+	if(matrixformat=="long") {
+		var usercols=cols.slice(0,2) // Test user and testtime
+		var responsevars=cols.slice(2) // responses
+		var filtered={}
+		//Opret en række for hver elev med den første tid som tidsstempel
+		//gå igennem alle responses og registrer dem hos eleven.
+		
+		var data=results.data.slice(1)
+		for(r of data) {
+			var v=responsevars.indexOf(r[itemnamecolno])	
+			if(v>-1) {
+				if(typeof(filtered[r[usercols[0]]])=="undefined") filtered[r[usercols[0]]]=[r[usercols[0]],r[usercols[1]]]
+				filtered[r[usercols[0]]][v+2]=r[responsecolno]
+			}
 		}
-		return a
-	})
+	 	console.log(filtered)
+		filtered=Object.values(filtered)
+		var vars=$("#usedcols a.column").map(function(x) {return $(this).text()}).get()
+		filtered.unshift(vars)
+	 	console.log(filtered)
+	} else {
+		var filtered=results.data.map(function(vals) {
+			var a=[]
+			for(var c of cols) {
+				a.push(vals[c])
+			}
+			return a
+		})
+	}
 	var before=$("#beforefilter").val()
 	if(before.length>0) {
 		var beforedate=Date.parse(before)
@@ -924,7 +993,7 @@ function doUpload(results) {
 			return regex.test(v)
 		})
 	}
-	console.log(filtered[0])
+// 	console.log(filtered[0])
 	if(window.confirm(_("You are about to import {0} columns of data from {1} test-takers. Do you want to proceed?",(filtered[0].length-2),filtered.length)))
 		send("doUpload","uploaddone",{test_id:test_id,responses:JSON.stringify(filtered)},"backend")
 

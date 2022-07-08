@@ -19,6 +19,24 @@ checkperm("projectadmin");
   </div>
 </form>
 <div class="collapse" id="datafields">
+	<h3 class=""><?= _("Matrix format");?></h3>
+	<div class="form-check form-check-inline">
+		<input class="form-check-input" type="radio" name="matrixformat" id="matrixformatwide" value="wide" checked>
+		<label class="form-check-label" for="matrixformatwide"><?= _("Wide format");?></label>
+	</div>
+	<div class="form-check form-check-inline">
+		<input class="form-check-input" type="radio" name="matrixformat" id="matrixformatlong" value="long">
+		<label class="form-check-label" for="matrixformatlong"><?= _("Long format");?></label>
+	</div>
+	<div class="form-inline">
+		<div class="collapse" id="longsettings">
+		<label class="form-label" for="itemnamecol"><?= _("Item name column");?></label>
+		<select id="itemnamecol" class="form-control longoptions"></select>
+		<label class="form-label" for="responsecol"><?= _("Response column");?></label>
+		<select id="responsecol" class="form-control longoptions"></select>
+		</div>
+	</div>
+
 	<p class="lead">
 		<?= _("Click on the username-column, then the testing time-column, and finally on the columns containing responses"); ?>
 	</p>
