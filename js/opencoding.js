@@ -548,12 +548,14 @@ function gotdownload() {
 	$("#doDownload").click(doDownload)
 }
 function doDownload() {
+	var NAvalue=$('#NAvalue').val()
 	var dataformat=$('[name="dataformat"]:checked').val()
 	var tasks=$(".taskcheck:checked").map(function() { return $(this).data("task_id") }).get()
 
 // 	initprogress("scoresheet")
 	var formData=new FormData();
 	formData.append("dataformat", dataformat);
+	formData.append("NAvalue", NAvalue);
 	formData.append("tasks", JSON.stringify(tasks));
   let xhr = new XMLHttpRequest();
   xhr.responseType = 'arraybuffer';

@@ -25,6 +25,12 @@ else {
 		<input class="form-check-input" type="radio" name="dataformat" id="dataformatcoders" value="coders">
 		<label class="form-check-label" for="dataformatmultiple"><?= _("Long format, coders in columns");?></label>
 	</div>
+	<div class="form-group-inline">
+		<label class="form-label" for="NAvalue"><?= _("No data-value");?></label>
+		<input class="form-input" type="text" name="NAvalue" id="NAvalue" value="NA">
+	</div>
+	
+	<h3><?= _("Select tasks");?></h3>
 	<div>
 		<input type="checkbox" class="form-check-input testcheck" id="alltasks">
 		<label class="form-check-label" for="alltasks"><?= _("Select all tasks");?></label>
@@ -34,8 +40,8 @@ else {
 	while($r=$result->fetch_assoc()) {
 		?>
 		<li class="testli">
-			<input type="checkbox" class="form-check-input testcheck" id="task_<?= $r["test_id"];?>" data-test_id="<?= $r["test_id"];?>">
-			<label class="form-check-label" for="task_<?= $r["test_id"];?>"><?= $r["test_name"];?></label>
+			<input type="checkbox" class="form-check-input testcheck" id="test_<?= $r["test_id"];?>" data-test_id="<?= $r["test_id"];?>">
+			<label class="form-check-label" for="test_<?= $r["test_id"];?>"><?= $r["test_name"];?></label>
 			<ul>
 			<?php
 				$q="select * from tasks where test_id=".$r["test_id"]." and `group_id`=0";

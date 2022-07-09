@@ -65,7 +65,7 @@ if($dataformat=="coders") {
 			$i=count($csv);
 			$csv[$i]=array($testtaker,$item);
 			foreach($allcoders as $coder) {
-				$csv[$i][]=(isset($coded[$coder])?$coded[$coder]:"NA");
+				$csv[$i][]=(isset($coded[$coder])?$coded[$coder]:$_POST["NAvalue"]);
 			}
 		}
 	}	
