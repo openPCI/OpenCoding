@@ -136,7 +136,7 @@ foreach($qarr as $unittype=>$q) {
 			</div>
 		</div>
   </div>
-<input type="hidden" id="task_ids" value="<?= implode(",",$task_ids);?>">
+
 <div class="modal" tabindex="-1" id="addcodermodal" role="dialog">
 	<div class="modal-dialog modal-lg" role="document">
 		<div class="modal-content">

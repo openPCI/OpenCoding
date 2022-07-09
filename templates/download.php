@@ -12,6 +12,19 @@ $result=$mysqli->query($q);
 if($result->num_rows==0) echo _("You don't have any tests in this project. Upload data to create tests.");
 else {
 	?>
+	<h3><?= _("Data format");?></h3>
+	<div class="form-check form-check-inline">
+		<input class="form-check-input" type="radio" name="dataformat" id="dataformatmatrix" value="matrix" checked>
+		<label class="form-check-label" for="dataformatmatrix"><?= _("Matrix, first coders code");?></label>
+	</div>
+	<div class="form-check form-check-inline">
+		<input class="form-check-input" type="radio" name="dataformat" id="dataformatmultiple" value="multiple">
+		<label class="form-check-label" for="dataformatmultiple"><?= _("Matrix, didiscrepancy codes on multiple lines");?></label>
+	</div>
+	<div class="form-check form-check-inline">
+		<input class="form-check-input" type="radio" name="dataformat" id="dataformatcoders" value="coders">
+		<label class="form-check-label" for="dataformatmultiple"><?= _("Long format, coders in columns");?></label>
+	</div>
 	<div>
 		<input type="checkbox" class="form-check-input testcheck" id="alltasks">
 		<label class="form-check-label" for="alltasks"><?= _("Select all tasks");?></label>
