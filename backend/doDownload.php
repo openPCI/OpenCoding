@@ -7,7 +7,7 @@ checkperm("projectadmin");
 $task_ids=json_decode($_POST["tasks"]);
 $dataformat=$_POST["dataformat"];
 
-
+$warning=array();
 
 $q='select if(t.clone_task_id!=0,tc.item_prefix,t.item_prefix) as item_prefix,if(t.clone_task_id!=0,tc.items,t.items) as items,testtaker,codes'.($dataformat=="coders"?',username':'').' from tasks t left join tasks tc on t.clone_task_id=tc.task_id left join responses r on t.task_id=r.task_id left join coded c on r.response_id=c.response_id '.($dataformat=="coders"?'left join users u on coder_id=user_id ':'').' where t.task_id in ('.implode(",",$task_ids).')'.($dataformat=="matrix"?' and isdoublecode=0':''); //If matrix: Select the first code
 
@@ -47,11 +47,18 @@ while($r=$result->fetch_assoc()) {
 				$list[$tt][$item]=array_merge($list[$tt][$item],array($coder=>$code));
 			}
 		} else {
-			if(!$list[$tt]) $list[$tt]=array();
-			for($ttno=0;$ttno<=count($list[$tt]);$ttno++) {
-				if(!$list[$tt][$ttno]) $list[$tt][$ttno]=array();
-				if(!array_intersect_key($coded,$list[$tt][$ttno])) break;
-			} 
+			if(!isset($list[$tt])) $list[$tt]=array();
+			if($dataformat=="matrix") {
+				$ttno=0;
+				if(!isset($list[$tt][0])) $list[$tt][0]=array();
+				else if(array_intersect_key($coded,$list[$tt][0])) $warning[]=sprintf(_("Overlapping codes for %s: %s"),$tt,print_r($coded,true));
+			}
+			else {
+				for($ttno=0;$ttno<=count($list[$tt]);$ttno++) {
+					if(!isset($list[$tt][$ttno])) $list[$tt][$ttno]=array();
+					if(!array_intersect_key($coded,$list[$tt][$ttno])) break;
+				} 
+			}
 			$list[$tt][$ttno]=array_merge($list[$tt][$ttno],$coded);
 		}
 	}
@@ -88,7 +95,10 @@ if($dataformat=="coders") {
 header('Content-Type: text/csv');
 header('Content-disposition: attachment; filename='._("opencoding".rand().".csv"));
 $fp = fopen('php://output', 'w');
-
+if($warning) {
+	array_unshift($warning,_("WARNINGS:"));
+	fputcsv($fp, $warning,";");
+}
 foreach ($csv as $fields) {
     fputcsv($fp, $fields,";");
 }

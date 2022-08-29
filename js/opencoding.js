@@ -924,7 +924,7 @@ function colsread(results) {
 			if(colname==itemnamecol)
 				itemnamecolno=i
 			if(colname==responsecol)
-				responsecol=i
+				responsecolno=i
 		}
 		var tasknames={}
 		for(var i=1;i<data.length;i++) {

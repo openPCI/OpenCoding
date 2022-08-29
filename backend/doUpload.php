@@ -40,14 +40,17 @@ if(!$warning) {
 	for($i=0;$i<=$queries;$i++) {
 		if(count($responses)>=$i*$numrowsperquery) {
 			$responsesslice=array_slice($responses,$i*$numrowsperquery,($i+1)*$numrowsperquery);
-			$values=array();
 			foreach ($responsesslice as $response) {
+				$values=array();
 					$testtaker=array_shift($response);
 					$response_time=array_shift($response);
 					for($j=0;$j<count($task_ids);$j++) 
 						$values[]='('.$task_ids[$j].',"'.$testtaker.'","'.$mysqli->real_escape_string($response[$j]).'","'.$response_time.'")';
+				$q="insert IGNORE into responses (task_id,testtaker,response,response_time) VALUES ".implode(",",$values);
+				$log.="\n".$q;
+				$mysqli->query($q);
+				$newresponses+=$mysqli->affected_rows;
 			}
-			$q="insert IGNORE into responses (task_id,testtaker,response,response_time) VALUES ".implode(",",$values);
 
 // 				implode(",",
 // 					array_map(
@@ -63,9 +66,6 @@ if(!$warning) {
 // 							);
 // 						},$responsesslice)
 // 					);
-			$log.="\n".$q;
-			$mysqli->query($q);
-			$newresponses+=$mysqli->affected_rows;
 		}
 	}
 }

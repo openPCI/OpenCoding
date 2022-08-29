@@ -9,6 +9,7 @@ $codingadmin=$_SESSION["perms"]["codingadmin"][$_SESSION["project_id"]];
 
 $_SESSION["remainingresponses"]=$_POST["remainingresponses"];
 
+
 if($_POST["codetype"]=="code") {
 	$q="select (select doublecodingpct from projects where project_id=".$_SESSION["project_id"].") as doublecodingpct, count(*) as numresponses,sum(isdoublecode) as numdoublecoded,sum(if(c.response_id IS NOT NULL and c.isdoublecode=0,1,0)) as numcoded from responses r left join coded c on r.response_id=c.response_id where r.task_id=".$_POST["task_id"];
 
