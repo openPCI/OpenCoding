@@ -33,7 +33,7 @@ if(!$mysqli->query($q)) {
 }
 if(!$warning) {
 	# To avoid this problem: https://dev.mysql.com/doc/refman/8.0/en/packet-too-large.html
-	$variablesperquery=100;
+	$variablesperquery=25;
 	$queries=$ntasks*count($responses)/$variablesperquery;
 	$numrowsperquery=ceil($variablesperquery/$ntasks);
 	$newresponses=0;
@@ -47,25 +47,11 @@ if(!$warning) {
 					for($j=0;$j<count($task_ids);$j++) 
 						$values[]='('.$task_ids[$j].',"'.$testtaker.'","'.$mysqli->real_escape_string($response[$j]).'","'.$response_time.'")';
 				$q="insert IGNORE into responses (task_id,testtaker,response,response_time) VALUES ".implode(",",$values);
-				$log.="\n".$q;
+// 				$log.="\n".$q;
 				$mysqli->query($q);
 				$newresponses+=$mysqli->affected_rows;
 			}
 
-// 				implode(",",
-// 					array_map(
-// 						function($respondent) use($task_ids,$ntasks,$mysqli) {
-// 							$testtaker=array_shift($respondent);
-// 							$response_time=array_shift($respondent);
-// 							return implode(",",
-// 								array_map(
-// 									function($response,$thistask_id) use($testtaker,$response_time,$mysqli) {
-// 										return '('.$thistask_id.',"'.$testtaker.'","'.$mysqli->real_escape_string($response).'","'.$response_time.'")';
-// 									},$respondent,$task_ids
-// 								)
-// 							);
-// 						},$responsesslice)
-// 					);
 		}
 	}
 }
