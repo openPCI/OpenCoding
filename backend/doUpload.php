@@ -47,7 +47,7 @@ if(!$warning) {
 					for($j=0;$j<count($task_ids);$j++) 
 						$values[]='('.$task_ids[$j].',"'.$testtaker.'","'.$mysqli->real_escape_string($response[$j]).'","'.$response_time.'")';
 				$q="insert IGNORE into responses (task_id,testtaker,response,response_time) VALUES ".implode(",",$values);
-// 				$log.="\n".$q;
+ 				#$log.="\n".$q;
 				$mysqli->query($q);
 				$newresponses+=$mysqli->affected_rows;
 			}
