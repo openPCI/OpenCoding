@@ -132,3 +132,14 @@ table.sticky-column tbody td:first-child {
 .searchvalue[type=number] {
 		max-width:80px;
 }
+.word {
+	width: 400px;
+	word-wrap: break-word;
+}
+
+  .itemsdiv { margin: 0; padding: 0;  }
+/*   .itemsdiv li { margin: 0 3px 3px 3px; padding: 0.4em; padding-left: 1.5em; font-size: 1.4em; height: 18px; } */
+/*   .itemsdiv li span { position: absolute; margin-left: -1.3em; } */
+ .itemsdiv>div:has(".font-weight-bold") {
+	 background-color:#992211;
+ }

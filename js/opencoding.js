@@ -11,7 +11,7 @@ var itemnamecolno
 var responsecolno
 var itemnamecol
 var responsecol
-
+if(!typeof __!="function") function __(s) {return s;}
 $(function() {
 	$("#showloginform").click(function () {get_template("login",{},"loginready")})
 	var p=window.location.search.replace(/.*[?&]p=([^&]*)(&|$).*/,"$1")
@@ -51,6 +51,7 @@ function send(page,f,d,place) {
 	if(typeof(d)=="undefined") var d={};
 // 	alert(page+f+place)
 	d.ajax=1;
+ 	// console.log(d)
 	console.log("./"+place+"/"+page+".php");
 	$.ajax({
 		url: "./"+place+"/"+page+".php",
@@ -356,7 +357,8 @@ function gotcoding(json) {
 	$("#sendcomment").click(sendcomment)
 	$("#flag").click(toggleFlag)
 	$("#trainingresponse").click(trainingresponse)
-	$(".itemvalue").focus(function() {if($(this).val()=="") $(this).val("0")});
+	$(".itemvalue[type=number]").focus(function() {if($(this).val()=="") $(this).val("0")});
+	$(".itemvalue[type=text]").keyup(function() {if($(this).val().length<40) $(this).css("width",$(this).val().length + 'ch')});
 	$(".nextresponse").click(function() { getresponse($(this).data("next"))})
 	$("#response_id").dblclick(function() {$(this).prop("readonly",false)}).change(function() { getresponse($(this).val())})
 	getresponse()
@@ -443,7 +445,7 @@ function getresponse(next) {
 			}
 		})
 		if(go && !nocodes) {
-			codes=$(".itemvalue").map(function() {return {item_name:$(this).data("item_name"),code:parseInt($(this).val())}}).get()
+			codes=$(".itemvalue").map(function() {return {item_name:$(this).data("item_name"),code:$(this).attr("type")=="text"?$(this).val():parseInt($(this).val())}}).get()
 			if($(".searchvalue:eq(0)").hasClass("show")) {
 				filtercodes=$(".searchvalue").map(function() {if($(this).val()!="" && $(this).data("item_name")!="itemtextsearch") return {item_name:$(this).data("item_name"),code:parseInt($(this).val())}}).get()
 				filtertext=$(".searchvalue[data-item_name=itemtextsearch]").val()
@@ -677,23 +679,27 @@ function maketasksactive() {
 		$("#modalimg").html($(e.relatedTarget).html());
 		$("#saveimg").data("task_id",$(e.relatedTarget).closest("tr").data("task_id"))
 	})
-	$(".itemsort").unbind("click").click(function() {
-		var active=$( ".itemsdiv" ).sortable( "option", "disabled" )
-		$(".itemsdiv").sortable(active?"enable":"disable")
-		$(".itemsort").toggleClass("text-success",active)
-	})
+	// $(".itemsort").unbind("click").click(function() {
+	// 	var active=$( ".itemsdiv" ).sortable( "option", "disabled" )
+	// 	$(".itemsdiv").sortable(active?"enable":"disable")
+	// 	$(".itemsort").toggleClass("text-success",active)
+	// })
 	$(".itemsdiv").sortable({
 		placeholder: "ui-state-highlight",
-		handle: ".editable",
+		// handle: ".editable",
+		handle: ".sorthandle",
+
 		stop: function(event,ui) {
 			send("itemsorted","itemsortdone",{order:$(event.target).find(".name").map(function() {return $(this).text()}).get(),task_id:$(this).closest("tr").data("task_id")},"backend")
 		}
-	}).sortable("disable")
+	})//.sortable("disable")
 	$(".editable").unbind("keydown").keydown(isEnter)
 	$(".editable").unbind("blur").on("blur",edited)
 	$(".htmleditable").unbind("click").click(edithtml)
 	$(".selectable").unbind("click").click(initselectable)
 	$(".additem").unbind("click").click(additem)
+	$(".additemstring").unbind("click").click(additemstring)
+	$(".additemcategory").unbind("click").click(additemcategory)
 	$(".deleteitem").unbind("click").click(deleteitem)
 	$(".tasktype_variable").unbind("change").change(function() {
 // 		console.log({task_id:$(this).closest("tr").data("task_id"),edittype:"tasktype_variables",variable:$(this).data("variablename"),value:$(this).val()})
@@ -821,16 +827,41 @@ function groupmade() {}
 function additem() {
 	var add=$(this).parent()
 	var itemname=_('item')+(add.index()+1)
-	var div=add.parent()
-	add.before('<div><span class="editable first" data-edittype="items" data-edittype2="name" data-oldvalue="'+itemname+'" contenteditable>'+itemname+'</span>: 0-<span class="editable" data-edittype="items"  data-edittype2="value" contenteditable>1</span><span class="deleteitem float-right"><i class="fa fa-trash-alt"></i></span><div>')
+	var div=$(this).closest(".itemdiv")
+	add.before('<div class="d-flex"><span class="sorthandle mx-1"><i class="fa-solid fa-sort"></i></span><span class="editable first name" data-edittype="items" data-edittype2="name" data-oldvalue="'+itemname+'" contenteditable>'+itemname+'</span>: 0-<span class="editable" data-edittype="items" data-edittype2="value" contenteditable>1</span><span class="deleteitem ml-auto"><i class="fa fa-trash-alt"></i></span><div>')
 	add.prev().children(".editable").keydown(isEnter).on("blur",edited)
+	add.prev().children(".deleteitem").click(deleteitem)
 	var task_id=add.closest("tr").data("task_id")
-	send("edited","wasedited",{task_id:task_id,edittype:"items",edittype2:"value",oldvalue:itemname,value:1},"backend")
+	send("edited","wasedited",{task_id:task_id,edittype:"items",edittype2:"value",oldvalue:itemname,value:1,order:div.find(".name").map(function() {return $(this).text()}).get()},"backend")
+}
+function additemstring() {
+	var add=$(this).parent()
+	var itemstringname=_('itemstring')+(add.index()+1)
+	var div=$(this).closest(".itemdiv")
+
+	add.before('<div class="d-flex"><span class="sorthandle mx-1"><i class="fa-solid fa-sort"></i></span><span class="editable first name" data-edittype="items" data-edittype2="name" data-oldvalue="'+itemstringname+'" contenteditable>'+itemstringname+'</span>: '+_("String")+'<span class="deleteitem ml-auto"><i class="fa fa-trash-alt"></i></span><div>')
+	add.prev().children(".editable").keydown(isEnter).on("blur",edited)
+	add.prev().children(".deleteitem").click(deleteitem)
+
+	var task_id=add.closest("tr").data("task_id")
+	send("edited","wasedited",{task_id:task_id,edittype:"items",edittype2:"value",oldvalue:itemstringname,value:"string",order:div.find(".name").map(function() {return $(this).text()}).get()},"backend")
+}
+function additemcategory() {
+	var add=$(this).parent()
+	var itemcategoryname=_('itemcategory')+(add.index()+1)
+	var div=$(this).closest(".itemdiv")
+	add.before('<div class="d-flex"><span class="sorthandle mx-1"><i class="fa-solid fa-sort"></i></span><span class="editable first name font-weight-bold" data-edittype="items" data-edittype2="name" data-oldvalue="'+itemcategoryname+'" contenteditable>'+itemcategoryname+'</span><span class="deleteitem ml-auto"><i class="fa fa-trash-alt"></i></span><div>')
+	add.prev().children(".editable").keydown(isEnter).on("blur",edited)
+	add.prev().children(".deleteitem").click(deleteitem)
+
+	var task_id=add.closest("tr").data("task_id")
+	send("edited","wasedited",{task_id:task_id,edittype:"items",edittype2:"value",oldvalue:itemcategoryname,value:0,order:div.find(".name").map(function() {return $(this).text()}).get()},"backend")
 }
 function deleteitem() {
 	var oldvalue=$(this).siblings(".first").data("oldvalue")
 	var task_id=$(this).closest("tr").data("task_id")
-	send("edited","wasedited",{task_id:task_id,edittype:"items",edittype2:"delete",oldvalue:oldvalue},"backend")
+	var div=$(this).closest(".itemdiv")
+	send("edited","wasedited",{task_id:task_id,edittype:"items",edittype2:"delete",oldvalue:oldvalue,order:div.find(".name").map(function() {return $(this).text()}).get()},"backend")
 	$(this).parent().remove()
 }
 function revertgroup() {
@@ -870,8 +901,8 @@ function edited() {
 	var edittype=$(this).data("edittype")
 	var edittype2=$(this).data("edittype2")
 	var oldvalue=(edittype2=="value"?$(this).prev().data("oldvalue"):$(this).data("oldvalue"))
-	var value=$(this).text().trim().replace(/[\n\r]/,"")
-	$(this).data("oldvalue",value)
+	var value=$(this).text().trim().replace(/[\n\r ]/g,"_")
+	$(this).text(value).data("oldvalue",value)
 	send("edited","wasedited",{task_id:task_id,tasktype_id:tasktype_id,edittype:edittype,edittype2:edittype2,oldvalue:oldvalue,value:value,edittable:$("#edittable").data("edittable")},"backend")
 }
 function wasedited(json) {
@@ -957,11 +988,11 @@ function doUpload(results) {
 				filtered[r[usercols[0]]][v+2]=r[responsecolno]
 			}
 		}
-	 	console.log(filtered)
+	 	// console.log(filtered)
 		filtered=Object.values(filtered)
 		var vars=$("#usedcols a.column").map(function(x) {return $(this).text()}).get()
 		filtered.unshift(vars)
-	 	console.log(filtered)
+	 	// console.log(filtered)
 	} else {
 		var filtered=results.data.map(function(vals) {
 			var a=[]
@@ -997,9 +1028,9 @@ function doUpload(results) {
 			return regex.test(v)
 		})
 	}
-// 	console.log(filtered[0])
+ 	console.log(filtered)
 	if(window.confirm(_("You are about to import {0} columns of data from {1} test-takers. Do you want to proceed?",(filtered[0].length-2),filtered.length)))
-		send("doUpload","uploaddone",{test_id:test_id,responses:JSON.stringify(filtered)},"backend")
+		send("doUpload","uploaddone",{test_id:test_id,responses:filtered},"backend")
 
 }
 function uploaddone(json) {
@@ -1145,6 +1176,13 @@ function gotcodingmanagement() {
 	$("#newcoder").keydown(getcoder)
 }
 function gotcodermanagement() {
+	$(".openitems").click(function() {
+		$(this).children().toggleClass("show")
+		$(this).closest("tr").find(".itemtable").toggleClass("show")
+	})
+	$(".openallitems").click(function() {
+		$(this).closest("table").find(".itemtable,.fa-caret-down,.fa-caret-right").toggleClass("show")
+	})
 }
 function getcoder() {
 	var codername=$(this).val()

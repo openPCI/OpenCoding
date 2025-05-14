@@ -34,7 +34,7 @@ if($task_id) {
 			}
 			if($hasminus) $warning=_("You need to set the flag to send negative values.");
 			else {
-				$codes=json_encode($_POST["codes"]);
+				$codes=json_encode($_POST["codes"],JSON_UNESCAPED_UNICODE);
 				if($flaghandling or $reviseall) $q="update coded set codes=CAST('".$codes."' as JSON) where response_id=".$_POST["response_id"]." and coder_id=".$_SESSION["coder_id"];
 				else $q="insert into coded (response_id,coder_id,codes,isdoublecode) value (".$_POST["response_id"].",".$_SESSION["user_id"].",CAST('".$codes."' as JSON),".($_SESSION["isdoublecode"]?1:0).") on duplicate key update codes=values(codes), code_id=LAST_INSERT_ID(code_id)";
 				$mysqli->query($q);
@@ -69,7 +69,7 @@ if($task_id) {
 				$res["dodouble"]=true;
 			}
 			$justcoding=(!$training and !$flaghandling and !$revise);
-			$direct=($_POST["next"]>0);
+			$direct=(!is_string($_POST["next"]) and $_POST["next"]>0);
 			$_SESSION["isdoublecode"]=($dodouble?1:0);
 			$q='select task_name,r.task_id,response,testtaker,response_time,r.response_id'.
 			($training?'':($dodouble?'':',codes')).
@@ -117,13 +117,14 @@ if($task_id) {
 				:
 					''
 				).
-				($_POST["filtercodes"]?' and JSON_CONTAINS(`codes`,CAST(\''.json_encode($_POST["filtercodes"]).'\' as JSON))':'').
+				($_POST["filtercodes"]?' and JSON_CONTAINS(`codes`,CAST(\''.json_encode($_POST["filtercodes"],JSON_UNESCAPED_UNICODE).'\' as JSON))':'').
 				($_POST["filtertext"]?' and response LIKE "%'.$_POST["filtertext"].'%"':'').'
 				and 
 				r.task_id='.$task_id.' 
 				order by '.($training?'difficulty':($flaghandling?'flag_id':($revise?'code_id':'RAND()'))).($_POST["next"]=="<"?' DESC':' ASC').'
 				limit 1';
 		$log.=$q;
+		$log.="\n".($directtonew?"directtonew":"").($revise?"revise":"").($direct?"direct":"");
 			$result=$mysqli->query($q);
 			$success=($result->num_rows>0);
 			if(!$success) {

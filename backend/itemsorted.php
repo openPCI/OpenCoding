@@ -6,7 +6,8 @@ include_once($shareddir."database.php");
 checkperm("projectadmin");
 $res=array();
 // $log.=print_r($_POST,true);
-$q='update tasks set `items`=JSON_SET(`items`,"$.order",CAST(\''.json_encode($_POST["order"]).'\' as JSON)) where task_id='.$_POST["task_id"];
+
+$q='update tasks set `items`=JSON_SET(`items`,"$.order",CAST(\''.json_encode($_POST["order"],JSON_UNESCAPED_UNICODE).'\' as JSON)) where task_id='.$_POST["task_id"];
 
 if(!$mysqli->query($q)) $res["warning"]=$mysqli->error;
 

@@ -75,21 +75,30 @@ if($result->num_rows>0) {
 						?>
 						</td>
 						<td class="editable" data-edittype="item_prefix" contenteditable><?= $r1["item_prefix"];?></td>
-						<td><div><span class="itemsort" title="<?= _("Sort");?>"><i class="fas fa-random"></i></span></div><div class="itemsdiv"><?php
-						$itemobj=json_decode($r1["items"],true); 
-						$items=$itemobj["items"];
-						$itemorder=$itemobj["order"]?$itemobj["order"]:array();
-						$extra=array_diff(array_keys($items),$itemorder);
-						$itemorder=array_merge($itemorder,$extra);
-						echo implode("\n",
-							array_map(
-								function($k) use($items) {
-									return '<div><span class="editable first name" data-oldvalue="'.$k.'" data-edittype="items"  data-edittype2="name" contenteditable>'.$k.'</span>: 0-<span class="editable" data-edittype="item"  data-edittype2="value" contenteditable>'.$items[$k].'</span><span class="deleteitem float-right"><i class="fa fa-trash-alt"></i></span></div>';
-								},
-								$itemorder
-							)
-						);
-						?><div><div class="additem"><i class="fas fa-plus"></i></div></td>
+						<td><!--<div><span class="itemsort" title="<?= _("Sort");?>"><i class="fas fa-random"></i></span></div>-->
+						<div class="itemsdiv">
+							<?php
+							$itemobj=json_decode($r1["items"],true); 
+							$items=$itemobj["items"];
+							$itemorder=$itemobj["order"]?$itemobj["order"]:array();
+							$extra=array_diff(array_keys($items),$itemorder);
+							$itemorder=array_merge(array_intersect($itemorder,array_keys($items)),$extra); // Removing items in order, but not in items. Adding items in items, but not in order...
+							echo implode("\n",
+								array_map(
+									function($k) use($items) {
+										return '<div class="d-flex"><span class="sorthandle mx-1"><i class="fa-solid fa-sort"></i></span><span class="editable first name '.($items[$k]?'':'font-weight-bold').'" data-oldvalue="'.$k.'" data-edittype="items"  data-edittype2="name" contenteditable>'.$k.'</span>'.($items[$k]?($items[$k]=="string"?': string':': 0-<span class="editable" data-edittype="item"  data-edittype2="value" contenteditable>'.$items[$k].'</span>'):'').'<span class="deleteitem ml-auto"><i class="fa fa-trash-alt"></i></span></div>';
+									},
+									$itemorder
+								)
+							);
+							?>
+							<div>
+								<span class="additem ml-2"><i class="fas fa-plus"></i></span>
+								<span class="additemstring ml-2"><i class="fas fa-comment-dots"></i></span>
+								<span class="additemcategory ml-2"><i class="fas fa-folder-plus"></i></span>
+							</div>
+						</div>
+						</td>
 						<td class="htmleditable"><div  class="htmleditablediv" id="rubrics_<?= $r1["task_id"];?>" data-edittype="coding_rubrics"><?= $r1["coding_rubrics"];?></div></td>
 						<?php } // End not clone
 						?>

@@ -31,8 +31,14 @@ switch($edittype) {
 					$log.="\n".$q;
 				}
 			}
-		} else 
+		} else {
 			$value='JSON_SET(`'.$edittype.'`,'.$path.$oldvalue.'","'.$value.'")';
+		}
+		if($_POST["order"]) {
+			$q='update tasks set `items`=JSON_SET(`items`,"$.order",CAST(\''.json_encode($_POST["order"]).'\' as JSON)) where task_id='.$_POST["task_id"];
+			if(!$mysqli->query($q)) $res["warning"]=$mysqli->error;
+		}
+
 	break;
 	case "tasktype_variables":
 		$value='JSON_SET(`tasktype_variables`,"$.'.$variable.'","'.htmlspecialchars_decode($value).'")';

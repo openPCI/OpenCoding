@@ -13,7 +13,7 @@ checkperm();
 		break;
 		case "comment":
 			if(trim($_POST["comment"])) {
-				$comment=htmlentities(trim($_POST["comment"]));
+				$comment=filter_var(trim($_POST["comment"]),FILTER_SANITIZE_SPECIAL_CHARS);
 				$q='update flags set `comments`=JSON_ARRAY_APPEND(`comments`,"$",CAST(CONCAT(\'{"username":"\',(SELECT username from users where user_id='.$_SESSION["user_id"].'),\'","commenttime":"\',NOW(),\'","comment": "'.$comment.'"}\') AS JSON)) where response_id='.$_POST["response_id"];
 				$mysqli->query($q);
 			}

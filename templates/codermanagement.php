@@ -8,7 +8,7 @@ $l = localeconv();
 
 $q="(select test_name as name,t.test_id,t.test_id as unit_id,1 as coltype from tests t left join tasks tt on t.test_id=tt.test_id where project_id=".$_SESSION["project_id"]." GROUP by test_id order by test_name) 
 union 
-(select task_name as name,t.test_id,t.task_id, 2 from tasks t left join tests tt on t.test_id=tt.test_id left join responses r on r.task_id=t.task_id where t.group_id=0 and tt.project_id=".$_SESSION["project_id"]." order by task_name)
+(select task_name as name,t.test_id,t.task_id, 2 from tasks t left join tests tt on t.test_id=tt.test_id left join responses r on r.task_id=t.task_id left join tasktypes ty on ty.tasktype_id=t.tasktype_id where manualauto='manual' and t.group_id=0 and tt.project_id=".$_SESSION["project_id"]." order by task_name)
 order by test_id,coltype,name";
 
 $all=array();
@@ -33,6 +33,16 @@ foreach($qarr as $unittype=>$q) {
 	else echo $q;
 }
 // print_r($coders);
+function sortitems($a,$b) {
+	return strcmp($a["item_name"],$b["item_name"]);
+}
+function addmissing($codes,$itemnames) {
+	$codeitems=array_column($codes,"item_name");
+	$missing=array_diff($itemnames,$codeitems);
+	$full=array_merge($codes,array_map(function($i) {return array("item_name"=>$i);},$missing));
+	usort($full,"sortitems");
+	return $full;
+}
 ?>
     <div >
 		<div class="row">
@@ -63,7 +73,21 @@ foreach($qarr as $unittype=>$q) {
 						foreach($all as $r) {
 						?>
 							<tr data-unit_id="<?= $r["unit_id"];?>" data-<?= ($r["coltype"]==1?"test":"task");?>_id="<?= $r["unit_id"];?>" data-unittype="<?= ($r["coltype"]==1?"test":"task");?>" class="<?= ($r["coltype"]==1?"table-warning":"");?>">
-								<?= ($r["coltype"]==1?'<th scope="row">':"<td>");?><?= $r["name"];?><?= ($r["coltype"]==1?'</th>':"</td>");?>
+								<?= ($r["coltype"]==1?'<th scope="row"><span class="openallitems m-1"><i class="fa-solid fa-caret-right collapse show"></i><i class="fa-solid fa-caret-down collapse"></i></span>':'<td><span class="openitems m-1"><i class="fa-solid fa-caret-right collapse show"></i><i class="fa-solid fa-caret-down collapse"></i></span>');?><?= $r["name"];?>
+								<?php
+								if($r["coltype"]==2) {
+									$q="select if(t.clone_task_id!=0,tc.items,t.items) as items from tasks t left join tasks tc on t.clone_task_id=tc.task_id where t.task_id=".$r["unit_id"];
+									$result=$mysqli->query($q);
+									$items=json_decode($result->fetch_assoc()["items"],true)["items"];
+									$itemnames=array_keys($items);
+									sort($itemnames);
+									?>
+									<table class="table table-sm table-borderless collapse itemtable text-muted ml-3">
+										<?= array_reduce($itemnames,function($c,$i) { return $c."<tr><td>".$i."</td></tr>";},"");?>
+									</table>
+									<?php
+								}?>
+								<?= ($r["coltype"]==1?'</th>':"</td>");?>
 								<?php
 								foreach($coders as $coder_id=>$codername) {
 									if($r["coltype"]==2) {
@@ -71,7 +95,7 @@ foreach($qarr as $unittype=>$q) {
 										if($result=$mysqli->query($q)) 
 											$numcodes=$result->fetch_assoc()["numcodes"];
 										else echo $q;
-										$agreement=array();
+										$agreement=$items=array();
 										$numdoublecodes=0;
 										if($numcodes>0) {
 											$q="select c.codes, c1.codes as doublecodes from coded c left join coded c1 on c.response_id=c1.response_id left join responses r on r.response_id=c.response_id where (c1.coder_id!=c.coder_id) and c.coder_id=".$coder_id." and task_id=".$r["unit_id"];
@@ -81,21 +105,32 @@ foreach($qarr as $unittype=>$q) {
 											$alld=$result->fetch_all(MYSQLI_ASSOC);
 											foreach($alld as $r1) {
 												$codes=json_decode($r1["codes"],true);
+												$codes=addmissing($codes,$itemnames);
 												$doublecodes=json_decode($r1["doublecodes"],true);
-												$agreement[]=array_map(function($c,$d) {
-													global $warning;
-													if($c["item_name"]!=$d["item_name"]) $warning=_("Item names are not the same");
-													else {
-														return ($c["code"]==$d["code"]?1:0);
-													}
+												$doublecodes=addmissing($doublecodes,$itemnames);
+												
+												$thisagree=array_map(function($c,$d) {
+													// global $warning;
+													// if($c["item_name"]!=$d["item_name"]) sprintf(_("Item names are not the same: %s & %s"),$c["item_name"],$d["item_name"]); #$warning=_("Item names are not the same");
+													// else {
+														if(!isset($c["code"]) or !isset($c["code"])) return null;
+														return ($c["code"]==$d["code"]?1:0); #return (array("item"=>$c["item_name"],"agree"=>$c["code"]==$d["code"]?1:0));
+													// }
 												},$doublecodes,$codes);
+												#$items[]=array_column($thisagree,"item");
+												#$agreement[]=array_column($thisagree,"agree");
+												$agreement[]=$thisagree;
 											}
 										}
 										$total=0;
 										if($agreement) {
-											$agreement=array_merge(...$agreement);
-											$agree=array_sum($agreement);
-											$total=count($agreement);
+											$itemagree=array_reduce($agreement,function($c,$i) {return array_map(function($i1,$c1) {return $i1+$c1;},$i,$c);},array());
+											$itemtotal=count($agreement);
+											// print_r($itemagree);
+											$totalagreement=array_merge(...$agreement);
+											$agree=array_sum($totalagreement);
+											$total=count($totalagreement);
+											// echo "<br>".$itemtotal." og ".$total;
 										} else $agree=0;
 										$overall[$coder_id]["numcodes"]+=$numcodes;
 										$overall[$coder_id]["numdoublecodes"]+=$numdoublecodes;
@@ -104,7 +139,14 @@ foreach($qarr as $unittype=>$q) {
 										?>
 										<td class="text-right border-left"><?= $numcodes;?></td>
 										<td class="text-right"><?= $numdoublecodes;?></td>
-										<td class="text-right"><?= (number_format(($total?$agree/$total*100:0),1,$l["decimal_point"],$l["thousands_sep"])." %");?></td>
+										<td class="text-right"><?= (number_format(($total?$agree/$total*100:0),1,$l["decimal_point"],$l["thousands_sep"])." %");?>
+										<?php 
+											if($agreement){ ?>
+											<table class="table table-sm table-borderless itemtable collapse text-muted">
+												<?= array_reduce($itemagree,function($c,$i) use($itemtotal,$l) { return $c."<tr><td>".(number_format(($itemtotal?$i/$itemtotal*100:0),1,$l["decimal_point"],$l["thousands_sep"])." %")."</td></tr>";},"");?>
+											</table>
+										<?php } ?>
+										</td>
 									<?php 
 								} else {
 								?>

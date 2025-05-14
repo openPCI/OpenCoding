@@ -146,16 +146,33 @@ function insertResponse(json) {
 						$itemorder=$itemobj["order"]?$itemobj["order"]:array();
 						$extra=array_diff(array_keys($items),$itemorder);
 						$itemorder=array_merge($itemorder,$extra);
-
+						$endcol=false;
 						foreach($itemorder as $item_name) {
-						?>
+							if(!$items[$item_name]) { // Is category/header
+								if($endcol) { ?></div></div><?php } else $endcol=true;
+							?>
 							<div class="form-group col">
+								<h3><?=str_replace("_"," ",$item_name);?></h3>
+								<div class="row">
+
+							<?php 
+								
+							} else {
+						?>
+							<div class="form-group col-3 col-md-2 col-lg-1"  style="min-width:100px">
+							<?php if($items[$item_name]=="string") { ?>
+								<label for="item<?= $item_name;?>"><?= $item_name;?></label>
+								<input type="text" data-item_name="<?= $item_name;?>" class="form-control itemvalue" name="<?= $item_name;?>" placeholder="" required>
+							<?php } else { ?>
 								<label for="item<?= $item_name;?>"><?= $item_name;?></label>
 								<input type="number" data-item_name="<?= $item_name;?>" class="form-control itemvalue" name="<?= $item_name;?>" placeholder="" min="-1" max="<?= $items[$item_name];?>" step="1" required>
+							<?php } ?>
 								<?= ($revise?'<input type="number" data-item_name="'.$item_name.'" class="form-control collapse searchvalue">':''); ?>
 							</div>
-						<?php
+						<?php 
+							}
 						}
+						if($endcol) { ?></div></div><?php } 
 					?>
 					</div>
 				</div>
