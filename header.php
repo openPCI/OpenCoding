@@ -1,4 +1,4 @@
-<?php $v=0.1;?>
+<?php $v=0.12;?>
 <!DOCTYPE html>
 <html lang="<?= $locale; ?>">
   <head>
@@ -23,7 +23,8 @@
     <link rel="stylesheet" href="./css/flatpickr.min.css"> 
 <!--      <link rel="stylesheet" href="./css/daterangepicker.css"> -->
     <!-- Add icon library -->
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
+    <link rel="stylesheet" href="./css/fontawesome.all.min.css">
+<!--     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v6.2.1/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous"> -->
 <!-- 	 <script defer src="./js/fontawesome-all.min.js"></script> -->
     <!-- styles for OpenCoding -->
     <link rel="stylesheet" href="css/opencoding.css?<?=$v;?>" rel="stylesheet">

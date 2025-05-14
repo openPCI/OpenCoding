@@ -70,6 +70,7 @@
 <script src="./js/translate.js"></script>
 <script src="./js/tether.min.js"></script>
 <script src="./js/bootstrap.min.js"></script>
+<script src="./js/fontawesome.all.min.js"></script>
 <!-- <script src="./js/bootstrap-timepicker.min.js"></script> -->
 <script src="./js/luxon.min.js"></script>
 
