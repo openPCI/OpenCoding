@@ -171,10 +171,11 @@ function gottasktypes(json) {
 		var row=$("[data-tasktype_id="+tasktype_id+"]")
 		row.children("[data-edittype="+edittype+"]").addClass("text-info").removeClass("text-muted")
 	})
-	hljs.configure({   // optionally configure hljs
-		languages: ['javascript', 'html', 'css','handlebars']
-	});
-
+	if(typeof(hljs)!="undefined") {
+		hljs.configure({   // optionally configure hljs
+			languages: ['javascript', 'html', 'css','handlebars']
+		});
+	}
 	quill = new Quill('#editor', {
 	modules: {
 		syntax: true,              // Include syntax module
@@ -273,10 +274,11 @@ function gotautocoding(json) {
 // 	$(".nextresponse").click(function() { getautoresponse($(this).data("next"))})
 // 	$("#response_id").dblclick(function() {$(this).prop("readonly",false)}).change(function() { getautoresponse(0)})
 	if($(".quill").length>0) {
-		hljs.configure({   // optionally configure hljs
-			languages: ['javascript', 'html', 'css','handlebars']
-		});
-
+		if(typeof(hljs)!="undefined") {
+			hljs.configure({   // optionally configure hljs
+				languages: ['javascript', 'html', 'css','handlebars']
+			});
+		}
 		quill = new Quill('.quill', {
 		modules: {
 			syntax: true,              // Include syntax module

@@ -25,7 +25,7 @@ Click on Task types, and click on import tasktypes. Select the file tasktypes.cs
 
 Go to Project Admin.
 
-Import data from csv-files. 
+Import data from csv-files. The format of the csv-file can be both wide (testtakers in rows, all responses in columns) and long (one testtakers' response to one item in each row). The system presents all columns in the file, and you select what you want to import. You can import from the same file more times, to split your work up in smaller chunks.
 
 Go to Administer Tests: Upload images, write descriptions and rubrics, define items, and assign tasktypes to tasks. 
 
