@@ -25,15 +25,21 @@ Click on Task types, and click on import tasktypes. Select the file tasktypes.cs
 
 Go to Project Admin.
 
-Import data from csv-files. The format of the csv-file can be both wide (testtakers in rows, all responses in columns) and long (one testtakers' response to one item in each row). The system presents all columns in the file, and you select what you want to import. You can import from the same file more times, to split your work up in smaller chunks.
+6. Click administer tests
 
-Go to Administer Tests: Upload images, write descriptions and rubrics, define items, and assign tasktypes to tasks. 
+Create a test
+
+7. Import response data from csv-files.
+
+The format of the csv-file can be both wide (testtakers in rows, all responses in columns) and long (one testtakers' response to one item in each row). The system presents all columns in the file, and you select what you want to import. You can import from the same file more times, to split your work up in smaller chunks.
+
+8. Administer Tests: Upload images, write descriptions and rubrics, define items, and assign tasktypes to tasks.
 
 - Create your own tasktypes, if you miss some. Please share. Twig-templates are used, so you can include variables and iterate over them.
 
-Go to users and give yourself Codingadmin permissions
+9. Go to users and give yourself Codingadmin permissions
 
-6. Go to Coding Admin
+10. Go to Coding Admin
 
 Invite coders (including yourself). Code some responses and select items for training use. 
 
