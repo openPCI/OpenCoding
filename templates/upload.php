@@ -5,18 +5,55 @@
 // $max_input_vars=ini_get("max_input_vars");
 // if($newmax_input_vars!=$max_input_vars) echo ('<div class="alert alert-danger" role="alert">'.sprintf(_("Your server limits the number of cases to be uploaded to %d (max_input_vars). You can change that in the php-ini-file on the server (/etc/php/7.X/apache2/php.ini). Or keep the number of cases down in each upload."),$max_input_vars).'</div>');
 
+$ppconfig=array(
+	"delimiter"=> "",	// auto-detect
+	"newline"=> "",	// auto-detect
+	"quoteChar"=> '',
+	"escapeChar"=> '',
+	"encoding"=> "",
+	"skipFirstNLines"=> 0,
+	"comments"=> false,
+	"skipEmptyLines"=> false
+);
+
 checkperm("projectadmin");
 ?>
 <form>
 	<div class="form-group">
-		<label for="test_name"><?= sprintf(_("Upload to: %s"),$_POST["test_name"]);?></label>
+		<h2><?= sprintf(_("Upload to: %s"),$_POST["test_name"]);?></h2>
 		<input type="hidden" id="test_id" value="<?= $_POST["test_id"];?>">
 	</div>
   
 	<div class="form-group">
-    <label for="datafile"><?= _("Choose a CSV-file");?></label>
-    <input type="file" class="custom-file-input" id="datafile" accept="text/csv">
-  </div>
+		<div class="custom-file">
+			<label for="datafile" class="custom-file-label"><?= _("Choose a CSV-file");?></label>
+			<input type="file" class="custom-file-input" id="datafile" accept="text/csv">
+		</div>
+	</div>
+	<button class="btn btn-secondary" type="button" data-toggle="collapse" data-target="#ppsettings" aria-expanded="false" aria-controls="ppsettings">
+	<?= _("Change settings");?>  </button>
+	<div class="collapse" id="ppsettings">
+		<small><?= _("Leave these as they are, unless you experience problems. ");?><a href="https://www.papaparse.com/docs#config" target="_blank"><?= _("View documentation");?></a></small>
+	<?php
+		foreach($ppconfig as $c=>$v) {
+			if(is_bool($v)) {
+				?><div class="form-check mb-1">
+					<input  class="ppconfig form-check-input" id="pp<?= $c;?>" type="checkbox"  <?= ($v?"checked":"");?>>
+					<label class="form-check-label" for="pp<?= $c;?>"><?= $c;?></label>
+				</div>
+				<?php
+			} else {
+				?>
+				<div class="">
+					<input  class="ppconfig form-input" id=pp<?= $c;?> type="text" size="5" value="<?= $v; ?>">
+					<label for="pp<?= $c;?>"><?= $c;?></label>
+				</div>
+			<?php
+			}
+
+		}
+	?>
+	</div>
 </form>
 <div class="collapse" id="datafields">
 	<h3 class=""><?= _("Matrix format");?></h3>

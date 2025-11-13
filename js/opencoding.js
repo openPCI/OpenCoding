@@ -916,12 +916,20 @@ function wasedited(json) {
 // Select format of data: Wide format, long format
 function readCols(func,preview=0) {
 	var file = $("#datafile").prop("files")[0]
-	
-	var papa = Papa.parse(file, {
-			header: false,
+	var config = {
 			complete: func,
 			preview:preview
           }
+	var ppconfig=$(".ppconfig")
+	for(var pp of ppconfig) {
+		if($(pp).attr("type")=="text") {
+			if($(pp).val()!="") config[$(pp).attr("id").replace(/^pp/,"")]=$(pp).val()
+		} else {
+			if($(pp).is(":checked") ) config[$(pp).attr("id").replace(/^pp/,"")]=true;
+
+		}
+	}
+	var papa = Papa.parse(file, config
         );
 	
 }

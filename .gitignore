@@ -2,4 +2,4 @@
 build/
 temp-*
 *.kate-swp
-secrets/
+secrets/*

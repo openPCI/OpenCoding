@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-09-17 09:14+0200\n"
+"POT-Creation-Date: 2025-11-13 23:25+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,12 +17,237 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
+#: dirs.php:8 dirs.php:8
+msgid "You don't have access here"
+msgstr ""
+
+#: frontend/getresponse.php:29
+#, php-format
+msgid ""
+"No correct codes for this response. Please contact the scoring manager. "
+"Response id: %d"
+msgstr ""
+
+#: frontend/getresponse.php:35
+msgid "You need to set the flag to send negative values."
+msgstr ""
+
+#: frontend/getresponse.php:161
+msgid "No more responses"
+msgstr ""
+
+#: frontend/autosave.php:29
+msgid ""
+"Trying to save a JSON document which too big. Set the MYSQL global variable "
+"'max_allowed_packet' to a higher value."
+msgstr ""
+
+#: shared/login.php:34
+msgid ""
+"You are not authorized to work on any projects. Please ask your manager to "
+"assign a task to you."
+msgstr ""
+
+#: shared/login.php:37
+msgid "Welcome back!"
+msgstr ""
+
+#: shared/login.php:48
+msgid "Username or password was wrong"
+msgstr ""
+
+#: shared/login.php:49
+msgid "No username"
+msgstr ""
+
+#: header.php:13 header.php:37 header.php:58 header.php:13 header.php:37
+#: header.php:58
+msgid "Human coding of test responses"
+msgstr ""
+
+#: header.php:54 header.php:54
+msgid "Change Project"
+msgstr ""
+
+#: header.php:69 templates/mytasks.php:59 header.php:69
+msgid "Code"
+msgstr ""
+
+#: header.php:72 header.php:72
+msgid "Train"
+msgstr ""
+
+#: header.php:76 header.php:76
+msgid "Manage"
+msgstr ""
+
+#: header.php:81 templates/projects.php:24 header.php:81
+msgid "Project"
+msgstr ""
+
+#: header.php:86 templates/users.php:10 header.php:86
+msgid "System"
+msgstr ""
+
+#: footer.php:25 footer.php:50 footer.php:25 footer.php:50
+msgid "Cookies"
+msgstr ""
+
+#: footer.php:30 footer.php:30
+msgid "My user"
+msgstr ""
+
+#: footer.php:34 footer.php:34
+msgid "Log out"
+msgstr ""
+
+#: footer.php:40 footer.php:40
+msgid "Log in"
+msgstr ""
+
+#: footer.php:51 footer.php:51
+msgid "Contact"
+msgstr ""
+
+#: backend/doUpload.php:10
+msgid "No responses provided"
+msgstr ""
+
+#: backend/doDownload.php:43
+msgid "Auto-coded"
+msgstr ""
+
+#: backend/doDownload.php:54
+#, php-format
+msgid "Overlapping codes for %s: %s"
+msgstr ""
+
+#: backend/doDownload.php:96 backend/exportTasktype.php:17
+msgid "opencoding"
+msgstr ""
+
+#: backend/doDownload.php:99
+msgid "WARNINGS:"
+msgstr ""
+
+#: backend/importTasktype.php:24
+msgid "Error in query"
+msgstr ""
+
 #: backend/useredit.php:12
 msgid "Changed"
 msgstr ""
 
-#: backend/doDownload.php:58
-msgid "opencoding"
+#: templates/projects.php:15
+msgid "New project"
+msgstr ""
+
+#: templates/projects.php:20
+msgid "OpenCoding Projects"
+msgstr ""
+
+#: templates/projects.php:25
+msgid "Double-coding percent"
+msgstr ""
+
+#: templates/projects.php:26
+msgid "Max responses per task per coder (%)"
+msgstr ""
+
+#: templates/projects.php:27 templates/users.php:33 templates/users.php:86
+msgid "Permissions"
+msgstr ""
+
+#: templates/projects.php:28 templates/codingmanagement.php:50
+#: templates/users.php:34 templates/mytasks.php:35
+msgid "Actions"
+msgstr ""
+
+#: templates/projects.php:40
+msgid "Change to this project"
+msgstr ""
+
+#: templates/projects.php:41
+msgid "Delete project"
+msgstr ""
+
+#: templates/download.php:12
+msgid "You don't have any tests in this project. Upload data to create tests."
+msgstr ""
+
+#: templates/download.php:15
+msgid "Data format"
+msgstr ""
+
+#: templates/download.php:18
+msgid "Matrix, first coders code"
+msgstr ""
+
+#: templates/download.php:22
+msgid "Matrix, didiscrepancy codes on multiple lines"
+msgstr ""
+
+#: templates/download.php:26
+msgid "Long format, coders in columns"
+msgstr ""
+
+#: templates/download.php:29
+msgid "No data-value"
+msgstr ""
+
+#: templates/download.php:33
+msgid "Select tasks"
+msgstr ""
+
+#: templates/download.php:36
+msgid "Select all tasks"
+msgstr ""
+
+#: templates/download.php:71
+msgid "Download"
+msgstr ""
+
+#: templates/coding.php:132
+msgid "Filter responses"
+msgstr ""
+
+#: templates/coding.php:134
+msgid "Search for text in item response"
+msgstr ""
+
+#: templates/coding.php:139
+msgid "Flag response."
+msgstr ""
+
+#: templates/coding.php:140
+msgid "This response is used in coder training. Difficulty: "
+msgstr ""
+
+#: templates/coding.php:140
+msgid "Mark response as used in coder training."
+msgstr ""
+
+#: templates/coding.php:193
+msgid "Code all 0"
+msgstr ""
+
+#: templates/coding.php:197 templates/autocoding.php:70
+msgid "Finish"
+msgstr ""
+
+#: templates/coding.php:202
+msgid ""
+"Use TAB and SHIFT+TAB to shift forward and back between item-codes. Use "
+"ARROWS to increase and decrease codes. Hit ENTER when in the last item-code "
+"to go to next response."
+msgstr ""
+
+#: templates/coding.php:214
+msgid "Flagged by:"
+msgstr ""
+
+#: templates/coding.php:217
+msgid "Add comment"
 msgstr ""
 
 #: templates/management.php:8
@@ -37,110 +262,326 @@ msgstr ""
 msgid "Coder management"
 msgstr ""
 
+#: templates/login.php:8 templates/login.php:9 templates/myUser.php:16
+#: templates/users.php:31 templates/users.php:84 templates/users.php:118
+msgid "Username"
+msgstr ""
+
+#: templates/login.php:10 templates/login.php:11 templates/myUser.php:25
+#: templates/users.php:126
+msgid "Password"
+msgstr ""
+
+#: templates/login.php:14
+msgid "Remember Me"
+msgstr ""
+
+#: templates/login.php:17
+msgid "Login"
+msgstr ""
+
+#: templates/codermanagement.php:50 templates/codingmanagement.php:39
+msgid "Coding Management"
+msgstr ""
+
+#: templates/codermanagement.php:61 templates/codingmanagement.php:43
+#: templates/training.php:18 templates/mytasks.php:34
+msgid "Test/task name"
+msgstr ""
+
+#: templates/codermanagement.php:63 templates/codingmanagement.php:45
+msgid "Coded"
+msgstr ""
+
+#: templates/codermanagement.php:64 templates/codingmanagement.php:46
+msgid "Double coded"
+msgstr ""
+
+#: templates/codermanagement.php:65 templates/codingmanagement.php:47
+msgid "Agreement"
+msgstr ""
+
+#: templates/codermanagement.php:164
+msgid "Overall"
+msgstr ""
+
+#: templates/codermanagement.php:186 templates/codermanagement.php:208
+#: templates/codingmanagement.php:116 templates/codingmanagement.php:138
+msgid "Add coders"
+msgstr ""
+
+#: templates/codermanagement.php:192 templates/codingmanagement.php:122
+msgid "Coders on project"
+msgstr ""
+
+#: templates/codermanagement.php:203 templates/codingmanagement.php:133
+msgid "Find coder"
+msgstr ""
+
+#: templates/codermanagement.php:213 templates/codingmanagement.php:143
+#: templates/tasktypes.php:89 templates/users.php:135 templates/tests.php:143
+msgid "Close"
+msgstr ""
+
+#: templates/codermanagement.php:214 templates/codingmanagement.php:144
+#: templates/tasktypes.php:90 templates/tests.php:144
+#: templates/autocoding.php:69
+msgid "Save"
+msgstr ""
+
 #: templates/chooseproject.php:10
 msgid "Choose project"
 msgstr ""
 
-#: templates/tasktypes.php:10
-msgid "New task type"
+#: templates/projectadmin.php:8
+msgid "Project administration"
 msgstr ""
 
-#: templates/tasktypes.php:11 templates/opencodingadmin.php:12
-msgid "Task types"
+#: templates/projectadmin.php:13
+msgid "Administer Tests"
 msgstr ""
 
-#: templates/tasktypes.php:15
-msgid "Name"
-msgstr ""
-
-#: templates/tasktypes.php:16
-msgid "Manual/auto coding"
-msgstr ""
-
-#: templates/tasktypes.php:17
-msgid "Description"
-msgstr ""
-
-#: templates/tasktypes.php:18
-msgid "Instructions"
-msgstr ""
-
-#: templates/tasktypes.php:19
-msgid "Playarea template"
-msgstr ""
-
-#: templates/tasktypes.php:20
-msgid "Responsearea template"
-msgstr ""
-
-#: templates/tasktypes.php:21
-msgid "Codearea template"
-msgstr ""
-
-#: templates/tasktypes.php:22
-msgid "Script"
-msgstr ""
-
-#: templates/tasktypes.php:23
-msgid "Styles"
-msgstr ""
-
-#: templates/tasktypes.php:24
-msgid "Variables"
-msgstr ""
-
-#: templates/tasktypes.php:69 templates/users.php:58
-msgid "Edit"
-msgstr ""
-
-#: templates/tasktypes.php:75
-msgid "Syntax Highlight"
-msgstr ""
-
-#: templates/tasktypes.php:82 templates/users.php:135 templates/tests.php:127
-#: templates/codermanagement.php:171 templates/codingmanagement.php:142
-msgid "Close"
-msgstr ""
-
-#: templates/tasktypes.php:83 templates/tests.php:128
-#: templates/codermanagement.php:172 templates/codingmanagement.php:143
-#: templates/autocoding.php:68
-msgid "Save"
-msgstr ""
-
-#: templates/tasktypes.php:84
-msgid "Save & Close"
-msgstr ""
-
-#: templates/users.php:10 header.php:85 header.php:85
-msgid "System"
-msgstr ""
-
-#: templates/users.php:22
-msgid "New user"
-msgstr ""
-
-#: templates/users.php:27 templates/projectadmin.php:14
+#: templates/projectadmin.php:14 templates/users.php:27
 #: templates/opencodingadmin.php:13
 msgid "Users"
 msgstr ""
 
-#: templates/users.php:31 templates/users.php:84 templates/users.php:118
-#: templates/login.php:8 templates/login.php:9 templates/myUser.php:16
-msgid "Username"
+#: templates/projectadmin.php:15
+msgid "Download coded data"
 msgstr ""
 
-#: templates/users.php:32 templates/users.php:85 templates/users.php:122
-#: templates/myUser.php:20
+#: templates/contact.php:4 templates/menu.php:4
+msgid "Human Coding of QTI/PCI items"
+msgstr ""
+
+#: templates/contact.php:5
+msgid "Developed by Jeppe Bundsgaard and Elias Toft Hansen."
+msgstr ""
+
+#: templates/contact.php:6
+msgid "Find out more at Github"
+msgstr ""
+
+#: templates/upload.php:23
+#, php-format
+msgid "Upload to: %s"
+msgstr ""
+
+#: templates/upload.php:29
+msgid "Choose a CSV-file"
+msgstr ""
+
+#: templates/upload.php:34
+msgid "Change settings"
+msgstr ""
+
+#: templates/upload.php:36
+msgid "Leave these as they are, unless you experience problems. "
+msgstr ""
+
+#: templates/upload.php:36
+msgid "View documentation"
+msgstr ""
+
+#: templates/upload.php:59
+msgid "Matrix format"
+msgstr ""
+
+#: templates/upload.php:62
+msgid "Wide format"
+msgstr ""
+
+#: templates/upload.php:66
+msgid "Long format"
+msgstr ""
+
+#: templates/upload.php:70
+msgid "Item name column"
+msgstr ""
+
+#: templates/upload.php:72
+msgid "Response column"
+msgstr ""
+
+#: templates/upload.php:78
+msgid ""
+"Click on the username-column, then the testing time-column, and finally on "
+"the columns containing responses"
+msgstr ""
+
+#: templates/upload.php:84
+msgid "Test taker username"
+msgstr ""
+
+#: templates/upload.php:85
+msgid "Test time"
+msgstr ""
+
+#: templates/upload.php:86
+msgid "Tasks"
+msgstr ""
+
+#: templates/upload.php:91
+msgid "Filter the responses"
+msgstr ""
+
+#: templates/upload.php:96
+msgid "Test taker username (regular expression accepted)"
+msgstr ""
+
+#: templates/upload.php:100
+msgid "Only include responses with test time before"
+msgstr ""
+
+#: templates/upload.php:104
+msgid "Only include responses with test time after"
+msgstr ""
+
+#: templates/upload.php:111
+msgid "Upload"
+msgstr ""
+
+#: templates/codingmanagement.php:44 templates/tests.php:40
+msgid "Count"
+msgstr ""
+
+#: templates/codingmanagement.php:48 templates/mytasks.php:38
+msgid "Flagged"
+msgstr ""
+
+#: templates/codingmanagement.php:49
+msgid "Resolved"
+msgstr ""
+
+#: templates/codingmanagement.php:51
+msgid "Assigned Coders"
+msgstr ""
+
+#: templates/codingmanagement.php:80
+msgid "Item names are not the same"
+msgstr ""
+
+#: templates/codingmanagement.php:99
+msgid "Zero-code empty responses"
+msgstr ""
+
+#: templates/codingmanagement.php:100 templates/codingmanagement.php:101
+msgid "Add coder"
+msgstr ""
+
+#: templates/training.php:14
+msgid "Training tasks"
+msgstr ""
+
+#: templates/training.php:19
+msgid "# training responses"
+msgstr ""
+
+#: templates/training.php:20
+msgid "# completed"
+msgstr ""
+
+#: templates/training.php:21
+msgid "Correct (items)"
+msgstr ""
+
+#: templates/training.php:38
+msgid "of"
+msgstr ""
+
+#: templates/tasktypes.php:12
+msgid "Import task types"
+msgstr ""
+
+#: templates/tasktypes.php:15
+msgid "New task type"
+msgstr ""
+
+#: templates/tasktypes.php:16 templates/opencodingadmin.php:12
+msgid "Task types"
+msgstr ""
+
+#: templates/tasktypes.php:20
+msgid "Export all tasktypes"
+msgstr ""
+
+#: templates/tasktypes.php:21
+msgid "Name"
+msgstr ""
+
+#: templates/tasktypes.php:22
+msgid "Manual/auto coding"
+msgstr ""
+
+#: templates/tasktypes.php:23
+msgid "Description"
+msgstr ""
+
+#: templates/tasktypes.php:24
+msgid "Instructions"
+msgstr ""
+
+#: templates/tasktypes.php:25
+msgid "Playarea template"
+msgstr ""
+
+#: templates/tasktypes.php:26
+msgid "Responsearea template"
+msgstr ""
+
+#: templates/tasktypes.php:27
+msgid "Codearea template"
+msgstr ""
+
+#: templates/tasktypes.php:28
+msgid "Script"
+msgstr ""
+
+#: templates/tasktypes.php:29
+msgid "Styles"
+msgstr ""
+
+#: templates/tasktypes.php:30
+msgid "Variables"
+msgstr ""
+
+#: templates/tasktypes.php:38
+msgid "Export this tasktype"
+msgstr ""
+
+#: templates/tasktypes.php:76 templates/users.php:58
+msgid "Edit"
+msgstr ""
+
+#: templates/tasktypes.php:82
+msgid "Syntax Highlight"
+msgstr ""
+
+#: templates/tasktypes.php:91
+msgid "Save & Close"
+msgstr ""
+
+#: templates/myUser.php:14
+msgid "User Data"
+msgstr ""
+
+#: templates/myUser.php:20 templates/users.php:32 templates/users.php:85
+#: templates/users.php:122
 msgid "E-mail"
 msgstr ""
 
-#: templates/users.php:33 templates/users.php:86 templates/projects.php:27
-msgid "Permissions"
+#: templates/myUser.php:22
+msgid ""
+"You are welcome to change your e-mail. Please remember to use the new "
+"address for login in the future."
 msgstr ""
 
-#: templates/users.php:34 templates/mytasks.php:34 templates/projects.php:28
-msgid "Actions"
+#: templates/myUser.php:26
+msgid "Unchanged"
+msgstr ""
+
+#: templates/users.php:22
+msgid "New user"
 msgstr ""
 
 #: templates/users.php:56
@@ -159,11 +600,6 @@ msgstr ""
 msgid "User"
 msgstr ""
 
-#: templates/users.php:126 templates/login.php:10 templates/login.php:11
-#: templates/myUser.php:25
-msgid "Password"
-msgstr ""
-
 #: templates/users.php:128
 msgid "Create a password"
 msgstr ""
@@ -172,126 +608,12 @@ msgstr ""
 msgid "Save information"
 msgstr ""
 
-#: templates/contact.php:4 templates/menu.php:4
-msgid "Human Coding of QTI/PCI items"
-msgstr ""
-
-#: templates/contact.php:5
-msgid "Developed by Jeppe Bundsgaard and Elias Toft Hansen."
-msgstr ""
-
-#: templates/contact.php:6
-msgid "Find out more at Github"
-msgstr ""
-
-#: templates/login.php:14
-msgid "Remember Me"
-msgstr ""
-
-#: templates/login.php:17
-msgid "Login"
-msgstr ""
-
-#: templates/projectadmin.php:8
-msgid "Project administration"
-msgstr ""
-
-#: templates/projectadmin.php:13
-msgid "Administer Tests"
-msgstr ""
-
-#: templates/projectadmin.php:15
-msgid "Download coded data"
-msgstr ""
-
-#: templates/upload.php:12
-#, php-format
-msgid "Upload to: %s"
-msgstr ""
-
-#: templates/upload.php:17
-msgid "Choose a CSV-file"
-msgstr ""
-
-#: templates/upload.php:23
-msgid ""
-"Click on the username-column, then the testing time-column, and finally on "
-"the columns containing responses"
-msgstr ""
-
-#: templates/upload.php:29
-msgid "Test taker username"
-msgstr ""
-
-#: templates/upload.php:30
-msgid "Test time"
-msgstr ""
-
-#: templates/upload.php:31
-msgid "Tasks"
-msgstr ""
-
-#: templates/upload.php:36
-msgid "Filter the responses"
-msgstr ""
-
-#: templates/upload.php:41
-msgid "Test taker username (regular expression accepted)"
-msgstr ""
-
-#: templates/upload.php:45
-msgid "Only include responses with test time before"
-msgstr ""
-
-#: templates/upload.php:49
-msgid "Only include responses with test time after"
-msgstr ""
-
-#: templates/upload.php:56
-msgid "Upload"
-msgstr ""
-
 #: templates/opencodingadmin.php:8
 msgid "OpenCoding administration"
 msgstr ""
 
 #: templates/opencodingadmin.php:14
 msgid "Projects"
-msgstr ""
-
-#: templates/coding.php:122
-msgid "Flag response."
-msgstr ""
-
-#: templates/coding.php:123
-msgid "This response is used in coder training. Difficulty: "
-msgstr ""
-
-#: templates/coding.php:123
-msgid "Mark response as used in coder training."
-msgstr ""
-
-#: templates/coding.php:156
-msgid "Code all 0"
-msgstr ""
-
-#: templates/coding.php:160 templates/autocoding.php:69
-msgid "Finish"
-msgstr ""
-
-#: templates/coding.php:165
-msgid ""
-"Use TAB and SHIFT+TAB to shift forward and back between item-codes. Use "
-"ARROWS to increase and decrease codes. Hit ENTER when in the last item-code "
-"to go to next response."
-msgstr ""
-
-#: templates/coding.php:177
-msgid "Flagged by:"
-msgstr ""
-
-#: templates/coding.php:180
-msgid "Add comment"
 msgstr ""
 
 #: templates/tests.php:9
@@ -342,138 +664,45 @@ msgstr ""
 msgid "Coding rubrics"
 msgstr ""
 
-#: templates/tests.php:40 templates/codingmanagement.php:44
-msgid "Count"
-msgstr ""
-
 #: templates/tests.php:41
 msgid "Action"
 msgstr ""
 
-#: templates/tests.php:74
+#: templates/tests.php:62
+#, php-format
+msgid "Cloning <b>%s</b>"
+msgstr ""
+
+#: templates/tests.php:62
+msgid "Stop cloning"
+msgstr ""
+
+#: templates/tests.php:78
 msgid "Sort"
 msgstr ""
 
-#: templates/tests.php:92
+#: templates/tests.php:107
 msgid "Delete task"
 msgstr ""
 
-#: templates/tests.php:93
+#: templates/tests.php:108
 msgid "Move task"
 msgstr ""
 
-#: templates/tests.php:115
+#: templates/tests.php:109
+msgid "Clone task settings"
+msgstr ""
+
+#: templates/tests.php:131
 msgid "Upload image"
 msgstr ""
 
-#: templates/tests.php:147
+#: templates/tests.php:163
 msgid "Move to"
 msgstr ""
 
-#: templates/codermanagement.php:40 templates/codingmanagement.php:39
-msgid "Coding Management"
-msgstr ""
-
-#: templates/codermanagement.php:51 templates/mytasks.php:33
-#: templates/codingmanagement.php:43 templates/training.php:18
-msgid "Test/task name"
-msgstr ""
-
-#: templates/codermanagement.php:53 templates/codingmanagement.php:45
-msgid "Coded"
-msgstr ""
-
-#: templates/codermanagement.php:54 templates/codingmanagement.php:46
-msgid "Double coded"
-msgstr ""
-
-#: templates/codermanagement.php:55 templates/codingmanagement.php:47
-msgid "Agreement"
-msgstr ""
-
-#: templates/codermanagement.php:87 templates/codingmanagement.php:79
-msgid "Item names are not the same"
-msgstr ""
-
-#: templates/codermanagement.php:122
-msgid "Overall"
-msgstr ""
-
-#: templates/codermanagement.php:144 templates/codermanagement.php:166
-#: templates/codingmanagement.php:115 templates/codingmanagement.php:137
-msgid "Add coders"
-msgstr ""
-
-#: templates/codermanagement.php:150 templates/codingmanagement.php:121
-msgid "Coders on project"
-msgstr ""
-
-#: templates/codermanagement.php:161 templates/codingmanagement.php:132
-msgid "Find coder"
-msgstr ""
-
-#: templates/mytasks.php:29
-msgid "My tasks"
-msgstr ""
-
-#: templates/mytasks.php:35
-msgid "Coded by you"
-msgstr ""
-
-#: templates/mytasks.php:36
-msgid "Remaining"
-msgstr ""
-
-#: templates/mytasks.php:37 templates/codingmanagement.php:48
-msgid "Flagged"
-msgstr ""
-
-#: templates/mytasks.php:58 header.php:68 header.php:68
-msgid "Code"
-msgstr ""
-
-#: templates/mytasks.php:58
-msgid "Revise"
-msgstr ""
-
-#: templates/projects.php:15
-msgid "New project"
-msgstr ""
-
-#: templates/projects.php:20
-msgid "OpenCoding Projects"
-msgstr ""
-
-#: templates/projects.php:24 header.php:80 header.php:80
-msgid "Project"
-msgstr ""
-
-#: templates/projects.php:25
-msgid "Double-coding percent"
-msgstr ""
-
-#: templates/projects.php:26
-msgid "Max responses per task per coder (%)"
-msgstr ""
-
-#: templates/projects.php:40
-msgid "Change to this project"
-msgstr ""
-
-#: templates/projects.php:41
-msgid "Delete project"
-msgstr ""
-
-#: templates/codingmanagement.php:49
-msgid "Resolved"
-msgstr ""
-
-#: templates/codingmanagement.php:50
-msgid "Assigned Coders"
-msgstr ""
-
-#: templates/codingmanagement.php:98 templates/codingmanagement.php:99
-msgid "Add coder"
+#: templates/tests.php:175
+msgid "Clone from"
 msgstr ""
 
 #: templates/autocoding.php:15
@@ -488,130 +717,34 @@ msgstr ""
 msgid "Write a coding script here"
 msgstr ""
 
-#: templates/autocoding.php:65
+#: templates/autocoding.php:66
 msgid "Add item"
 msgstr ""
 
-#: templates/autocoding.php:138
+#: templates/autocoding.php:163
 msgid "Statistics"
 msgstr ""
 
-#: templates/autocoding.php:139
+#: templates/autocoding.php:164
 msgid "Update"
 msgstr ""
 
-#: templates/download.php:10
-msgid "You don't have any tests in this project. Upload data to create tests."
+#: templates/mytasks.php:30
+msgid "My tasks"
 msgstr ""
 
-#: templates/download.php:46
-msgid "Download"
+#: templates/mytasks.php:36
+msgid "Coded by you"
 msgstr ""
 
-#: templates/training.php:14
-msgid "Training tasks"
+#: templates/mytasks.php:37
+msgid "Remaining"
 msgstr ""
 
-#: templates/training.php:19
-msgid "# training responses"
+#: templates/mytasks.php:59
+msgid "Revise"
 msgstr ""
 
-#: templates/training.php:20
-msgid "# completed"
-msgstr ""
-
-#: templates/training.php:21
-msgid "Correct (items)"
-msgstr ""
-
-#: templates/training.php:38
-msgid "of"
-msgstr ""
-
-#: templates/myUser.php:14
-msgid "User Data"
-msgstr ""
-
-#: templates/myUser.php:22
-msgid ""
-"You are welcome to change your e-mail. Please remember to use the new "
-"address for login in the future."
-msgstr ""
-
-#: templates/myUser.php:26
-msgid "Unchanged"
-msgstr ""
-
-#: header.php:13 header.php:36 header.php:57 header.php:13 header.php:36
-#: header.php:57
-msgid "Human coding of test responses"
-msgstr ""
-
-#: header.php:53 header.php:53
-msgid "Change Project"
-msgstr ""
-
-#: header.php:71 header.php:71
-msgid "Train"
-msgstr ""
-
-#: header.php:75 header.php:75
-msgid "Manage"
-msgstr ""
-
-#: dirs.php:8 dirs.php:8
-msgid "You don't have access here"
-msgstr ""
-
-#: frontend/getresponse.php:28
-#, php-format
-msgid ""
-"No correct codes for this response. Please contact the scoring manager. "
-"Response id: %d"
-msgstr ""
-
-#: frontend/getresponse.php:34
-msgid "You need to set the flag to send negative values."
-msgstr ""
-
-#: frontend/getresponse.php:154
-msgid "No more responses"
-msgstr ""
-
-#: shared/login.php:34
-msgid ""
-"You are not authorized to work on any projects. Please ask your manager to "
-"assign a task to you."
-msgstr ""
-
-#: shared/login.php:37
-msgid "Welcome back!"
-msgstr ""
-
-#: shared/login.php:48
-msgid "Username or password was wrong"
-msgstr ""
-
-#: shared/login.php:49
-msgid "No username"
-msgstr ""
-
-#: footer.php:25 footer.php:50 footer.php:25 footer.php:50
-msgid "Cookies"
-msgstr ""
-
-#: footer.php:30 footer.php:30
-msgid "My user"
-msgstr ""
-
-#: footer.php:34 footer.php:34
-msgid "Log out"
-msgstr ""
-
-#: footer.php:40 footer.php:40
-msgid "Log in"
-msgstr ""
-
-#: footer.php:51 footer.php:51
-msgid "Contact"
+#: templates/mytasks.php:60
+msgid "Revise all coders' coding"
 msgstr ""
