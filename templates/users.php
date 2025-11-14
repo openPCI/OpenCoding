@@ -7,8 +7,8 @@ else checkperm("projectadmin");
 	global $res;
 // 	$res["org_id"]=$_POST["org_id"];
 if($oca) 
-		$q='(select u.user_id,u.username,u.email,p.unit_id,if(p.unit_id=0,"'._("System").'", project_name) as project,group_concat(p.unittype separator ", ") as permissions, 1 as permtype from users u left join user_permissions p on u.user_id=p.user_id left join projects pr on pr.project_id=p.unit_id where '.($oca?1:'unit_id='.$_SESSION["project_id"]).' group by project_id,1 order by username , project_name )';
-else	$q='(select u.user_id,u.username,u.email,p.unit_id,group_concat(p.unittype separator ", ") as permissions, 1 as permtype from users u left join user_permissions p on u.user_id=p.user_id where '.($oca?1:'unit_id='.$_SESSION["project_id"]).' group by 1 order by username)';
+		$q='(select u.user_id,u.username,u.email,p.unit_id,if(p.unit_id=0,"'._("System").'", project_name) as project,group_concat(p.unittype separator ", ") as permissions, 1 as permtype from users u left join user_permissions p on u.user_id=p.user_id left join projects pr on pr.project_id=p.unit_id where '.($oca?1:'unit_id='.$_SESSION["project_id"]).' group by project_id,p.unit_id,u.user_id order by username , project_name )';
+else	$q='(select u.user_id,u.username,u.email,p.unit_id,group_concat(p.unittype separator ", ") as permissions, 1 as permtype from users u left join user_permissions p on u.user_id=p.user_id where '.($oca?1:'unit_id='.$_SESSION["project_id"]).' group by u.user_id,p.user_id order by username)';
 
 // 	echo $q;
 if(!$result=$mysqli->query($q)) {echo $q."<br>".$mysqli->error; }
